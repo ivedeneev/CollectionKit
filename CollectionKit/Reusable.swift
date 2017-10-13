@@ -9,7 +9,7 @@
 import Foundation
 import UIKit.UINib
 
-protocol Reusable {
+public protocol Reusable {
     static var nib: UINib {get}
     static var reuseIdentifier: String {get}
 }
@@ -22,5 +22,4 @@ extension Reusable {
     static var reuseIdentifier: String {
         return "\(String(describing: self))Identifier"
     }
-    
 }

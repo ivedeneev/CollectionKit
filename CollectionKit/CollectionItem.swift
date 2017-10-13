@@ -8,22 +8,26 @@
 
 import UIKit
 
-class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionReusableView {
+//как то различать ячейки и хедеры/футеры
+open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem, ActionableCollectionItem where CellType: UICollectionReusableView {
     //todo: consider item as parameter
-    var onSelect: ((_ indexPath: IndexPath) -> Void)?
-    var onDeselect: ((_ indexPath: IndexPath) -> Void)?
-    var onDisplay: ((_ indexPath: IndexPath) -> Void)?
-    var onEndDisplay: ((_ indexPath: IndexPath) -> Void)?
+    open var onSelect: ((_ indexPath: IndexPath) -> Void)?
+    open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
+    open var onDisplay: ((_ indexPath: IndexPath) -> Void)?
+    open var onEndDisplay: ((_ indexPath: IndexPath) -> Void)?
+    open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
+    open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
+    open var shouldHighlight: Bool?
     
-    var estimatedSize: CGSize { return CellType.estimatedSize(item: self.item) }
-    var item: CellType.T
-    var reuseIdentifier: String { return CellType.reuseIdentifier }
+    open var estimatedSize: CGSize { return CellType.estimatedSize(item: self.item) }
+    open var item: CellType.T
+    open var reuseIdentifier: String { return CellType.reuseIdentifier }
     
     init(item: CellType.T) {
         self.item = item
     }
     
-    func configure(_ cell: UICollectionReusableView) {
+    open func configure(_ cell: UICollectionReusableView) {
         (cell as? CellType)?.configure(item: item)
     }
     
@@ -31,23 +35,39 @@ class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionIt
         self.item = item
     }
     
+    @discardableResult
     func onSelect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onSelect = block
         return self
     }
     
+    @discardableResult
     func onDeselect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onDeselect = block
         return self
     }
 
+    @discardableResult
     func onDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onDisplay = block
         return self
     }
     
+    @discardableResult
     func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onEndDisplay = block
+        return self
+    }
+    
+    @discardableResult
+    func onHighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+        self.onHighlight = block
+        return self
+    }
+    
+    @discardableResult
+    func onUnighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+        self.onUnighlight = block
         return self
     }
 }

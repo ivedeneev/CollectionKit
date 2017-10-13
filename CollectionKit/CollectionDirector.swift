@@ -9,56 +9,8 @@
 import Foundation
 import UIKit
 
-
-//todo: consider delete this
-enum CollectionSectionType {
-    case common
-    case expandaple
-    case loadable
-}
-
-
-
-protocol ConfigurableCollectionItem : Reusable {
-    associatedtype T
-    static func estimatedSize(item: T?) -> CGSize
-    func configure(item: T)
-}
-
-protocol ActionableCollectionItem {
-    var onSelect: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onDeselect: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onDisplay: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onEndDisplay: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onHighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var shouldHighlight: Bool? { get set }
-}
-
-extension UICollectionView {
-    func dequeue<T: Reusable>(indexPath: IndexPath) -> T {
-        return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
-    }
-    
-    func registerNib<T: Reusable>(_ type: T.Type) {
-        self.register(T.nib, forCellWithReuseIdentifier: T.reuseIdentifier)
-    }
-    
-    func registerClass<T: Reusable>(_ type: T.Type) where T:UICollectionViewCell {
-        self.register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
-    }
-}
-
-
-//MARK:- AbstractCollectionItem
-protocol AbstractCollectionItem : ActionableCollectionItem {
-    var reuseIdentifier: String { get }
-    var estimatedSize: CGSize { get }
-    func configure(_: UICollectionReusableView)
-}
-
-
 //MARK:- CollectionDirector
-class CollectionDirector: NSObject {
+open class CollectionDirector: NSObject {
     var sections: [CollectionSection] = []
     fileprivate weak var collectionView: UICollectionView!
     
@@ -72,14 +24,29 @@ class CollectionDirector: NSObject {
                                                selector: #selector(handleReload),
                                                name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                                object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleInsert),
+                                               name: Notification.Name(rawValue: NotificationNames.insertItem.rawValue),
+                                               object: nil)
     }
     
     @objc private func handleReload(notification: Notification) {
-        guard let section = notification.object as? CollectionSection, let idx = self.sections.index(where: {$0 == section}) else { return }
+        guard let section = notification.object as? CollectionSection,
+              let idx = self.sections.index(where: {$0 == section}) else { return }
         self.collectionView.performBatchUpdates({ [unowned self] in
             self.collectionView.reloadSections([idx])
         }, completion: nil)
-        
+    }
+    
+    @objc private func handleInsert(notification: Notification) {
+        guard let section = notification.object as? CollectionSection,
+            let sectionIndex = self.sections.index(where: {$0 == section}),
+            let insertedItemIndex = notification.userInfo?["index"] as? Int else { return }
+        self.collectionView.performBatchUpdates({ [unowned self] in
+            let indexPath = IndexPath(item: insertedItemIndex, section: sectionIndex)
+            self.collectionView.insertItems(at: [indexPath])
+            }, completion: nil)
     }
     
     deinit {
@@ -113,14 +80,6 @@ class CollectionDirector: NSObject {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    func reloadLoadableSection(section: CollectionSection) {
-//        guard let idx = sections.index(where: {$0 == section}) else {return}
-//        self.collectionView.performBatchUpdates({ [weak collectionView] in
-//            guard let strongCollectionView = collectionView else {return}
-//            strongCollectionView.reloadSections([idx])
-//            }, completion: nil)
-    }
-    
     fileprivate func shouldLoadRelated(indexPath: IndexPath) -> Bool {
         let isSellerSection = indexPath.section == sections.count - 2
         return isSellerSection
@@ -133,11 +92,11 @@ class CollectionDirector: NSObject {
 
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionObject = sections[section]
         
         if let expandableSection = sectionObject as? ExpandableSection, let collappsedItemsCount = expandableSection.collapsedItemsCount {
@@ -147,15 +106,14 @@ extension CollectionDirector: UICollectionViewDataSource {
         return sections[section].items.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sections[indexPath.section].items[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
         item.configure(cell)
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
+    open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let section = sections[indexPath.section]
         switch kind {
         case UICollectionElementKindSectionHeader:
@@ -178,52 +136,68 @@ extension CollectionDirector: UICollectionViewDataSource {
 
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector : UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].items[indexPath.row]
         item.onSelect?(indexPath)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].items[indexPath.row]
         item.onDeselect?(indexPath)
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].items[indexPath.row]
         item.onDisplay?(indexPath)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].items[indexPath.row]
         item.onEndDisplay?(indexPath)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        let item = sections[indexPath.section].items[indexPath.row]
+        //todo: consider false as default value or set default value in colection item
+        return item.shouldHighlight ?? true
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let item = sections[indexPath.section].items[indexPath.row]
+        item.onHighlight?(indexPath)
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let item = sections[indexPath.section].items[indexPath.row]
+        item.onUnighlight?(indexPath)
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let item = sections[indexPath.section].items[indexPath.row]
         return item.estimatedSize
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return sections[section].instetForSection
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = sections[section]
-        let value = section_.headerItem?.estimatedSize ?? CGSize(width: collectionView.bounds.width, height: section_.headerHeight)
+        let value = section_.headerItem?.estimatedSize ?? .zero
         return value
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         let section_ = sections[section]        
-        let value = section_.footerItem?.estimatedSize ?? CGSize(width: collectionView.bounds.width, height: section_.footerHeight)
+        let value = section_.footerItem?.estimatedSize ?? .zero
         return value
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return sections[section].minimumInterItemSpacing
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sections[section].lineSpacing
     }
 }

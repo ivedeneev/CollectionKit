@@ -8,54 +8,50 @@
 
 import UIKit
 
-class CollectionSection : Equatable, Hashable {
+open class CollectionSection : Equatable, Hashable {
     let identifier = UUID().uuidString
-    var items: [AbstractCollectionItem] = []
+    open var items: [AbstractCollectionItem] = []
     var headerItem: AbstractCollectionItem?
     var footerItem: AbstractCollectionItem?
     
-    var headerHeight: CGFloat = 0
-    var footerHeight: CGFloat = 0
-    var title: String?
-    var type: CollectionSectionType
     var instetForSection: UIEdgeInsets = .zero
     var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
     var lineSpacing: CGFloat = 0
-    //todo: refactor this
-    var isLoading: Bool = true
-    /////// only for expandable Sections
-    
-    //////
-    
-    var hashValue: Int {
+
+    public var hashValue: Int {
         return identifier.hashValue
     }
-    
-    init(title: String? = nil, type: CollectionSectionType = .common) {
-        self.title = title
-        self.type = type
-    }
-    
+
     func append(item: AbstractCollectionItem) {
         items.append(item)
     }
     
     func append(header: AbstractCollectionItem) {
         headerItem = header
-        headerHeight = header.estimatedSize.height
     }
     
     func append(footer: AbstractCollectionItem) {
         footerItem = footer
-        footerHeight = footer.estimatedSize.height
     }
     
-    static func ==(lhs: CollectionSection, rhs: CollectionSection) -> Bool {
+    func insert(item: AbstractCollectionItem, at index: Int) {
+        items.insert(item, at: index)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.insertItem.rawValue),
+                                        object: self,
+                                        userInfo: [ "index" : index ])
+    }
+    
+    func remove(at index: Int) {
+        items.remove(at: index)
+    }
+    
+    public static func ==(lhs: CollectionSection, rhs: CollectionSection) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
     func reload() {
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue), object: self)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
+                                        object: self)
     }
 }
 
