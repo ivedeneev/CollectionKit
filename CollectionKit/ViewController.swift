@@ -12,6 +12,7 @@ import SafariServices
 class ViewController: UIViewController {
     var collectionView: UICollectionView!
     var director: CollectionDirector!
+    var section: CollectionSection!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,11 +23,11 @@ class ViewController: UIViewController {
         
         director = CollectionDirector(colletionView: collectionView)
         collectionView.registerClass(CollectionCell.self)
-        let section = CollectionSection()
+        section = CollectionSection()
         section.minimumInterItemSpacing = 2
-        section.instetForSection = UIEdgeInsetsMake(0, 8, 0, 8)
+        section.instetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
         section.lineSpacing = 2
-        for _ in 0..<20 {
+        for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
                 .onSelect({ (ip) in
                     let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
@@ -46,6 +47,10 @@ class ViewController: UIViewController {
         director.sections.first?.reload()
     }
     
+    @IBAction func addAction(_ sender: Any) {
+        let row = CollectionItem<CollectionCell>(item: "text")
+        section.append(item: row)
+    }
     
 }
 

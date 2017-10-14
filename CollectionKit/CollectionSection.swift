@@ -22,23 +22,25 @@ open class CollectionSection : Equatable, Hashable {
         return identifier.hashValue
     }
 
-    func append(item: AbstractCollectionItem) {
+    open func append(item: AbstractCollectionItem) {
         items.append(item)
     }
     
-    func append(header: AbstractCollectionItem) {
+    open func append(header: AbstractCollectionItem) {
         headerItem = header
     }
     
-    func append(footer: AbstractCollectionItem) {
+    open func append(footer: AbstractCollectionItem) {
         footerItem = footer
     }
     
+    //TODO: include item to signature
+    //TODO: add implementation
     func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
-        
+        deletions.forEach(remove)
     }
     
-    func insert(item: AbstractCollectionItem, at index: Int) {
+    open func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
@@ -47,24 +49,27 @@ open class CollectionSection : Equatable, Hashable {
     
     func remove(at index: Int) {
         items.remove(at: index)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
+                                        object: self,
+                                        userInfo: [ CollectionChange.insertItem.rawValue : index ])
     }
     
     public static func ==(lhs: CollectionSection, rhs: CollectionSection) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
-    func reload() {
+    open func reload() {
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                         object: self)
     }
 }
 
-class ExpandableSection: CollectionSection {
-    var collapsedItemsCount: Int
-    var isExpanded: Bool = false
+open class ExpandableSection: CollectionSection {
+    open var collapsedItemsCount: Int
+    open var isExpanded: Bool = false
     
-    //todo: consider pass isInitiallyExpanded paramater
-    init(collapsedItemsCount: Int) {
+    //TODO: consider pass isInitiallyExpanded paramater
+    public init(collapsedItemsCount: Int) {
         self.collapsedItemsCount = collapsedItemsCount
     }
 }

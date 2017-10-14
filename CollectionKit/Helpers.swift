@@ -66,8 +66,6 @@ public protocol ActionableCollectionItem {
 }
 
 
-
-
 //MARK:- AbstractCollectionItem
 public protocol AbstractCollectionItem : ActionableCollectionItem {
     var reuseIdentifier: String { get }

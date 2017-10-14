@@ -10,7 +10,7 @@ import UIKit
 
 //как то различать ячейки и хедеры/футеры
 open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem, ActionableCollectionItem where CellType: UICollectionReusableView {
-    //todo: consider item as parameter
+    //TODO: consider item as parameter
     open var onSelect: ((_ indexPath: IndexPath) -> Void)?
     open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
     open var onDisplay: ((_ indexPath: IndexPath) -> Void)?
@@ -33,7 +33,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     func reload(item: CellType.T) {
         self.item = item
-        //todo: send notification
+        //TODO: send notification
     }
     
     @discardableResult

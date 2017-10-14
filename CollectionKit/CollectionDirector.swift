@@ -11,9 +11,10 @@ import UIKit
 
 
 /*
- 1 потестить обновления
- 2 потестить с реалмом и кор датой
+ 1  потестить обновления
+ 2  потестить с реалмом и кор датой
  3. удаление/добавления хедеры/футеры
+ 4. автоматическая высота по ширине экрана
  */
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
@@ -159,7 +160,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
         let item = sections[indexPath.section].items[indexPath.row]
-        //todo: consider false as default value or set default value in colection item
+        //TODO: consider false as default value or set default value in colection item
         return item.shouldHighlight ?? true
     }
     
