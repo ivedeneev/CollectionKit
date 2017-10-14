@@ -21,8 +21,14 @@ func +=(left: CollectionSection, right: AbstractCollectionItem) {
 enum NotificationNames : String {
     case reloadSection
     case reloadRow
+    case sectionChanges
+}
+
+enum CollectionChange : String {
     case insertItem
-    case removeItem
+    case deleteItem
+    case insertSection
+    case removeSection
 }
 
 

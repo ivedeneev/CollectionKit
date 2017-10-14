@@ -34,11 +34,15 @@ open class CollectionSection : Equatable, Hashable {
         footerItem = footer
     }
     
+    func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
+        
+    }
+    
     func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.insertItem.rawValue),
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
-                                        userInfo: [ "index" : index ])
+                                        userInfo: [ CollectionChange.insertItem.rawValue : index ])
     }
     
     func remove(at index: Int) {
@@ -56,6 +60,11 @@ open class CollectionSection : Equatable, Hashable {
 }
 
 class ExpandableSection: CollectionSection {
-    var collapsedItemsCount: Int?
+    var collapsedItemsCount: Int
     var isExpanded: Bool = false
+    
+    //todo: consider pass isInitiallyExpanded paramater
+    init(collapsedItemsCount: Int) {
+        self.collapsedItemsCount = collapsedItemsCount
+    }
 }

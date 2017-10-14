@@ -9,6 +9,12 @@
 import Foundation
 import UIKit
 
+
+/*
+ 1 потестить обновления
+ 2 потестить с реалмом и кор датой
+ 3. удаление/добавления хедеры/футеры
+ */
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     var sections: [CollectionSection] = []
@@ -27,7 +33,7 @@ open class CollectionDirector: NSObject {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleInsert),
-                                               name: Notification.Name(rawValue: NotificationNames.insertItem.rawValue),
+                                               name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                                object: nil)
     }
     
@@ -80,11 +86,6 @@ open class CollectionDirector: NSObject {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    fileprivate func shouldLoadRelated(indexPath: IndexPath) -> Bool {
-        let isSellerSection = indexPath.section == sections.count - 2
-        return isSellerSection
-    }
-    
     //TODO: remove header/footer
     //TODO: expansion
 }
@@ -99,8 +100,8 @@ extension CollectionDirector: UICollectionViewDataSource {
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionObject = sections[section]
         
-        if let expandableSection = sectionObject as? ExpandableSection, let collappsedItemsCount = expandableSection.collapsedItemsCount {
-            return expandableSection.isExpanded ? sectionObject.items.count : min(collappsedItemsCount, expandableSection.items.count)
+        if let expandableSection = sectionObject as? ExpandableSection {
+            return expandableSection.isExpanded ? sectionObject.items.count : min(expandableSection.collapsedItemsCount, expandableSection.items.count)
         }
         
         return sections[section].items.count

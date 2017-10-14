@@ -33,6 +33,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     func reload(item: CellType.T) {
         self.item = item
+        //todo: send notification
     }
     
     @discardableResult
