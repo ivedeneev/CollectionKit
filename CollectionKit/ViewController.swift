@@ -48,9 +48,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func addAction(_ sender: Any) {
-        let row = CollectionItem<CollectionCell>(item: "text")
-        section.append(item: row)
+        let row = CollectionItem<CollectionCell>(item: "-__-__-__-__-")
+        section.insert(item: row, at: 0)
     }
     
+    @IBAction func removeAction(_ sender: Any) {
+        section.remove(at: 0)
+    }
 }
 

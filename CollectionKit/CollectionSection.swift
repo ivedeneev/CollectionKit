@@ -51,7 +51,7 @@ open class CollectionSection : Equatable, Hashable {
         items.remove(at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
-                                        userInfo: [ CollectionChange.insertItem.rawValue : index ])
+                                        userInfo: [ CollectionChange.removeItem.rawValue : index ])
     }
     
     public static func ==(lhs: CollectionSection, rhs: CollectionSection) -> Bool {

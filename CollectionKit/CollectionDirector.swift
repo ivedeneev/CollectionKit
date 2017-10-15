@@ -47,13 +47,28 @@ open class CollectionDirector: NSObject {
     }
     
     @objc private func handleInsert(notification: Notification) {
-        guard let section = notification.object as? CollectionSection,
-            let sectionIndex = self.sections.index(where: {$0 == section}),
-            let insertedItemIndex = notification.userInfo?["index"] as? Int else { return }
+        guard let section = notification.object as? CollectionSection, let sectionIndex = self.sections.index(where: {$0 == section}) else { return }
+        var insert = [IndexPath]()
+        var delete = [IndexPath]()
+        var reload = [IndexPath]()
+        
+        if let insertedItemIndex = notification.userInfo?[CollectionChange.insertItem.rawValue] as? Int {
+            insert.append(IndexPath(item: insertedItemIndex, section: sectionIndex))
+        }
+        
+        if let deletedItemIndex = notification.userInfo?[CollectionChange.removeItem.rawValue] as? Int {
+            delete.append(IndexPath(item: deletedItemIndex, section: sectionIndex))
+        }
+        
+        if let reloadItemIndex = notification.userInfo?[CollectionChange.reloadItem.rawValue] as? Int {
+            reload.append(IndexPath(item: reloadItemIndex, section: sectionIndex))
+        }
+        
         self.collectionView.performBatchUpdates({ [unowned self] in
-            let indexPath = IndexPath(item: insertedItemIndex, section: sectionIndex)
-            self.collectionView.insertItems(at: [indexPath])
-            }, completion: nil)
+            self.collectionView.insertItems(at: insert)
+            self.collectionView.deleteItems(at: delete)
+            self.collectionView.reloadItems(at: reload)
+        }, completion: nil)
     }
     
     deinit {
@@ -64,9 +79,9 @@ open class CollectionDirector: NSObject {
         self.sections.append(section)
     }
     
-    func reload(section: CollectionSection) {
-        guard let idx = sections.index(where: {$0 == section}) else {return}
-        
+//    func reload(section: CollectionSection) {
+//        guard let idx = sections.index(where: {$0 == section}) else {return}
+//
 //        let range = section.collapsedItemsCount..<section.items.count
 //        let indexPaths = range.map({IndexPath(item: $0, section: idx)})
 //        
@@ -81,7 +96,7 @@ open class CollectionDirector: NSObject {
 //                strongCollectionView.deleteItems(at: indexPaths)
 //                }, completion: nil)
 //        }
-    }
+//    }
     
     func setNeedsUpdate() {
         self.collectionView.performBatchUpdates({}, completion: nil)
@@ -154,6 +169,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        //FIXME: crash when deleting last row
         let item = sections[indexPath.section].items[indexPath.row]
         item.onEndDisplay?(indexPath)
     }
@@ -203,4 +219,3 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         return sections[section].lineSpacing
     }
 }
-

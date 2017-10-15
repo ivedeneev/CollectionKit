@@ -26,7 +26,8 @@ enum NotificationNames : String {
 
 enum CollectionChange : String {
     case insertItem
-    case deleteItem
+    case removeItem
+    case reloadItem
     case insertSection
     case removeSection
 }
