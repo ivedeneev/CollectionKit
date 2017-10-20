@@ -11,8 +11,8 @@ import UIKit
 open class CollectionSection : Equatable, Hashable {
     let identifier = UUID().uuidString
     open var items: [AbstractCollectionItem] = []
-    var headerItem: AbstractCollectionItem?
-    var footerItem: AbstractCollectionItem?
+    open var headerItem: AbstractCollectionItem?
+    open var footerItem: AbstractCollectionItem?
     
     var instetForSection: UIEdgeInsets = .zero
     var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
