@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import CollectionKit
 
 class ViewController: UIViewController {
     var collectionView: UICollectionView!

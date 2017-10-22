@@ -10,11 +10,11 @@ import Foundation
 import UIKit
 
 //MARK:- Operators
-func +=(left: CollectionDirector, right: CollectionSection) {
+public func +=(left: CollectionDirector, right: CollectionSection) {
     left.append(section: right)
 }
 
-func +=(left: CollectionSection, right: AbstractCollectionItem) {
+public func +=(left: CollectionSection, right: AbstractCollectionItem) {
     left.append(item: right)
 }
 
@@ -34,7 +34,7 @@ enum CollectionChange : String {
 
 
 //MARK:- Convinience
-extension UICollectionView {
+public extension UICollectionView {
     func dequeue<T: Reusable>(indexPath: IndexPath) -> T {
         return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }

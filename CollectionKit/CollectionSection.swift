@@ -9,14 +9,16 @@
 import UIKit
 
 open class CollectionSection : Equatable, Hashable {
-    let identifier = UUID().uuidString
+    private let identifier = UUID().uuidString
     open var items: [AbstractCollectionItem] = []
     open var headerItem: AbstractCollectionItem?
     open var footerItem: AbstractCollectionItem?
     
-    var instetForSection: UIEdgeInsets = .zero
-    var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
-    var lineSpacing: CGFloat = 0
+    open var instetForSection: UIEdgeInsets = .zero
+    open var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
+    open var lineSpacing: CGFloat = 0
+    
+    public init() {}
 
     public var hashValue: Int {
         return identifier.hashValue
@@ -36,18 +38,18 @@ open class CollectionSection : Equatable, Hashable {
     
     //TODO: include item to signature
     //TODO: add implementation
-    func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
+    public func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
         deletions.forEach(remove)
     }
     
-    open func insert(item: AbstractCollectionItem, at index: Int) {
+    public func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
                                         userInfo: [ CollectionChange.insertItem.rawValue : index ])
     }
     
-    func remove(at index: Int) {
+    public func remove(at index: Int) {
         items.remove(at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
@@ -58,7 +60,7 @@ open class CollectionSection : Equatable, Hashable {
         return lhs.hashValue == rhs.hashValue
     }
     
-    open func reload() {
+    public func reload() {
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                         object: self)
     }

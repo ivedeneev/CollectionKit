@@ -9,9 +9,34 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>CollectionKitTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>Examples.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>D638A8D81F9D258E00B858E9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D638A8E01F9D258E00B858E9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D638A8F31F9D25AF00B858E9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D69EEF541F6894F5002B29E4</key>
 		<dict>
 			<key>primary</key>

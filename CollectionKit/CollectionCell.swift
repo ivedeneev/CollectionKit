@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CollectionKit
+
 
 class CollectionCell: UICollectionViewCell, ConfigurableCollectionItem {
     typealias T = String

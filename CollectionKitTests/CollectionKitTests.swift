@@ -2,7 +2,7 @@
 //  CollectionKitTests.swift
 //  CollectionKitTests
 //
-//  Created by Igor Vedeneev on 13.09.17.
+//  Created by Igor Vedeneev on 22.10.17.
 //  Copyright © 2017 Igor Vedeneev. All rights reserved.
 //
 

@@ -18,10 +18,10 @@ import UIKit
  */
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
-    var sections: [CollectionSection] = []
+    open var sections: [CollectionSection] = []
     fileprivate weak var collectionView: UICollectionView!
     
-    init(colletionView: UICollectionView) {
+    public init(colletionView: UICollectionView) {
         self.collectionView = colletionView
         super.init()
         self.collectionView.dataSource = self

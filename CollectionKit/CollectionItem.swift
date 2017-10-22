@@ -23,51 +23,51 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     
-    init(item: CellType.T) {
+    public init(item: CellType.T) {
         self.item = item
     }
     
-    open func configure(_ cell: UICollectionReusableView) {
+    public func configure(_ cell: UICollectionReusableView) {
         (cell as? CellType)?.configure(item: item)
     }
     
-    func reload(item: CellType.T) {
+    public func reload(item: CellType.T) {
         self.item = item
         //TODO: send notification
     }
     
     @discardableResult
-    func onSelect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onSelect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onSelect = block
         return self
     }
     
     @discardableResult
-    func onDeselect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onDeselect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onDeselect = block
         return self
     }
 
     @discardableResult
-    func onDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onDisplay = block
         return self
     }
     
     @discardableResult
-    func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onEndDisplay = block
         return self
     }
     
     @discardableResult
-    func onHighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onHighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onHighlight = block
         return self
     }
     
     @discardableResult
-    func onUnighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onUnighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onUnighlight = block
         return self
     }

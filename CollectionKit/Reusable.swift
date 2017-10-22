@@ -10,11 +10,11 @@ import Foundation
 import UIKit.UINib
 
 public protocol Reusable {
-    static var nib: UINib {get}
-    static var reuseIdentifier: String {get}
+    static var nib: UINib { get }
+    static var reuseIdentifier: String { get }
 }
 
-extension Reusable {
+public extension Reusable {
     static var nib: UINib {
         return UINib(nibName: String(describing: self), bundle: nil)
     }
