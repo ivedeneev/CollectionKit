@@ -33,8 +33,6 @@ class ViewController: UIViewController {
                 .onSelect({ (ip) in
                     let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
                     self.present(safariViewController, animated: true, completion: nil)
-                }).onDisplay({ (ip) in
-                    print("will display")
                 })
             section += row
         }

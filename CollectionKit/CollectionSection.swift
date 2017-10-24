@@ -28,14 +28,6 @@ open class CollectionSection : Equatable, Hashable {
         items.append(item)
     }
     
-    open func append(header: AbstractCollectionItem) {
-        headerItem = header
-    }
-    
-    open func append(footer: AbstractCollectionItem) {
-        footerItem = footer
-    }
-    
     //TODO: include item to signature
     //TODO: add implementation
     public func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
