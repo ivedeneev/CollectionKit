@@ -9,7 +9,7 @@
 import UIKit
 
 //как то различать ячейки и хедеры/футеры
-open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem, ActionableCollectionItem where CellType: UICollectionReusableView {
+open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionReusableView {
     //TODO: consider item as parameter
     open var onSelect: ((_ indexPath: IndexPath) -> Void)?
     open var onDeselect: ((_ indexPath: IndexPath) -> Void)?

@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
         collectionView.alwaysBounceVertical = true
+
         
         director = CollectionDirector(colletionView: collectionView)
         collectionView.registerClass(CollectionCell.self)
@@ -29,11 +30,11 @@ class ViewController: UIViewController {
         section.instetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
-            let row = CollectionItem<CollectionCell>(item: "text")
-                .onSelect({ (ip) in
-                    let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
-                    self.present(safariViewController, animated: true, completion: nil)
-                })
+            let row = CollectionItem<CollectionCell>(item: "text").onSelect({ (ip) in
+                let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
+                self.present(safariViewController, animated: true, completion: nil)
+            })
+
             section += row
         }
         

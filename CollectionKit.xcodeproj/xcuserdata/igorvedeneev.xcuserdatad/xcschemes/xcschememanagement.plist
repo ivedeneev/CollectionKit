@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>Examples copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>Examples.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -22,6 +27,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>D6077EF51F9FF38600DD8CA6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>D638A8D81F9D258E00B858E9</key>
 		<dict>
 			<key>primary</key>

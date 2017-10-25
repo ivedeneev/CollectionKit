@@ -20,11 +20,9 @@ open class CollectionSection : Equatable, Hashable {
     
     public init() {}
 
-    public var hashValue: Int {
-        return identifier.hashValue
-    }
+    public var hashValue: Int { return identifier.hashValue }
 
-    open func append(item: AbstractCollectionItem) {
+    public func append(item: AbstractCollectionItem) {
         items.append(item)
     }
     

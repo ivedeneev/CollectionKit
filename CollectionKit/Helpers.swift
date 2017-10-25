@@ -66,6 +66,44 @@ public protocol ActionableCollectionItem {
     var shouldHighlight: Bool? { get set }
 }
 
+//public extension ActionableCollectionItem {
+//    @discardableResult
+//    public mutating func onSelect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onSelect = block
+//        return self
+//    }
+//    
+//    @discardableResult
+//    public mutating func onDeselect(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onDeselect = block
+//        return self
+//    }
+//    
+//    @discardableResult
+//    public mutating func onDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onDisplay = block
+//        return self
+//    }
+//    
+//    @discardableResult
+//    public mutating func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onEndDisplay = block
+//        return self
+//    }
+//    
+//    @discardableResult
+//    public mutating func onHighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onHighlight = block
+//        return self
+//    }
+//    
+//    @discardableResult
+//    public mutating func onUnighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+//        self.onUnighlight = block
+//        return self
+//    }
+//}
+
 
 //MARK:- AbstractCollectionItem
 public protocol AbstractCollectionItem : ActionableCollectionItem {
