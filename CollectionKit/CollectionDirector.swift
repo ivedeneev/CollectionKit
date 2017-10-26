@@ -16,6 +16,7 @@ import UIKit
  3. удаление/добавления хедеры/футеры
  4. автоматическая ширина по ширине экрана
  5. автоматическая регистрация ячеек/хедеров/футеров
+ 6. logging
  */
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
@@ -29,7 +30,7 @@ open class CollectionDirector: NSObject {
         self.collectionView.delegate = self
         
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleReload),
+                                               selector: #selector(handleSectionReload),
                                                name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                                object: nil)
         
@@ -37,14 +38,29 @@ open class CollectionDirector: NSObject {
                                                selector: #selector(handleInsert),
                                                name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                                object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleItemReload),
+                                               name: Notification.Name(rawValue: NotificationNames.reloadRow.rawValue),
+                                               object: nil)
     }
     
-    @objc private func handleReload(notification: Notification) {
+    @objc private func handleItemReload(notification: Notification) {
+        guard let item = notification.object as? AbstractCollectionItem,
+            let sectionIdx = sections.index(where: {$0.items.contains(where: {$0 == item})}),
+            let itemIndex = sections[sectionIdx].items.index(where: {$0 == item}) else { return }
+        self.collectionView.performBatchUpdates({ [unowned self] in
+            let indexPath = IndexPath(item: itemIndex, section: sectionIdx)
+            self.collectionView.reloadItems(at: [indexPath])
+        }, completion: nil)
+    }
+    
+    @objc private func handleSectionReload(notification: Notification) {
         guard let section = notification.object as? CollectionSection,
-              let idx = self.sections.index(where: {$0 == section}) else { return }
+            let idx = self.sections.index(where: {$0 == section}) else { return }
         self.collectionView.performBatchUpdates({ [unowned self] in
             self.collectionView.reloadSections([idx])
-        }, completion: nil)
+            }, completion: nil)
     }
     
     @objc private func handleInsert(notification: Notification) {
@@ -79,6 +95,7 @@ open class CollectionDirector: NSObject {
     func append(section: CollectionSection) {
         self.sections.append(section)
     }
+
     
 //    func reload(section: CollectionSection) {
 //        guard let idx = sections.index(where: {$0 == section}) else {return}

@@ -33,7 +33,9 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public func reload(item: CellType.T) {
         self.item = item
-        //TODO: send notification
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadRow.rawValue),
+                                        object: self,
+                                        userInfo: [ CollectionChange.reloadItem.rawValue : item ])
     }
     
     @discardableResult
