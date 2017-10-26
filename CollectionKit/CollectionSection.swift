@@ -26,6 +26,10 @@ open class CollectionSection : Equatable, Hashable {
         items.append(item)
     }
     
+    public func clear() {
+        items.removeAll()
+    }
+    
     //TODO: include item to signature
     //TODO: add implementation
     public func update(insertions: [Int], deletions: [Int], modifications: [Int]) {

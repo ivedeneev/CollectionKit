@@ -18,6 +18,10 @@ public func +=(left: CollectionSection, right: AbstractCollectionItem) {
     left.append(item: right)
 }
 
+public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> Bool {
+    return left.identifier == right.identifier
+}
+
 enum NotificationNames : String {
     case reloadSection
     case reloadRow
@@ -110,4 +114,8 @@ public protocol AbstractCollectionItem : ActionableCollectionItem {
     var reuseIdentifier: String { get }
     var estimatedSize: CGSize { get }
     func configure(_: UICollectionReusableView)
+}
+
+extension AbstractCollectionItem {
+    internal var identifier: String { return UUID().uuidString }
 }
