@@ -21,20 +21,19 @@ class ViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
         collectionView.alwaysBounceVertical = true
-
         
         director = CollectionDirector(colletionView: collectionView)
         collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 2
-        section.instetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
+//        section.instetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
-            let row = CollectionItem<CollectionCell>(item: "text").onSelect({ (ip) in
-                let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
-                self.present(safariViewController, animated: true, completion: nil)
-            })
-
+            let row = CollectionItem<CollectionCell>(item: "text")
+                .onSelect({ (ip) in
+                    let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
+                    self.present(safariViewController, animated: true, completion: nil)
+                })
             section += row
         }
         
@@ -43,13 +42,14 @@ class ViewController: UIViewController {
     
     
     @IBAction func action(_ sender: Any) {
-        director.sections.first?.items.remove(at: 0)
+//        director.sections.first?.items.remove(at: 0)
         director.sections.first?.reload()
     }
     
     @IBAction func addAction(_ sender: Any) {
         let row = CollectionItem<CollectionCell>(item: "-__-__-__-__-")
-        section.insert(item: row, at: 0)
+//        section.insert(item: row, at: 0)
+        section.append(item: row)
     }
     
     @IBAction func removeAction(_ sender: Any) {

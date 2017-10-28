@@ -101,8 +101,8 @@
 		D638A8FD1F9D25AF00B858E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D638A9001F9D25AF00B858E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D638A9021F9D25AF00B858E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D69EEF581F6894F5002B29E4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D69EEF5A1F6894F5002B29E4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D69EEF581F6894F5002B29E4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../CollectionKit/AppDelegate.swift; sourceTree = "<group>"; };
+		D69EEF5A1F6894F5002B29E4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../CollectionKit/ViewController.swift; sourceTree = "<group>"; };
 		D69EEF5D1F6894F5002B29E4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D69EEF5F1F6894F5002B29E4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D69EEF621F6894F5002B29E4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		D69EEF781F68951A002B29E4 /* CollectionDirector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionDirector.swift; sourceTree = "<group>"; };
 		D69EEF7A1F6898AA002B29E4 /* Reusable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		D69EEF7C1F689911002B29E4 /* CollectionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
-		D69EEF7E1F689C98002B29E4 /* CollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionCell.swift; sourceTree = "<group>"; };
+		D69EEF7E1F689C98002B29E4 /* CollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CollectionCell.swift; path = ../CollectionKit/CollectionCell.swift; sourceTree = "<group>"; };
 		D69EEF801F690F70002B29E4 /* CollectionSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSection.swift; sourceTree = "<group>"; };
 		D6CBBEB01F82F048007CD4A7 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -187,6 +187,10 @@
 		D638A8F51F9D25AF00B858E9 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				D69EEF5C1F6894F5002B29E4 /* Main.storyboard */,
+				D69EEF7E1F689C98002B29E4 /* CollectionCell.swift */,
+				D69EEF581F6894F5002B29E4 /* AppDelegate.swift */,
+				D69EEF5A1F6894F5002B29E4 /* ViewController.swift */,
 				D638A8FA1F9D25AF00B858E9 /* Main.storyboard */,
 				D638A8FD1F9D25AF00B858E9 /* Assets.xcassets */,
 				D638A8FF1F9D25AF00B858E9 /* LaunchScreen.storyboard */,
@@ -223,10 +227,6 @@
 		D69EEF571F6894F5002B29E4 /* CollectionKit */ = {
 			isa = PBXGroup;
 			children = (
-				D69EEF581F6894F5002B29E4 /* AppDelegate.swift */,
-				D69EEF5A1F6894F5002B29E4 /* ViewController.swift */,
-				D69EEF7E1F689C98002B29E4 /* CollectionCell.swift */,
-				D69EEF5C1F6894F5002B29E4 /* Main.storyboard */,
 				D69EEF5F1F6894F5002B29E4 /* Assets.xcassets */,
 				D69EEF611F6894F5002B29E4 /* LaunchScreen.storyboard */,
 				D69EEF641F6894F5002B29E4 /* Info.plist */,
@@ -538,6 +538,7 @@
 				D69EEF5D1F6894F5002B29E4 /* Base */,
 			);
 			name = Main.storyboard;
+			path = ../CollectionKit;
 			sourceTree = "<group>";
 		};
 		D69EEF611F6894F5002B29E4 /* LaunchScreen.storyboard */ = {

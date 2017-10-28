@@ -22,8 +22,12 @@ open class CollectionSection : Equatable, Hashable {
 
     public var hashValue: Int { return identifier.hashValue }
 
-    public func append(item: AbstractCollectionItem) {
+    public func append(item: AbstractCollectionItem, shouldNotify: Bool = false) {
         items.append(item)
+        //TODO: это нужно не всегда
+        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
+                                        object: self,
+                                        userInfo: [ CollectionChange.insertItem.rawValue : items.count - 1 ])
     }
     
     public func clear() {

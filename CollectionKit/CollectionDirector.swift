@@ -188,6 +188,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         //FIXME: crash when deleting last row
+        guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return }
         let item = sections[indexPath.section].items[indexPath.row]
         item.onEndDisplay?(indexPath)
     }

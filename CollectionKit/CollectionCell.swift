@@ -18,12 +18,11 @@ class CollectionCell: UICollectionViewCell, ConfigurableCollectionItem {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         backgroundColor = .white
-        imageView.frame = CGRect(x: 25, y: 25, width: 100, height: 120)
+        imageView.frame = CGRect(x: 15, y: 10, width: 30, height: 30)
         addSubview(imageView)
         imageView.backgroundColor = .red
-        textLabel.frame = CGRect(x: 25, y: 170, width: 100, height: 20)
+        textLabel.frame = CGRect(x: 60, y: 0, width: 200, height: 50)
         addSubview(textLabel)
     }
     
@@ -32,7 +31,7 @@ class CollectionCell: UICollectionViewCell, ConfigurableCollectionItem {
     }
     
     static func estimatedSize(item: String? = nil) -> CGSize {
-        return CGSize(width: 150, height: 200)
+        return CGSize(width: UIScreen.main.bounds.width, height: 50)
     }
     
     func configure(item: String) {

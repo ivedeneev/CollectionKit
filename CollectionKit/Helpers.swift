@@ -60,6 +60,7 @@ public protocol ConfigurableCollectionItem : Reusable {
 
 
 //MARK:- ActionableCollectionItem
+//TODO: consider indexpath , item, cell as parameter
 public protocol ActionableCollectionItem {
     var onSelect: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onDeselect: ((_ indexPath: IndexPath) -> Void)? { get set }
