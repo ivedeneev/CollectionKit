@@ -45,13 +45,13 @@ open class CollectionDirector: NSObject {
     }
     
     @objc private func handleItemReload(notification: Notification) {
-//        guard let item = notification.object as? AbstractCollectionItem,
-//            let sectionIdx = sections.index(where: {$0.items.contains(where: {$0 == item})}),
-//            let itemIndex = sections[sectionIdx].items.index(where: {$0 == item}) else { return }
-//        self.collectionView.performBatchUpdates({ [unowned self] in
-//            let indexPath = IndexPath(item: itemIndex, section: sectionIdx)
-//            self.collectionView.reloadItems(at: [indexPath])
-//        }, completion: nil)
+        guard let item = notification.object as? AbstractCollectionItem,
+            let sectionIdx = sections.index(where: {$0.contains(item: item)}),
+            let itemIndex = sections[sectionIdx].index(for: item) else { return }
+        self.collectionView.performBatchUpdates({ [unowned self] in
+            let indexPath = IndexPath(item: itemIndex, section: sectionIdx)
+            self.collectionView.reloadItems(at: [indexPath])
+        }, completion: nil)
     }
     
     @objc private func handleSectionReload(notification: Notification) {

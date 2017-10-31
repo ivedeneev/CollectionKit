@@ -21,6 +21,8 @@ public protocol AbstractCollectionSection : class {
     func item(for index: Int) -> AbstractCollectionItem
     func reload()
     func insert(item: AbstractCollectionItem, at index: Int)
+    func contains(item: AbstractCollectionItem) -> Bool
+    func index(for item: AbstractCollectionItem) -> Int?
 }
 
 extension AbstractCollectionSection {
@@ -94,6 +96,14 @@ open class CollectionSection : AbstractCollectionSection {
     public func reload() {
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                         object: self)
+    }
+    
+    public func contains(item: AbstractCollectionItem) -> Bool {
+        return items.contains(where: {$0 == item})
+    }
+    
+    public func index(for item: AbstractCollectionItem) -> Int? {
+        return items.index(where: {$0 == item})
     }
 }
 
