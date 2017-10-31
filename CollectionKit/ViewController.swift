@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 2
-//        section.instetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
+//        section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
