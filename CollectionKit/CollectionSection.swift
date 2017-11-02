@@ -17,26 +17,32 @@ public protocol AbstractCollectionSection : class {
     var minimumInterItemSpacing: CGFloat { get set }
     var lineSpacing: CGFloat { get set }
     
+    var isEmpty: Bool { get }
+    
     func numberOfItems() -> Int
     func item(for index: Int) -> AbstractCollectionItem
     func reload()
     func insert(item: AbstractCollectionItem, at index: Int)
     func contains(item: AbstractCollectionItem) -> Bool
     func index(for item: AbstractCollectionItem) -> Int?
+    func clear()
 }
 
 extension AbstractCollectionSection {
+    public var isEmpty: Bool { return numberOfItems() == 0 }
+    
     public func reload() {
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
                                         object: self)
     }
     
     public func insert(item: AbstractCollectionItem, at index: Int) {
+        
     }
-    
-    public static func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
-        return lhs.identifier == rhs.identifier
-    }
+}
+
+public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
+    return lhs.identifier == rhs.identifier
 }
 
 
@@ -71,13 +77,7 @@ open class CollectionSection : AbstractCollectionSection {
     public func clear() {
         items.removeAll()
     }
-    
-    //TODO: include item to signature
-    //TODO: add implementation
-    public func update(insertions: [Int], deletions: [Int], modifications: [Int]) {
-        deletions.forEach(remove)
-    }
-    
+
     public func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),

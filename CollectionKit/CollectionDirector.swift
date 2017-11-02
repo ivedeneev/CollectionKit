@@ -22,6 +22,9 @@ import UIKit
 open class CollectionDirector: NSObject {
     fileprivate weak var collectionView: UICollectionView!
     open var sections = [AbstractCollectionSection]()
+    private var reuseIdentifiers: Set<String> = []
+    open var shouldUseAutomaticCellRegistration: Bool = false
+    
     public init(colletionView: UICollectionView) {
         self.collectionView = colletionView
         super.init()
@@ -94,33 +97,23 @@ open class CollectionDirector: NSObject {
     func append(section: CollectionSection) {
         self.sections.append(section)
     }
+    
+    open func reload() {
+        collectionView.reloadData()
+    }
 
-    
-//    func reload(section: CollectionSection) {
-//        guard let idx = sections.index(where: {$0 == section}) else {return}
-//
-//        let range = section.collapsedItemsCount..<section.items.count
-//        let indexPaths = range.map({IndexPath(item: $0, section: idx)})
-//        
-//        if section.type == .expandaple && section.isExpanded {
-//            self.collectionView.performBatchUpdates({ [weak collectionView] in
-//                guard let strongCollectionView = collectionView else {return}
-//                strongCollectionView.insertItems(at: indexPaths)
-//                }, completion: nil)
-//        } else {
-//            self.collectionView.performBatchUpdates({ [weak collectionView] in
-//                guard let strongCollectionView = collectionView else {return}
-//                strongCollectionView.deleteItems(at: indexPaths)
-//                }, completion: nil)
-//        }
-//    }
-    
-    func setNeedsUpdate() {
+    open func setNeedsUpdate() {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    //TODO: remove header/footer
-    //TODO: expansion
+    open func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
+        guard let afterIndex = sections.index(where: { section == $0 }) else { return }
+        sections.insert(section, at: afterIndex + 1)
+    }
+    
+    open func insert(section: AbstractCollectionSection, at index: Int) {
+        sections.insert(section, at: index)
+    }
 }
 
 

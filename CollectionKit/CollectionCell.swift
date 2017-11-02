@@ -10,7 +10,7 @@ import UIKit
 import CollectionKit
 
 
-class CollectionCell: UICollectionViewCell, ConfigurableCollectionItem {
+class CollectionCell: UICollectionViewCell {
     typealias T = String
     
     fileprivate let imageView = UIImageView()
@@ -30,7 +30,11 @@ class CollectionCell: UICollectionViewCell, ConfigurableCollectionItem {
         fatalError("init(coder:) has not been implemented")
     }
     
-    static func estimatedSize(item: String? = nil) -> CGSize {
+
+}
+
+extension CollectionCell : ConfigurableCollectionItem {
+    static func estimatedSize(item: String?) -> CGSize {
         return CGSize(width: UIScreen.main.bounds.width, height: 50)
     }
     
