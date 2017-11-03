@@ -26,13 +26,14 @@ class ViewController: UIViewController {
         collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 2
-//        section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
+        section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
-                .onSelect({ (ip) in
-                    let safariViewController = SFSafariViewController(url: URL(string: "https://ya.ru")!)
-                    self.present(safariViewController, animated: true, completion: nil)
+                .onSelect({ (_) in
+                    print("i was tapped!")
+                }).onDisplay({ (_) in
+                    print("i was displayed")
                 })
             section += row
         }
@@ -47,7 +48,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func addAction(_ sender: Any) {
-        let row = CollectionItem<CollectionCell>(item: "-__-__-__-__-")
+        let row = CollectionItem<CollectionCell>(item: "hello")
 //        section.insert(item: row, at: 0)
         section.append(item: row)
     }
