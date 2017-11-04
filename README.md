@@ -8,7 +8,6 @@ Framework to manage complex `UICollectionView` in declarative way and very few l
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
  - [x] Easy way to map your models into cells
  - [x] Updating without `performBatchUpdates` or whatever
- - [x] Supports infinite feeds [soon]
  - [x] Supports cells from code and xibs and storyboard
  - [x] Supports custom section imlementations
  - [x] Register cells and reusable views automatically

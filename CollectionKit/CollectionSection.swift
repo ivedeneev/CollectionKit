@@ -37,7 +37,7 @@ extension AbstractCollectionSection {
     }
     
     public func insert(item: AbstractCollectionItem, at index: Int) {
-        
+        //todo: add implementation
     }
 }
 
@@ -48,13 +48,6 @@ public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -
 
 open class CollectionSection : AbstractCollectionSection {
     public let identifier: String = UUID().uuidString
-    public func item(for index: Int) -> AbstractCollectionItem {
-        return items[index]
-    }
-
-    public func numberOfItems() -> Int {
-        return items.count
-    }
 
     open var items: [AbstractCollectionItem] = []
     open var headerItem: AbstractCollectionItem?
@@ -65,6 +58,14 @@ open class CollectionSection : AbstractCollectionSection {
     open var lineSpacing: CGFloat = 0
     
     public init() {}
+    
+    public func item(for index: Int) -> AbstractCollectionItem {
+        return items[index]
+    }
+    
+    public func numberOfItems() -> Int {
+        return items.count
+    }
 
     public func append(item: AbstractCollectionItem, shouldNotify: Bool = false) {
         items.append(item)
@@ -76,6 +77,7 @@ open class CollectionSection : AbstractCollectionSection {
     
     public func clear() {
         items.removeAll()
+        //todo: notify?
     }
 
     public func insert(item: AbstractCollectionItem, at index: Int) {
@@ -86,6 +88,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func remove(at index: Int) {
+        guard index < items.count else { return }
         items.remove(at: index)
         NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
                                         object: self,
@@ -107,6 +110,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
 }
 
+//todo: consider delete this
 open class ExpandableSection: CollectionSection {
     open var collapsedItemsCount: Int
     open var isExpanded: Bool = false

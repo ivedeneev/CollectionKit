@@ -22,6 +22,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var estimatedSize: CGSize { return CellType.estimatedSize(item: self.item) }
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
+    public let identifier: String = UUID().uuidString
     
     public init(item: CellType.T) {
         self.item = item

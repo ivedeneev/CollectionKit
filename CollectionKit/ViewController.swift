@@ -17,7 +17,13 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = true
+        } else {
+            // Fallback on earlier versions
+        }
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
         collectionView.alwaysBounceVertical = true
@@ -43,7 +49,8 @@ class ViewController: UIViewController {
     
     @IBAction func action(_ sender: Any) {
 //        director.sections.first?.items.remove(at: 0)
-        director.sections.first?.reload()
+//        director.sections.first?.reload()
+        (section.items.first as! CollectionItem<CollectionCell>).reload(item: "reloaded item")
     }
     
     @IBAction func addAction(_ sender: Any) {
