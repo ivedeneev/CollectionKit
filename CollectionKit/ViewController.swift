@@ -21,7 +21,6 @@ class ViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
         collectionView.alwaysBounceVertical = true
-        
         director = CollectionDirector(colletionView: collectionView)
         collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
