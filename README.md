@@ -85,7 +85,10 @@ section.append(item: row)
 
 //remove item at specific position
 section.remove(at: 0)
+
+//reload cell
+row.reload(with: "reloaded")
 ```
 
 ## Custom sections
-You can provide your own section implementations using `AbstractCollectionSection` protocol. Fox example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour
+You can provide your own section implementations using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections

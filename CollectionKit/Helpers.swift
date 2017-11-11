@@ -19,7 +19,6 @@ public func +=(left: CollectionSection, right: AbstractCollectionItem) {
 }
 
 public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> Bool {
-    print(left.identifier, right.identifier)
     return left.identifier == right.identifier
 }
 

@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = true
+//            navigationController?.navigationBar.prefersLargeTitles = true
         } else {
             // Fallback on earlier versions
         }
@@ -44,6 +44,26 @@ class ViewController: UIViewController {
         }
         
         director += section
+        
+    
+        let layer = CALayer()
+        layer.backgroundColor = UIColor.red.cgColor
+        layer.frame = self.view.bounds
+        
+//        let mask = CAShapeLayer()
+//        mask.path = UIBezierPath(rect: mask.bounds).cgPath
+//        mask.frame = self.view.bounds
+//        mask.backgroundColor = UIColor.blue.cgColor
+//        layer.mask = mask
+//        mask.contents = mask
+//        layer.masksToBounds = true
+        view.layer.addSublayer(layer)
+
+        let path = UIBezierPath(roundedRect: CGRect.init(x: 0, y: 0, width: 100, height: 100), cornerRadius: 0)
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
+        print("dsad".capitalized)
     }
     
     

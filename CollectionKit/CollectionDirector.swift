@@ -59,14 +59,15 @@ open class CollectionDirector: NSObject {
     
     @objc private func handleSectionReload(notification: Notification) {
         guard let section = notification.object as? CollectionSection,
-            let idx = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
+              let idx = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
         self.collectionView.performBatchUpdates({ [unowned self] in
             self.collectionView.reloadSections([idx])
             }, completion: nil)
     }
     
     @objc private func handleInsert(notification: Notification) {
-        guard let section = notification.object as? CollectionSection, let sectionIndex = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
+        guard let section = notification.object as? CollectionSection,
+              let sectionIndex = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
         var insert = [IndexPath]()
         var delete = [IndexPath]()
         var reload = [IndexPath]()
@@ -94,7 +95,7 @@ open class CollectionDirector: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func append(section: CollectionSection) {
+    open func append(section: CollectionSection) {
         self.sections.append(section)
     }
     
