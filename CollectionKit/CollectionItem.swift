@@ -10,11 +10,10 @@ import UIKit
 
 //как то различать ячейки и хедеры/футеры
 open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionReusableView {
-    //TODO: consider item as parameter
     open var onSelect: ((_ indexPath: IndexPath) -> Void)?
     open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
-    open var onDisplay: ((_ indexPath: IndexPath) -> Void)?
-    open var onEndDisplay: ((_ indexPath: IndexPath) -> Void)?
+    open var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
+    open var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
     open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
     open var shouldHighlight: Bool?
@@ -52,13 +51,13 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     }
 
     @discardableResult
-    public func onDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onDisplay(_ block:@escaping (_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void) -> Self {
         self.onDisplay = block
         return self
     }
     
     @discardableResult
-    public func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
+    public func onEndDisplay(_ block:@escaping (_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void) -> Self {
         self.onEndDisplay = block
         return self
     }

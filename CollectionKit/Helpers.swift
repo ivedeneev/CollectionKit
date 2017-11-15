@@ -64,8 +64,8 @@ public protocol ConfigurableCollectionItem : Reusable {
 public protocol ActionableCollectionItem {
     var onSelect: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onDeselect: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onDisplay: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onEndDisplay: ((_ indexPath: IndexPath) -> Void)? { get set }
+    var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
+    var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
     var onHighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onUnighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
     var shouldHighlight: Bool? { get set }

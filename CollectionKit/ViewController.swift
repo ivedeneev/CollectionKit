@@ -22,61 +22,88 @@ class ViewController: UIViewController {
         } else {
             // Fallback on earlier versions
         }
+        
+        
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
         collectionView.alwaysBounceVertical = true
         director = CollectionDirector(colletionView: collectionView)
+        director.shouldUseAutomaticCellRegistration = true
         collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 2
-        section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
+        section.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
                 .onSelect({ (_) in
                     print("i was tapped!")
-                }).onDisplay({ (_) in
+                })
+                .onDisplay({ (_,_) in
                     print("i was displayed")
                 })
             section += row
         }
         
-        director += section
-        
-    
-        let layer = CALayer()
-        layer.backgroundColor = UIColor.red.cgColor
-        layer.frame = self.view.bounds
-        
-//        let mask = CAShapeLayer()
-//        mask.path = UIBezierPath(rect: mask.bounds).cgPath
-//        mask.frame = self.view.bounds
-//        mask.backgroundColor = UIColor.blue.cgColor
-//        layer.mask = mask
-//        mask.contents = mask
-//        layer.masksToBounds = true
-        view.layer.addSublayer(layer)
-
-        let path = UIBezierPath(roundedRect: CGRect.init(x: 0, y: 0, width: 100, height: 100), cornerRadius: 0)
-        let mask = CAShapeLayer()
-        mask.path = path.cgPath
-        layer.mask = mask
-        print("dsad".capitalized)
+        director.performWithoutReloading { [unowned self] in
+            self.director += section
+        }
     }
     
     
     @IBAction func action(_ sender: Any) {
 //        director.sections.first?.items.remove(at: 0)
 //        director.sections.first?.reload()
-        (section.items.first as! CollectionItem<CollectionCell>).reload(item: "reloaded item")
+        
     }
     
     @IBAction func addAction(_ sender: Any) {
-        let row = CollectionItem<CollectionCell>(item: "hello")
-//        section.insert(item: row, at: 0)
-        section.append(item: row)
+//        section.append(item: row)
+        let  alertController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: "Append item", style: .default, handler: { [unowned self] (_) in
+            let row = CollectionItem<CollectionCell>(item: "hello")
+             self.section.append(item: row)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Insert at 0 position", style: .default, handler: { [unowned self] (_) in
+            let row = CollectionItem<CollectionCell>(item: "hello")
+            self.section.insert(item: row, at: 0)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Reload item at 0 position", style: .default, handler: { [unowned self] (_) in
+            guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
+            item.reload(item: "reloaded item")
+            
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Append section", style: .default, handler: { [unowned self] (_) in
+            let section = CollectionSection()
+            section.minimumInterItemSpacing = 2
+            section.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
+            section.lineSpacing = 1
+            for _ in 0..<4 {
+                let row = CollectionItem<CollectionCell>(item: "Inserted Section".uppercased())
+                    .onSelect({ (_) in
+                        print("i was tapped!")
+                    })
+                    .onDisplay({ (_,_) in
+                        print("i was displayed")
+                    })
+                section += row
+            }
+            
+            self.director += section
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Remove item at 0 index", style: .destructive, handler: { [unowned self] (_) in
+            guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
+            self.section.remove(at: 0)
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
     
     @IBAction func removeAction(_ sender: Any) {

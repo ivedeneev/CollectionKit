@@ -22,8 +22,9 @@ import UIKit
 open class CollectionDirector: NSObject {
     fileprivate weak var collectionView: UICollectionView!
     open var sections = [AbstractCollectionSection]()
-    private var reuseIdentifiers: Set<String> = []
     open var shouldUseAutomaticCellRegistration: Bool = false
+    private var reuseIdentifiers: Set<String> = []
+    private var disableUpdates: Bool = false
     
     public init(colletionView: UICollectionView) {
         self.collectionView = colletionView
@@ -48,6 +49,7 @@ open class CollectionDirector: NSObject {
     }
     
     @objc private func handleItemReload(notification: Notification) {
+        guard !disableUpdates else { return }
         guard let item = notification.object as? AbstractCollectionItem,
             let sectionIdx = sections.index(where: {$0.contains(item: item)}),
             let itemIndex = sections[sectionIdx].index(for: item) else { return }
@@ -58,16 +60,19 @@ open class CollectionDirector: NSObject {
     }
     
     @objc private func handleSectionReload(notification: Notification) {
+        guard !disableUpdates else { return }
         guard let section = notification.object as? CollectionSection,
               let idx = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
         self.collectionView.performBatchUpdates({ [unowned self] in
             self.collectionView.reloadSections([idx])
-            }, completion: nil)
+        }, completion: nil)
     }
     
     @objc private func handleInsert(notification: Notification) {
+        guard !disableUpdates else { return }
         guard let section = notification.object as? CollectionSection,
               let sectionIndex = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
+        
         var insert = [IndexPath]()
         var delete = [IndexPath]()
         var reload = [IndexPath]()
@@ -95,24 +100,34 @@ open class CollectionDirector: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    open func append(section: CollectionSection) {
+    public func append(section: CollectionSection) {
         self.sections.append(section)
+        guard !disableUpdates else { return }
+        self.collectionView.performBatchUpdates({
+            self.collectionView.insertSections([self.sections.count - 1])
+        }, completion: nil)
     }
     
-    open func reload() {
+    public func performWithoutReloading(changes: (() -> Void)) {
+        disableUpdates = true
+        changes()
+        disableUpdates = false
+    }
+    
+    public func reload() {
         collectionView.reloadData()
     }
 
-    open func setNeedsUpdate() {
+    public func setNeedsUpdate() {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    open func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
+    public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
     }
     
-    open func insert(section: AbstractCollectionSection, at index: Int) {
+    public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
     }
 }
@@ -130,6 +145,13 @@ extension CollectionDirector: UICollectionViewDataSource {
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sections[indexPath.section].item(for: indexPath.row)
+        
+//        if shouldUseAutomaticCellRegistration && !reuseIdentifiers.contains(item.reuseIdentifier) {
+//            reuseIdentifiers.insert(item.reuseIdentifier)
+//            let clz = UICollectionViewCell.self
+//            collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
+//        }
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
         item.configure(cell)
         return cell
@@ -170,14 +192,14 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let item = sections[indexPath.section].item(for: indexPath.row)
-        item.onDisplay?(indexPath)
+        item.onDisplay?(indexPath, cell)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         //FIXME: crash when deleting last row
         guard sections.count > indexPath.section, sections[indexPath.section].numberOfItems() > indexPath.row else { return }
         let item = sections[indexPath.section].item(for: indexPath.row)
-        item.onEndDisplay?(indexPath)
+        item.onEndDisplay?(indexPath, cell)
     }
     
     open func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {

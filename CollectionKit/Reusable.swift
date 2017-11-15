@@ -20,6 +20,6 @@ public extension Reusable {
     }
     
     static var reuseIdentifier: String {
-        return "\(String(describing: self))Identifier"
+        return String(describing: self)
     }
 }
