@@ -9,6 +9,24 @@
 import Foundation
 import UIKit
 
+enum LogLevel: CustomStringConvertible {
+    case warning
+    case error
+    
+    var description: String {
+        switch self {
+        case .warning:
+            return "warning"
+        case .error:
+            return "error"
+        }
+    }
+}
+
+func log(_ message: String, logLevel: LogLevel = .warning) {
+    print("CollectionKit: \(logLevel.description): \(message)")
+}
+
 //MARK:- Operators
 public func +=(left: CollectionDirector, right: CollectionSection) {
     left.append(section: right)
@@ -22,36 +40,62 @@ public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> B
     return left.identifier == right.identifier
 }
 
-enum NotificationNames : String {
-    case reloadSection
-    case reloadRow
-    case sectionChanges
+//MARK:- Notifications
+let CKReloadNotificationName = "com.collection_kit.reload"
+let CKInsertOrDeleteNotificationName = "com.collection_kit.insert_or_delete_item"
+
+let CKUpdateSubjectKey = "subject"
+let CKUpdateActionKey = "action"
+let CKTargetSectionKey = "section"
+let CKItemIndexKey = "index"
+
+func postReloadNotofication(subject: UpdateSubject, object: Any) {
+    NotificationCenter.default.post(name: Notification.Name(rawValue: CKReloadNotificationName),
+                                    object: object,
+                                    userInfo: [ CKUpdateSubjectKey : subject,
+                                                CKUpdateActionKey  : UpdateActionType.reload ])
 }
 
-enum CollectionChange : String {
-    case insertItem
-    case removeItem
-    case reloadItem
-    case insertSection
-    case removeSection
+func postInsertOrDeleteItemNotification(section: AbstractCollectionSection, index: Int, action: UpdateActionType) {
+    NotificationCenter.default.post(name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
+                                    object: nil,
+                                    userInfo: [ CKUpdateActionKey    : action,
+                                                CKTargetSectionKey   : section,
+                                                CKItemIndexKey       : index ])
 }
 
+
+//MARK:- Update models
+enum UpdateActionType {
+    case insert
+    case delete
+    case reload
+}
+
+enum UpdateSubject : String {
+    case item
+    case section
+}
+
+//todo: consider using arrays
+struct ItemChange : AbstractCollectionUpdate {
+    let indexPath: IndexPath
+    let type: UpdateActionType
+}
+
+struct SectionUpdate : AbstractCollectionUpdate {
+    let index: Int
+    let type: UpdateActionType
+}
+
+protocol AbstractCollectionUpdate {
+    var type: UpdateActionType { get }
+}
 
 //MARK:- Convinience
-public extension UICollectionView {
-    func dequeue<T: Reusable>(indexPath: IndexPath) -> T {
-        return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
-    }
-    
-    func registerNib<T: Reusable>(_ type: T.Type) {
-        self.register(T.nib, forCellWithReuseIdentifier: T.reuseIdentifier)
-    }
-    
-    func registerClass<T: Reusable>(_ type: T.Type) where T:UICollectionViewCell {
-        self.register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
-    }
-}
 
+
+//MARK:- ConfigurableCollectionItem
 public protocol ConfigurableCollectionItem : Reusable {
     associatedtype T
     static func estimatedSize(item: T?) -> CGSize
@@ -77,5 +121,6 @@ public protocol AbstractCollectionItem : ActionableCollectionItem {
     var reuseIdentifier: String { get }
     var estimatedSize: CGSize { get }
     var identifier: String { get }
+    var cellType: AnyClass { get }
     func configure(_: UICollectionReusableView)
 }

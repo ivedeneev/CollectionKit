@@ -24,6 +24,12 @@ class ViewController: UIViewController {
         }
         
         
+        let layer = CALayer()
+        layer.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
+        layer.backgroundColor = UIColor.lightGray.cgColor
+        view.layer.addSublayer(layer)
+        
+        
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
@@ -31,9 +37,9 @@ class ViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         director = CollectionDirector(colletionView: collectionView)
         director.shouldUseAutomaticCellRegistration = true
-        collectionView.registerClass(CollectionCell.self)
+//        collectionView.registerClass(CollectionCell.self)
         section = CollectionSection()
-        section.minimumInterItemSpacing = 2
+        section.minimumInterItemSpacing = 0.5
         section.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
         section.lineSpacing = 2
         for _ in 0..<3 {
@@ -64,12 +70,18 @@ class ViewController: UIViewController {
         let  alertController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Append item", style: .default, handler: { [unowned self] (_) in
             let row = CollectionItem<CollectionCell>(item: "hello")
-             self.section.append(item: row)
+            self.director.performUpdates { [unowned self] in
+                self.section.append(item: row)
+            }
         }))
         
         alertController.addAction(UIAlertAction(title: "Insert at 0 position", style: .default, handler: { [unowned self] (_) in
             let row = CollectionItem<CollectionCell>(item: "hello")
-            self.section.insert(item: row, at: 0)
+            
+            self.director.performUpdates { [unowned self] in
+                self.section.insert(item: row, at: 0)
+                self.section.insert(item: row, at: 1)
+            }
         }))
         
         alertController.addAction(UIAlertAction(title: "Reload item at 0 position", style: .default, handler: { [unowned self] (_) in
@@ -99,7 +111,9 @@ class ViewController: UIViewController {
         
         alertController.addAction(UIAlertAction(title: "Remove item at 0 index", style: .destructive, handler: { [unowned self] (_) in
             guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
-            self.section.remove(at: 0)
+            self.director.performUpdates { [unowned self] in
+                self.section.remove(at: 0)
+            }
         }))
         
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

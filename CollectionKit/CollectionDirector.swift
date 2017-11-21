@@ -17,7 +17,10 @@ import UIKit
  4. автоматическая ширина по ширине экрана
  5. автоматическая регистрация ячеек/хедеров/футеров
  6. logging
+ 7. rotation
+ 8. определение уникальности ячейки/секции
  */
+
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     fileprivate weak var collectionView: UICollectionView!
@@ -25,6 +28,9 @@ open class CollectionDirector: NSObject {
     open var shouldUseAutomaticCellRegistration: Bool = false
     private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
+    private var deferBatchUpdates: Bool = false
+    private lazy var updater = CollectionUpdater(collectionView: self.collectionView)
+    private var deferredUpdates: [AbstractCollectionUpdate] = []
     
     public init(colletionView: UICollectionView) {
         self.collectionView = colletionView
@@ -33,79 +39,61 @@ open class CollectionDirector: NSObject {
         self.collectionView.delegate = self
         
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleSectionReload),
-                                               name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
+                                               selector: #selector(handleReload),
+                                               name: Notification.Name(rawValue: CKReloadNotificationName),
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleInsert),
-                                               name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
+                                               selector: #selector(handleInsertOrDelete),
+                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
                                                object: nil)
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleItemReload),
-                                               name: Notification.Name(rawValue: NotificationNames.reloadRow.rawValue),
-                                               object: nil)
     }
     
-    @objc private func handleItemReload(notification: Notification) {
-        guard !disableUpdates else { return }
-        guard let item = notification.object as? AbstractCollectionItem,
-            let sectionIdx = sections.index(where: {$0.contains(item: item)}),
-            let itemIndex = sections[sectionIdx].index(for: item) else { return }
-        self.collectionView.performBatchUpdates({ [unowned self] in
-            let indexPath = IndexPath(item: itemIndex, section: sectionIdx)
-            self.collectionView.reloadItems(at: [indexPath])
-        }, completion: nil)
+    @objc private func handleReload(notification: Notification) {
+        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
+        switch subject {
+        case .item:
+            //todo: add implementation
+            break
+        case .section:
+            guard let section = notification.object as? AbstractCollectionSection,
+                  let index = sections.index(where: { $0 == section }) else { return }
+            
+            let update = SectionUpdate(index: index, type: .reload)
+            deferredUpdates.append(update)
+            break
+        }
     }
     
-    @objc private func handleSectionReload(notification: Notification) {
-        guard !disableUpdates else { return }
-        guard let section = notification.object as? CollectionSection,
-              let idx = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
-        self.collectionView.performBatchUpdates({ [unowned self] in
-            self.collectionView.reloadSections([idx])
-        }, completion: nil)
-    }
-    
-    @objc private func handleInsert(notification: Notification) {
-        guard !disableUpdates else { return }
-        guard let section = notification.object as? CollectionSection,
-              let sectionIndex = self.sections.index(where: {$0.identifier == section.identifier}) else { return }
+    @objc private func handleInsertOrDelete(notification: Notification) {
+        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
+              let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
+              let itemIndex = notification.userInfo?[CKItemIndexKey] as? Int else { return }
         
-        var insert = [IndexPath]()
-        var delete = [IndexPath]()
-        var reload = [IndexPath]()
+        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
         
-        if let insertedItemIndex = notification.userInfo?[CollectionChange.insertItem.rawValue] as? Int {
-            insert.append(IndexPath(item: insertedItemIndex, section: sectionIndex))
-        }
-        
-        if let deletedItemIndex = notification.userInfo?[CollectionChange.removeItem.rawValue] as? Int {
-            delete.append(IndexPath(item: deletedItemIndex, section: sectionIndex))
-        }
-        
-        if let reloadItemIndex = notification.userInfo?[CollectionChange.reloadItem.rawValue] as? Int {
-            reload.append(IndexPath(item: reloadItemIndex, section: sectionIndex))
-        }
-        
-        self.collectionView.performBatchUpdates({ [unowned self] in
-            self.collectionView.insertItems(at: insert)
-            self.collectionView.deleteItems(at: delete)
-            self.collectionView.reloadItems(at: reload)
-        }, completion: nil)
+        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+        let update = ItemChange(indexPath: indexPath, type: action)
+        print("GOT ITEM UPDATE")
+        deferredUpdates.append(update)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    public func append(section: CollectionSection) {
+    public func append(section: AbstractCollectionSection) {
         self.sections.append(section)
-        guard !disableUpdates else { return }
-        self.collectionView.performBatchUpdates({
-            self.collectionView.insertSections([self.sections.count - 1])
-        }, completion: nil)
+        //todo: create and store update object
+    }
+    
+    public func remove(section: AbstractCollectionSection) {
+        //todo: add implementation
+    }
+    
+    public func removeSection(at index: Int) {
+        //todo: add implementation
     }
     
     public func performWithoutReloading(changes: (() -> Void)) {
@@ -125,10 +113,28 @@ open class CollectionDirector: NSObject {
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
+        //todo: create and store update object
     }
     
     public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
+        //todo: create and store update object
+    }
+    
+    public func performUpdates(updates: (() -> Void)) {
+        deferredUpdates.removeAll()
+        print("before updates")
+        updates()
+        print("after updates [\(deferredUpdates.count)]")
+        commitUpdates()
+    }
+    
+    private func commitUpdates() {
+        collectionView.performBatchUpdates({ [unowned self] in
+            self.updater.apply(changes: self.deferredUpdates)
+        }) { (finished) in
+            //todo:
+        }
     }
 }
 
@@ -146,11 +152,11 @@ extension CollectionDirector: UICollectionViewDataSource {
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sections[indexPath.section].item(for: indexPath.row)
         
-//        if shouldUseAutomaticCellRegistration && !reuseIdentifiers.contains(item.reuseIdentifier) {
-//            reuseIdentifiers.insert(item.reuseIdentifier)
-//            let clz = UICollectionViewCell.self
-//            collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
-//        }
+        if shouldUseAutomaticCellRegistration && !reuseIdentifiers.contains(item.reuseIdentifier) {
+            reuseIdentifiers.insert(item.reuseIdentifier)
+            let clz = item.cellType
+            collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
+        }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
         item.configure(cell)
@@ -176,7 +182,6 @@ extension CollectionDirector: UICollectionViewDataSource {
         }
     }
 }
-
 
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector : UICollectionViewDelegateFlowLayout {

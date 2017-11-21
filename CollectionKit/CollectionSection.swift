@@ -21,23 +21,18 @@ public protocol AbstractCollectionSection : class {
     
     func numberOfItems() -> Int
     func item(for index: Int) -> AbstractCollectionItem
-    func reload()
-    func insert(item: AbstractCollectionItem, at index: Int)
     func contains(item: AbstractCollectionItem) -> Bool
     func index(for item: AbstractCollectionItem) -> Int?
+    
     func clear()
+    func reload()
 }
 
 extension AbstractCollectionSection {
     public var isEmpty: Bool { return numberOfItems() == 0 }
     
     public func reload() {
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
-                                        object: self)
-    }
-    
-    public func insert(item: AbstractCollectionItem, at index: Int) {
-        //todo: add implementation
+        postReloadNotofication(subject: .section, object: self)
     }
 }
 
@@ -69,36 +64,37 @@ open class CollectionSection : AbstractCollectionSection {
 
     public func append(item: AbstractCollectionItem, shouldNotify: Bool = false) {
         items.append(item)
-        //TODO: это нужно не всегда
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
-                                        object: self,
-                                        userInfo: [ CollectionChange.insertItem.rawValue : items.count - 1 ])
+        postInsertOrDeleteItemNotification(section: self, index: items.count - 1, action: .insert)
+    }
+
+    public func insert(item: AbstractCollectionItem, at index: Int) {
+        items.insert(item, at: index)
+        postInsertOrDeleteItemNotification(section: self, index: index, action: .insert)
+    }
+    
+    public func remove(at index: Int) {
+        //todo: consider more correct condition
+        guard index < items.count else { return }
+        items.remove(at: index)
+        postInsertOrDeleteItemNotification(section: self, index: index, action: .delete)
+    }
+    
+    public func remove(item: AbstractCollectionItem) {
+        guard let index = items.index(where: { $0 == item }) else {
+            log("Attempt to remove item from section, which it doesnt belongs to", logLevel: .warning)
+            return
+        }
+        
+        remove(at: index)
+    }
+    
+    public func reload() {
+        postReloadNotofication(subject: .section, object: self)
     }
     
     public func clear() {
         items.removeAll()
         //todo: notify?
-    }
-
-    public func insert(item: AbstractCollectionItem, at index: Int) {
-        items.insert(item, at: index)
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
-                                        object: self,
-                                        userInfo: [ CollectionChange.insertItem.rawValue : index ])
-    }
-    
-    public func remove(at index: Int) {
-        guard index < items.count else { return }
-        items.remove(at: index)
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.sectionChanges.rawValue),
-                                        object: self,
-                                        userInfo: [ CollectionChange.removeItem.rawValue : index ])
-    }
-    
-    
-    public func reload() {
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadSection.rawValue),
-                                        object: self)
     }
     
     public func contains(item: AbstractCollectionItem) -> Bool {

@@ -23,3 +23,17 @@ public extension Reusable {
         return String(describing: self)
     }
 }
+
+public extension UICollectionView {
+    func dequeue<T: Reusable>(indexPath: IndexPath) -> T {
+        return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
+    }
+    
+    func registerNib<T: Reusable>(_ type: T.Type) {
+        self.register(T.nib, forCellWithReuseIdentifier: T.reuseIdentifier)
+    }
+    
+    func registerClass<T: Reusable>(_ type: T.Type) where T:UICollectionViewCell {
+        self.register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
+    }
+}

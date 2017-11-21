@@ -23,6 +23,10 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     public let identifier: String = UUID().uuidString
     
+    public var cellType: AnyClass {
+        return CellType.self
+    }
+    
     public init(item: CellType.T) {
         self.item = item
     }
@@ -33,9 +37,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public func reload(item: CellType.T) {
         self.item = item
-        NotificationCenter.default.post(name: Notification.Name(rawValue: NotificationNames.reloadRow.rawValue),
-                                        object: self,
-                                        userInfo: [ CollectionChange.reloadItem.rawValue : item ])
+        postReloadNotofication(subject: .item, object: self)
     }
     
     @discardableResult
