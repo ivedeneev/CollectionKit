@@ -86,15 +86,25 @@ open class CollectionDirector: NSObject {
     
     public func append(section: AbstractCollectionSection) {
         self.sections.append(section)
-        //todo: create and store update object
+        let update = SectionUpdate(index: sections.count - 1, type: .insert)
+        deferredUpdates.append(update)
     }
     
     public func remove(section: AbstractCollectionSection) {
-        //todo: add implementation
+        guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
+            log("attempt to remove section not @ director", logLevel: .warning)
+            return
+            
+        }
+        sections.remove(at: index)
+        let update = SectionUpdate(index: index, type: .delete)
+        deferredUpdates.append(update)
     }
     
     public func removeSection(at index: Int) {
-        //todo: add implementation
+        sections.remove(at: index)
+        let update = SectionUpdate(index: index, type: .delete)
+        deferredUpdates.append(update)
     }
     
     //todo: add/remove array of sections
@@ -116,19 +126,19 @@ open class CollectionDirector: NSObject {
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
-        //todo: create and store update object
+        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
+        deferredUpdates.append(update)
     }
     
     public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
-        //todo: create and store update object
+        let update = SectionUpdate(index: index, type: .insert)
+        deferredUpdates.append(update)
     }
     
     public func performUpdates(updates: (() -> Void)) {
         deferredUpdates.removeAll()
-        print("before updates")
         updates()
-        print("after updates [\(deferredUpdates.count)]")
         commitUpdates()
     }
     

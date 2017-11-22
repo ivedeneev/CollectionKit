@@ -86,8 +86,9 @@ class ViewController: UIViewController {
         
         alertController.addAction(UIAlertAction(title: "Reload item at 0 position", style: .default, handler: { [unowned self] (_) in
             guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
-            item.reload(item: "reloaded item")
-            
+            self.director.performUpdates { [unowned self] in
+                item.reload(item: "reloaded item")
+            }
         }))
         
         alertController.addAction(UIAlertAction(title: "Append section", style: .default, handler: { [unowned self] (_) in
@@ -106,13 +107,27 @@ class ViewController: UIViewController {
                 section += row
             }
             
-            self.director += section
+            self.director.performUpdates { [unowned self] in
+                self.director += section
+            }
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Remove item at 0 index", style: .destructive, handler: { [unowned self] (_) in
+            self.director.performUpdates { [unowned self] in
+                self.section.remove(at: 0)
+            }
         }))
         
         alertController.addAction(UIAlertAction(title: "Remove item at 0 index", style: .destructive, handler: { [unowned self] (_) in
             guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
             self.director.performUpdates { [unowned self] in
-                self.section.remove(at: 0)
+                self.section.remove(item: item)
+            }
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Remove last section", style: .destructive, handler: { [unowned self] (_) in
+            self.director.performUpdates { [unowned self] in
+                self.director.remove(section: self.director.sections.last!)
             }
         }))
         
