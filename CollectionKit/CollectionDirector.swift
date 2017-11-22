@@ -15,15 +15,16 @@ import UIKit
  2  потестить с реалмом и кор датой
  3. удаление/добавления хедеры/футеры
  4. автоматическая ширина по ширине экрана
- 5. автоматическая регистрация ячеек/хедеров/футеров
+ 5. автоматическая регистрация хедеров/футеров, также вынести регистрацию в отдельный класс/метод
  6. logging
  7. rotation
  8. определение уникальности ячейки/секции
+ 9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
  */
 
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
-    fileprivate weak var collectionView: UICollectionView!
+    private weak var collectionView: UICollectionView!
     open var sections = [AbstractCollectionSection]()
     open var shouldUseAutomaticCellRegistration: Bool = false
     private var reuseIdentifiers: Set<String> = []
@@ -95,6 +96,8 @@ open class CollectionDirector: NSObject {
     public func removeSection(at index: Int) {
         //todo: add implementation
     }
+    
+    //todo: add/remove array of sections
     
     public func performWithoutReloading(changes: (() -> Void)) {
         disableUpdates = true
