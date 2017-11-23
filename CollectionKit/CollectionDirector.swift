@@ -55,11 +55,12 @@ open class CollectionDirector: NSObject {
         guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
         switch subject {
         case .item:
-//            guard let item = notification.object as? AbstractCollectionItem,
-//                let sectionIndex = sections.index(where: { $0 == section }) else { return }
-//            let section = sections[sectionIndex]
-//            guard let itemIndex = section.index(for: item) else { return }
-            
+            guard let item = notification.object as? AbstractCollectionItem else { return }
+            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
+            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
+            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+            let update = ItemChange(indexPath: indexPath, type: .reload)
+            deferredUpdates.append(update)
             break
         case .section:
             guard let section = notification.object as? AbstractCollectionSection,
