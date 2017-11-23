@@ -86,7 +86,7 @@ class ViewController: UIViewController {
         
         alertController.addAction(UIAlertAction(title: "Reload item at 0 position", style: .default, handler: { [unowned self] (_) in
             guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
-            self.director.performUpdates { [unowned self] in
+            self.director.performUpdates {
                 item.reload(item: "reloaded item")
             }
         }))

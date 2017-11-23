@@ -25,7 +25,7 @@ import UIKit
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     private weak var collectionView: UICollectionView!
-    open var sections = [AbstractCollectionSection]()
+    public var sections = [AbstractCollectionSection]()
     open var shouldUseAutomaticCellRegistration: Bool = false
     private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
@@ -55,7 +55,11 @@ open class CollectionDirector: NSObject {
         guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
         switch subject {
         case .item:
-            //todo: add implementation
+//            guard let item = notification.object as? AbstractCollectionItem,
+//                let sectionIndex = sections.index(where: { $0 == section }) else { return }
+//            let section = sections[sectionIndex]
+//            guard let itemIndex = section.index(for: item) else { return }
+            
             break
         case .section:
             guard let section = notification.object as? AbstractCollectionSection,
