@@ -51,49 +51,11 @@ open class CollectionDirector: NSObject {
         
     }
     
-    @objc private func handleReload(notification: Notification) {
-        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
-        switch subject {
-        case .item:
-            guard let item = notification.object as? AbstractCollectionItem else { return }
-            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
-            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
-            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-            let update = ItemChange(indexPath: indexPath, type: .reload)
-            deferredUpdates.append(update)
-            break
-        case .section:
-            guard let section = notification.object as? AbstractCollectionSection,
-                  let index = sections.index(where: { $0 == section }) else { return }
-            
-            let update = SectionUpdate(index: index, type: .reload)
-            deferredUpdates.append(update)
-            break
-        }
-    }
-    
-    @objc private func handleInsertOrDelete(notification: Notification) {
-        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
-              let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
-              let itemIndex = notification.userInfo?[CKItemIndexKey] as? Int else { return }
-        
-        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
-        
-        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-        let update = ItemChange(indexPath: indexPath, type: action)
-        print("GOT ITEM UPDATE")
-        deferredUpdates.append(update)
-    }
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    public func append(section: AbstractCollectionSection) {
-        self.sections.append(section)
-        let update = SectionUpdate(index: sections.count - 1, type: .insert)
-        deferredUpdates.append(update)
-    }
+    
     
     public func remove(section: AbstractCollectionSection) {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
@@ -128,19 +90,6 @@ open class CollectionDirector: NSObject {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
-        guard let afterIndex = sections.index(where: { section == $0 }) else { return }
-        sections.insert(section, at: afterIndex + 1)
-        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
-        deferredUpdates.append(update)
-    }
-    
-    public func insert(section: AbstractCollectionSection, at index: Int) {
-        sections.insert(section, at: index)
-        let update = SectionUpdate(index: index, type: .insert)
-        deferredUpdates.append(update)
-    }
-    
     public func performUpdates(updates: (() -> Void)) {
         deferredUpdates.removeAll()
         updates()
@@ -155,7 +104,6 @@ open class CollectionDirector: NSObject {
         }
     }
 }
-
 
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
@@ -268,5 +216,63 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sections[section].lineSpacing
+    }
+}
+
+//MARK:- Insertions
+extension CollectionDirector {
+    public func append(section: AbstractCollectionSection) {
+        sections.append(section)
+        let update = SectionUpdate(index: sections.count - 1, type: .insert)
+        deferredUpdates.append(update)
+    }
+    public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
+        guard let afterIndex = sections.index(where: { section == $0 }) else { return }
+        sections.insert(section, at: afterIndex + 1)
+        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
+        deferredUpdates.append(update)
+    }
+    
+    public func insert(section: AbstractCollectionSection, at index: Int) {
+        sections.insert(section, at: index)
+        let update = SectionUpdate(index: index, type: .insert)
+        deferredUpdates.append(update)
+    }
+}
+
+//MARK:- Updates handling
+private extension CollectionDirector {
+    @objc private func handleReload(notification: Notification) {
+        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
+        switch subject {
+        case .item:
+            guard let item = notification.object as? AbstractCollectionItem else { return }
+            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
+            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
+            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+            let update = ItemChange(indexPath: indexPath, type: .reload)
+            deferredUpdates.append(update)
+            break
+        case .section:
+            guard let section = notification.object as? AbstractCollectionSection,
+                let index = sections.index(where: { $0 == section }) else { return }
+            
+            let update = SectionUpdate(index: index, type: .reload)
+            deferredUpdates.append(update)
+            break
+        }
+    }
+    
+    @objc private func handleInsertOrDelete(notification: Notification) {
+        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
+            let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
+            let itemIndex = notification.userInfo?[CKItemIndexKey] as? Int else { return }
+        
+        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
+        
+        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+        let update = ItemChange(indexPath: indexPath, type: action)
+        print("GOT ITEM UPDATE")
+        deferredUpdates.append(update)
     }
 }

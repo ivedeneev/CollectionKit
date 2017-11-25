@@ -72,6 +72,10 @@ open class CollectionSection : AbstractCollectionSection {
         postInsertOrDeleteItemNotification(section: self, index: index, action: .insert)
     }
     
+    public func append(items: [AbstractCollectionItem]) {
+        
+    }
+    
     public func remove(at index: Int) {
         //todo: consider more correct condition
         guard index < items.count else { return }
