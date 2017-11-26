@@ -56,12 +56,12 @@ func postReloadNotofication(subject: UpdateSubject, object: Any) {
                                                 CKUpdateActionKey  : UpdateActionType.reload ])
 }
 
-func postInsertOrDeleteItemNotification(section: AbstractCollectionSection, index: Int, action: UpdateActionType) {
+func postInsertOrDeleteItemNotification(section: AbstractCollectionSection, indicies: [Int], action: UpdateActionType) {
     NotificationCenter.default.post(name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
                                     object: nil,
                                     userInfo: [ CKUpdateActionKey    : action,
                                                 CKTargetSectionKey   : section,
-                                                CKItemIndexKey       : index ])
+                                                CKItemIndexKey       : indicies ])
 }
 
 
@@ -77,14 +77,33 @@ enum UpdateSubject : String {
     case section
 }
 
-//todo: consider using arrays
-struct ItemChange : AbstractCollectionUpdate {
-    let indexPath: IndexPath
+struct ItemUpdate : AbstractCollectionUpdate {
+    init(indexPath: IndexPath, type: UpdateActionType) {
+        self.indexPaths = [ indexPath ]
+        self.type = type
+    }
+    
+    init(indexPaths: [IndexPath], type: UpdateActionType) {
+        self.indexPaths = indexPaths
+        self.type = type
+    }
+    
+    let indexPaths: [IndexPath]
     let type: UpdateActionType
 }
 
 struct SectionUpdate : AbstractCollectionUpdate {
-    let index: Int
+    init(indicies: [Int], type: UpdateActionType) {
+        self.indicies = indicies
+        self.type = type
+    }
+    
+    init(index: Int, type: UpdateActionType) {
+        self.indicies = [ index ]
+        self.type = type
+    }
+    
+    let indicies: [Int]
     let type: UpdateActionType
 }
 
@@ -93,7 +112,13 @@ protocol AbstractCollectionUpdate {
 }
 
 //MARK:- Convinience
-
+extension Array {
+    mutating func remove(at indexes: [Int]) {
+        for index in indexes.sorted(by: >) {
+            remove(at: index)
+        }
+    }
+}
 
 //MARK:- ConfigurableCollectionItem
 public protocol ConfigurableCollectionItem : Reusable {

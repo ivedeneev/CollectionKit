@@ -55,8 +55,6 @@ open class CollectionDirector: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    
-    
     public func remove(section: AbstractCollectionSection) {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
             log("attempt to remove section not @ director", logLevel: .warning)
@@ -117,11 +115,17 @@ extension CollectionDirector: UICollectionViewDataSource {
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sections[indexPath.section].item(for: indexPath.row)
-        
+        //todo: refactor: separate method
         if shouldUseAutomaticCellRegistration && !reuseIdentifiers.contains(item.reuseIdentifier) {
             reuseIdentifiers.insert(item.reuseIdentifier)
-            let clz = item.cellType
-            collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
+            
+            let bundle = Bundle(for: item.cellType)
+            if let _ = bundle.path(forResource: item.reuseIdentifier, ofType: "nib") {
+                collectionView.register(UINib(nibName: item.reuseIdentifier, bundle: bundle), forCellWithReuseIdentifier: item.reuseIdentifier)
+            } else {
+                let clz = item.cellType
+                collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
+            }
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
@@ -250,7 +254,7 @@ private extension CollectionDirector {
             guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
             guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
             let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-            let update = ItemChange(indexPath: indexPath, type: .reload)
+            let update = ItemUpdate(indexPath: indexPath, type: .reload)
             deferredUpdates.append(update)
             break
         case .section:
@@ -266,12 +270,12 @@ private extension CollectionDirector {
     @objc private func handleInsertOrDelete(notification: Notification) {
         guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
             let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
-            let itemIndex = notification.userInfo?[CKItemIndexKey] as? Int else { return }
+            let itemIndicies = notification.userInfo?[CKItemIndexKey] as? [Int] else { return }
         
         guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
         
-        let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-        let update = ItemChange(indexPath: indexPath, type: action)
+        let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
+        let update = ItemUpdate(indexPaths: indexPaths, type: action)
         print("GOT ITEM UPDATE")
         deferredUpdates.append(update)
     }

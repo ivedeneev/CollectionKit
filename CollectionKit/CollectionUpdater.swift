@@ -17,7 +17,7 @@ final class CollectionUpdater {
     
     func apply(change: AbstractCollectionUpdate) {
         switch change {
-        case let update as ItemChange:
+        case let update as ItemUpdate:
             handleItemUpdate(update: update)
         case let update as SectionUpdate:
             handleSectionUpdate(update: update)
@@ -31,30 +31,31 @@ final class CollectionUpdater {
         }
     }
     
-    private func handleItemUpdate(update: ItemChange) {
+    private func handleItemUpdate(update: ItemUpdate) {
         switch update.type {
         case .reload:
-            collectionView.reloadItems(at: [update.indexPath])
+            collectionView.reloadItems(at: update.indexPaths)
             break
         case .insert:
-            collectionView.insertItems(at: [update.indexPath])
+            collectionView.insertItems(at: update.indexPaths)
             break
         case .delete:
-            collectionView.deleteItems(at: [update.indexPath])
+            collectionView.deleteItems(at: update.indexPaths)
             break
         }
     }
     
     private func handleSectionUpdate(update: SectionUpdate) {
+        let indexSet = IndexSet(update.indicies)
         switch update.type {
         case .reload:
-            collectionView.reloadSections([update.index])
+            collectionView.reloadSections(indexSet)
             break
         case .insert:
-            collectionView.insertSections([update.index])
+            collectionView.insertSections(indexSet)
             break
         case .delete:
-            collectionView.deleteSections([update.index])
+            collectionView.deleteSections(indexSet)
             break
         }
     }

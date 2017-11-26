@@ -38,9 +38,10 @@ class ViewController: UIViewController {
         director = CollectionDirector(colletionView: collectionView)
         director.shouldUseAutomaticCellRegistration = true
 //        collectionView.registerClass(CollectionCell.self)
+//        collectionView.registerNib(CellFromXIB.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 0.5
-        section.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
+        section.insetForSection = UIEdgeInsetsMake(20, 0, 20, 0)
         section.lineSpacing = 2
         for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
@@ -76,11 +77,19 @@ class ViewController: UIViewController {
         }))
         
         alertController.addAction(UIAlertAction(title: "Insert at 0 position", style: .default, handler: { [unowned self] (_) in
-            let row = CollectionItem<CollectionCell>(item: "hello")
+            let row = CollectionItem<CellFromXIB>(item: "hello")
             
             self.director.performUpdates { [unowned self] in
                 self.section.insert(item: row, at: 0)
-                self.section.insert(item: row, at: 1)
+            }
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Insert multiple items", style: .default, handler: { [unowned self] (_) in
+            let row1 = CollectionItem<CellFromXIB>(item: "INSerteD Item [0]")
+            let row2 = CollectionItem<CollectionCell>(item: "INSerteD Item [2]")
+            
+            self.director.performUpdates { [unowned self] in
+                self.section.insert(items: [row1,row2], at: [0, 2])
             }
         }))
         
@@ -118,10 +127,16 @@ class ViewController: UIViewController {
             }
         }))
         
-        alertController.addAction(UIAlertAction(title: "Remove item at 0 index", style: .destructive, handler: { [unowned self] (_) in
+        alertController.addAction(UIAlertAction(title: "Remove 1st item", style: .destructive, handler: { [unowned self] (_) in
             guard let item = self.section.items.first as? CollectionItem<CollectionCell> else { return }
             self.director.performUpdates { [unowned self] in
                 self.section.remove(item: item)
+            }
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Remove items at 0 and 2 positions", style: .destructive, handler: { [unowned self] (_) in
+            self.director.performUpdates { [unowned self] in
+                self.section.remove(at: [0,2])
             }
         }))
         

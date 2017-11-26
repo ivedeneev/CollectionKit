@@ -64,32 +64,57 @@ open class CollectionSection : AbstractCollectionSection {
 
     public func append(item: AbstractCollectionItem, shouldNotify: Bool = false) {
         items.append(item)
-        postInsertOrDeleteItemNotification(section: self, index: items.count - 1, action: .insert)
+        postInsertOrDeleteItemNotification(section: self, indicies: [ items.count - 1 ], action: .insert)
     }
 
     public func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
-        postInsertOrDeleteItemNotification(section: self, index: index, action: .insert)
+        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .insert)
     }
     
     public func append(items: [AbstractCollectionItem]) {
-        
+        self.items.append(contentsOf: items)
+        let oldCount = self.items.count - items.count - 1
+        let indicies = Array(oldCount..<self.items.count)
+        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
+    }
+    
+    public func insert(items: [AbstractCollectionItem], at indicies: [Int]) {
+        for i in 0..<items.count {
+            self.items.insert(items[i], at: indicies[i])
+        }
+        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
     }
     
     public func remove(at index: Int) {
         //todo: consider more correct condition
         guard index < items.count else { return }
         items.remove(at: index)
-        postInsertOrDeleteItemNotification(section: self, index: index, action: .delete)
+        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .delete)
     }
     
     public func remove(item: AbstractCollectionItem) {
         guard let index = items.index(where: { $0 == item }) else {
-            log("Attempt to remove item from section, which it doesnt belongs to", logLevel: .warning)
+            log("Attempt to remove item from section, which it doesnt belongs to", logLevel: .error)
             return
         }
         
         remove(at: index)
+    }
+    
+    public func remove(items: [AbstractCollectionItem]) {
+        items.forEach { [unowned self] (item) in
+            guard let index = self.items.index(where: { $0.identifier == item.identifier }) else {
+                CollectionKit.log("Attempt to delete item , which is not contained at section", logLevel: .error)
+                return
+            }
+            self.items.remove(at: index)
+        }
+    }
+    
+    public func remove(at indicies: [Int]) {
+        items.remove(at: indicies)
+        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
     public func reload() {
