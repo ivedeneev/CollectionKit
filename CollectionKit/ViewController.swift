@@ -23,13 +23,6 @@ class ViewController: UIViewController {
             // Fallback on earlier versions
         }
         
-        
-        let layer = CALayer()
-        layer.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
-        layer.backgroundColor = UIColor.lightGray.cgColor
-        view.layer.addSublayer(layer)
-        
-        
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
@@ -59,15 +52,7 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    @IBAction func action(_ sender: Any) {
-//        director.sections.first?.items.remove(at: 0)
-//        director.sections.first?.reload()
-        
-    }
-    
     @IBAction func addAction(_ sender: Any) {
-//        section.append(item: row)
         let  alertController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Append item", style: .default, handler: { [unowned self] (_) in
             let row = CollectionItem<CollectionCell>(item: "hello")
@@ -148,10 +133,6 @@ class ViewController: UIViewController {
         
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
-    }
-    
-    @IBAction func removeAction(_ sender: Any) {
-        section.remove(at: 0)
     }
 }
 
