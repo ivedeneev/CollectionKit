@@ -140,7 +140,6 @@ public protocol ActionableCollectionItem {
     var shouldHighlight: Bool? { get set }
 }
 
-
 //MARK:- AbstractCollectionItem
 public protocol AbstractCollectionItem : ActionableCollectionItem {
     var reuseIdentifier: String { get }

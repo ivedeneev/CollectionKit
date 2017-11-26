@@ -20,6 +20,7 @@ import UIKit
  7. rotation
  8. определение уникальности ячейки/секции
  9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
+ 10. передавать размер collectionview в качестве параметра для расчета размера ячеек
  */
 
 //MARK:- CollectionDirector
@@ -97,10 +98,16 @@ open class CollectionDirector: NSObject {
     private func commitUpdates() {
         collectionView.performBatchUpdates({ [unowned self] in
             self.updater.apply(changes: self.deferredUpdates)
-        }) { (finished) in
-            //todo:
+        }) { [unowned self] (finished) in
+            guard finished else { return }
+            self.deferredUpdates.removeAll()
         }
     }
+}
+
+//MARK:- Public
+extension CollectionDirector {
+    
 }
 
 //MARK:- UICollectionViewDataSource

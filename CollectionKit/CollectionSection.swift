@@ -40,7 +40,6 @@ public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -
     return lhs.identifier == rhs.identifier
 }
 
-
 open class CollectionSection : AbstractCollectionSection {
     public let identifier: String = UUID().uuidString
 
@@ -105,7 +104,7 @@ open class CollectionSection : AbstractCollectionSection {
     public func remove(items: [AbstractCollectionItem]) {
         items.forEach { [unowned self] (item) in
             guard let index = self.items.index(where: { $0.identifier == item.identifier }) else {
-                CollectionKit.log("Attempt to delete item , which is not contained at section", logLevel: .error)
+                log("Attempt to delete item , which is not contained at section", logLevel: .error)
                 return
             }
             self.items.remove(at: index)
