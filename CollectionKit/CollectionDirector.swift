@@ -25,9 +25,11 @@ import UIKit
 
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
-    private weak var collectionView: UICollectionView!
     public var sections = [AbstractCollectionSection]()
     open var shouldUseAutomaticCellRegistration: Bool = false
+    ///Adjust z position for headers/footers @ iOS11
+    open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+    private weak var collectionView: UICollectionView!
     private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
     private var deferBatchUpdates: Bool = false
@@ -227,6 +229,12 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sections[section].lineSpacing
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        if shouldAdjustSupplementaryViewLayerZPosition {
+             if #available(iOS 11.0, *) { view.layer.zPosition = 0 }
+        }
     }
 }
 

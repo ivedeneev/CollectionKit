@@ -47,9 +47,7 @@ class ViewController: UIViewController {
             section += row
         }
         
-        director.performWithoutReloading { [unowned self] in
-            self.director += section
-        }
+        director += section
     }
     
     @IBAction func addAction(_ sender: Any) {
