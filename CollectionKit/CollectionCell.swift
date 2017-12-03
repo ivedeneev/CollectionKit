@@ -34,8 +34,8 @@ class CollectionCell: UICollectionViewCell {
 }
 
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: 50)
+    static func estimatedSize(item: String?, collectionViewSize: CGSize) -> CGSize {
+        return CGSize(width: collectionViewSize.width, height: 50)
     }
     
     func configure(item: String) {

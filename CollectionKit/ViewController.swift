@@ -18,9 +18,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if #available(iOS 11.0, *) {
-//            navigationController?.navigationBar.prefersLargeTitles = true
-        } else {
-            // Fallback on earlier versions
+            navigationController?.navigationBar.prefersLargeTitles = true
         }
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
@@ -30,12 +28,14 @@ class ViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         director = CollectionDirector(colletionView: collectionView)
         director.shouldUseAutomaticCellRegistration = true
+        collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Header.reuseIdentifier)
 //        collectionView.registerClass(CollectionCell.self)
 //        collectionView.registerNib(CellFromXIB.self)
         section = CollectionSection()
         section.minimumInterItemSpacing = 0.5
-        section.insetForSection = UIEdgeInsetsMake(20, 0, 20, 0)
+//        section.insetForSection = UIEdgeInsetsMake(20, 0, 20, 0)
         section.lineSpacing = 2
+        section.headerItem = CollectionItem<Header>(item: "title")
         for _ in 0..<3 {
             let row = CollectionItem<CollectionCell>(item: "text")
                 .onSelect({ (_) in

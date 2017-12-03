@@ -7,11 +7,11 @@ Framework to manage complex `UICollectionView` in declarative way and very few l
  - [x] Type-safe generic cells
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
  - [x] Easy way to map your models into cells
- - [x] Updating without `performBatchUpdates` or whatever
+ - [x] Convinient updations
  - [x] Supports cells from code and xibs and storyboard
  - [x] Supports custom section imlementations
  - [x] Register cells and reusable views automatically
- - [x] Automatic cells and reusable views registration (if needed)
+ - [x] Fix scroll indicator clipping at iOS11 (https://stackoverflow.com/questions/46747960/ios11-uicollectionsectionheader-clipping-scroll-indicator)
 
 # Getting Started
 
@@ -43,8 +43,8 @@ director += section
 Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: 50)
+    static func estimatedSize(item: String, collectionViewSize: CGSize) -> CGSize {
+        return CGSize(width: collectionViewSize.width, height: 50)
     }
 
     func configure(item: String) {
@@ -74,20 +74,13 @@ section.lineSpacing = 2
 ```
 
 ## Updating
-You can update collection view only by operating with section and item objects without any `performBatchUpdates`:
+You can update collection view only by operating with section and item objects without any `IndexPath` mess: put usual operations in `performUpdates` block
 ```swift
-// insert item at specific position
-let row = CollectionItem<CollectionCell>(item: "hello")
-section.insert(item: row, at: 0)
-
-//append item to bottom of section
-section.append(item: row)
-
-//remove item at specific position
-section.remove(at: 0)
-
-//reload cell
-row.reload(with: "reloaded")
+self.director.performUpdates { [unowned self] in
+    self.section.append(item: row)
+    self.section.insert(item: row, at: 0)
+    self.section.remove(item: item)
+}
 ```
 
 ## Custom sections

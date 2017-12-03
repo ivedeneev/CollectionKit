@@ -18,10 +18,14 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
     open var shouldHighlight: Bool?
     
-    open var estimatedSize: CGSize { return CellType.estimatedSize(item: self.item) }
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
+    
     public let identifier: String = UUID().uuidString
+    
+    public func estimatedSize(collectionViewSize: CGSize) -> CGSize {
+        return CellType.estimatedSize(item: self.item, collectionViewSize: collectionViewSize)
+    }
     
     public var cellType: AnyClass {
         return CellType.self

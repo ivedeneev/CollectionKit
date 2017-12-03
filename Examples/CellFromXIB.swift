@@ -14,8 +14,8 @@ final class CellFromXIB : UICollectionViewCell {
 }
 
 extension CellFromXIB : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width - 40, height: 60)
+    static func estimatedSize(item: String?, collectionViewSize: CGSize) -> CGSize {
+        return CGSize(width: collectionViewSize.width - 40, height: 60)
     }
     
     func configure(item: String) {

@@ -123,7 +123,7 @@ extension Array {
 //MARK:- ConfigurableCollectionItem
 public protocol ConfigurableCollectionItem : Reusable {
     associatedtype T
-    static func estimatedSize(item: T?) -> CGSize
+    static func estimatedSize(item: T?, collectionViewSize: CGSize) -> CGSize
     func configure(item: T)
 }
 
@@ -143,8 +143,9 @@ public protocol ActionableCollectionItem {
 //MARK:- AbstractCollectionItem
 public protocol AbstractCollectionItem : ActionableCollectionItem {
     var reuseIdentifier: String { get }
-    var estimatedSize: CGSize { get }
+//    var estimatedSize: CGSize { get }
     var identifier: String { get }
     var cellType: AnyClass { get }
     func configure(_: UICollectionReusableView)
+    func estimatedSize(collectionViewSize: CGSize) -> CGSize
 }

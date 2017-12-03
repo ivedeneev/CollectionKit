@@ -27,7 +27,7 @@ import UIKit
 open class CollectionDirector: NSObject {
     public var sections = [AbstractCollectionSection]()
     open var shouldUseAutomaticCellRegistration: Bool = false
-    ///Adjust z position for headers/footers @ iOS11
+    ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     private weak var collectionView: UICollectionView!
     private var reuseIdentifiers: Set<String> = []
@@ -76,12 +76,6 @@ open class CollectionDirector: NSObject {
     }
     
     //todo: add/remove array of sections
-    
-    public func performWithoutReloading(changes: (() -> Void)) {
-        disableUpdates = true
-        changes()
-        disableUpdates = false
-    }
     
     public func reload() {
         collectionView.reloadData()
@@ -204,7 +198,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let item = sections[indexPath.section].item(for: indexPath.row)
-        return item.estimatedSize
+        return item.estimatedSize(collectionViewSize: collectionView.bounds.size)
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -213,13 +207,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = sections[section]
-        let value = section_.headerItem?.estimatedSize ?? .zero
+        let value = section_.headerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
         return value
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         let section_ = sections[section]        
-        let value = section_.footerItem?.estimatedSize ?? .zero
+        let value = section_.footerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
         return value
     }
     
