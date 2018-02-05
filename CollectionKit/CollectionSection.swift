@@ -7,45 +7,13 @@
 //
 
 import UIKit
-//todo: добавть equals и перенести все методы по работе с секцией в протокол, добавить в ридми про абстрактные секции
-public protocol AbstractCollectionSection : class {
-    var identifier: String { get }
-    var headerItem: AbstractCollectionItem? { get set }
-    var footerItem: AbstractCollectionItem? { get set }
-    
-    var insetForSection: UIEdgeInsets { get set }
-    var minimumInterItemSpacing: CGFloat { get set }
-    var lineSpacing: CGFloat { get set }
-    
-    var isEmpty: Bool { get }
-    
-    func numberOfItems() -> Int
-    func item(for index: Int) -> AbstractCollectionItem
-    func contains(item: AbstractCollectionItem) -> Bool
-    func index(for item: AbstractCollectionItem) -> Int?
-    
-    func clear()
-    func reload()
-}
-
-extension AbstractCollectionSection {
-    public var isEmpty: Bool { return numberOfItems() == 0 }
-    
-    public func reload() {
-        postReloadNotofication(subject: .section, object: self)
-    }
-}
-
-public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
-    return lhs.identifier == rhs.identifier
-}
 
 open class CollectionSection : AbstractCollectionSection {
     public let identifier: String = UUID().uuidString
 
     open var items: [AbstractCollectionItem] = []
-    open var headerItem: AbstractCollectionItem?
-    open var footerItem: AbstractCollectionItem?
+    open var headerItem: AbstractCollectionHeaderFooterItem?
+    open var footerItem: AbstractCollectionHeaderFooterItem?
     
     open var insetForSection: UIEdgeInsets = .zero
     open var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
@@ -53,15 +21,15 @@ open class CollectionSection : AbstractCollectionSection {
     
     public init() {}
     
-    public func item(for index: Int) -> AbstractCollectionItem {
+    open func item(for index: Int) -> AbstractCollectionItem {
         return items[index]
     }
     
-    public func numberOfItems() -> Int {
+    open func numberOfItems() -> Int {
         return items.count
     }
 
-    public func append(item: AbstractCollectionItem, shouldNotify: Bool = false) {
+    open func append(item: AbstractCollectionItem) {
         items.append(item)
         postInsertOrDeleteItemNotification(section: self, indicies: [ items.count - 1 ], action: .insert)
     }
@@ -116,13 +84,14 @@ open class CollectionSection : AbstractCollectionSection {
         postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
-    public func reload() {
+    open func reload() {
         postReloadNotofication(subject: .section, object: self)
     }
     
     public func clear() {
+        let indicies = Array(0..<items.count)
         items.removeAll()
-        //todo: notify?
+        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
     public func contains(item: AbstractCollectionItem) -> Bool {
@@ -131,16 +100,5 @@ open class CollectionSection : AbstractCollectionSection {
     
     public func index(for item: AbstractCollectionItem) -> Int? {
         return items.index(where: {$0 == item})
-    }
-}
-
-//todo: consider delete this
-open class ExpandableSection: CollectionSection {
-    open var collapsedItemsCount: Int
-    open var isExpanded: Bool = false
-    
-    //TODO: consider pass isInitiallyExpanded paramater
-    public init(collapsedItemsCount: Int) {
-        self.collapsedItemsCount = collapsedItemsCount
     }
 }

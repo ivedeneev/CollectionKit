@@ -24,7 +24,7 @@ enum LogLevel: CustomStringConvertible {
 }
 
 func log(_ message: String, logLevel: LogLevel = .warning) {
-    print("CollectionKit: \(logLevel.description): \(message)")
+    print("CollectionKit: \(logLevel.description.uppercased()): \(message)")
 }
 
 //MARK:- Operators
@@ -38,6 +38,10 @@ public func +=(left: CollectionSection, right: AbstractCollectionItem) {
 
 public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> Bool {
     return left.identifier == right.identifier
+}
+
+public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
+    return lhs.identifier == rhs.identifier
 }
 
 //MARK:- Notifications
@@ -75,6 +79,7 @@ enum UpdateActionType {
 enum UpdateSubject : String {
     case item
     case section
+//    case supplementaryView
 }
 
 struct ItemUpdate : AbstractCollectionUpdate {
@@ -105,6 +110,12 @@ struct SectionUpdate : AbstractCollectionUpdate {
     
     let indicies: [Int]
     let type: UpdateActionType
+}
+
+struct SupplementaryViewUpdate : AbstractCollectionUpdate {
+    let type: UpdateActionType
+    let kind: String
+    let indexPath: IndexPath
 }
 
 protocol AbstractCollectionUpdate {
@@ -140,12 +151,32 @@ public protocol ActionableCollectionItem {
     var shouldHighlight: Bool? { get set }
 }
 
+
 //MARK:- AbstractCollectionItem
-public protocol AbstractCollectionItem : ActionableCollectionItem {
+public protocol AbstractCollectionItem : AbstractCollectionReusableView, ActionableCollectionItem {
     var reuseIdentifier: String { get }
-//    var estimatedSize: CGSize { get }
     var identifier: String { get }
     var cellType: AnyClass { get }
+    func configure(_: UICollectionReusableView)
+    func estimatedSize(collectionViewSize: CGSize) -> CGSize
+}
+
+//MARK:- AbstractCollectionReusableView
+public protocol AbstractCollectionReusableView {
+    var reuseIdentifier: String { get }
+    var identifier: String { get }
+    func configure(_: UICollectionReusableView)
+    func estimatedSize(collectionViewSize: CGSize) -> CGSize
+}
+
+//MARK:- AbstractCollectionHeaderFooterItem
+public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableView {
+    var reuseIdentifier: String { get }
+    var identifier: String { get }
+    var viewType: AnyClass { get }
+    var kind: String { get }
+    var onDisplay: (() -> Void)? { get set }
+    var onEndDisplay: (() -> Void)? { get set }
     func configure(_: UICollectionReusableView)
     func estimatedSize(collectionViewSize: CGSize) -> CGSize
 }

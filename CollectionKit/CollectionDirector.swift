@@ -20,7 +20,6 @@ import UIKit
  7. rotation
  8. определение уникальности ячейки/секции
  9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
- 10. передавать размер collectionview в качестве параметра для расчета размера ячеек
  */
 
 //MARK:- CollectionDirector
@@ -29,6 +28,7 @@ open class CollectionDirector: NSObject {
     open var shouldUseAutomaticCellRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+    open weak var scrollDelegate: UIScrollViewDelegate?
     private weak var collectionView: UICollectionView!
     private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
@@ -85,19 +85,30 @@ open class CollectionDirector: NSObject {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    public func performUpdates(updates: (() -> Void)) {
+    public func performUpdates(updates: (() -> Void), completion: (() -> Void)? = nil) {
         deferredUpdates.removeAll()
         updates()
-        commitUpdates()
+        commitUpdates(completion: completion)
     }
     
-    private func commitUpdates() {
+    private func commitUpdates(completion: (() -> Void)? = nil) {
         collectionView.performBatchUpdates({ [unowned self] in
             self.updater.apply(changes: self.deferredUpdates)
         }) { [unowned self] (finished) in
             guard finished else { return }
             self.deferredUpdates.removeAll()
+            completion?()
         }
+    }
+    
+    open override func responds(to selector: Selector) -> Bool {
+        print(selector.description)
+        return super.responds(to: selector) || scrollDelegate?.responds(to: selector) == true
+    }
+    
+    open override func forwardingTarget(for selector: Selector) -> Any? {
+        print(selector.description)
+        return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
     }
 }
 
@@ -226,8 +237,31 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if shouldAdjustSupplementaryViewLayerZPosition {
-             if #available(iOS 11.0, *) { view.layer.zPosition = 0 }
+        switch elementKind {
+        case UICollectionElementKindSectionHeader:
+            sections[indexPath.section].headerItem?.onDisplay?()
+            break
+        case UICollectionElementKindSectionFooter:
+            sections[indexPath.section].footerItem?.onDisplay?()
+            break
+        default:
+            break
+        }
+        
+        guard shouldAdjustSupplementaryViewLayerZPosition, #available(iOS 11.0, *) else { return }
+        view.layer.zPosition = 0
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+        switch elementKind {
+        case UICollectionElementKindSectionHeader:
+            sections[indexPath.section].headerItem?.onEndDisplay?()
+            break
+        case UICollectionElementKindSectionFooter:
+            sections[indexPath.section].footerItem?.onEndDisplay?()
+            break
+        default:
+            break
         }
     }
 }
@@ -285,7 +319,12 @@ private extension CollectionDirector {
         
         let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
         let update = ItemUpdate(indexPaths: indexPaths, type: action)
-        print("GOT ITEM UPDATE")
         deferredUpdates.append(update)
+    }
+}
+
+extension CollectionDirector : UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.scrollDelegate?.scrollViewDidScroll?(scrollView)
     }
 }

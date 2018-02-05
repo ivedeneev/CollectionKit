@@ -11,7 +11,7 @@ Framework to manage complex `UICollectionView` in declarative way and very few l
  - [x] Supports cells from code and xibs and storyboard
  - [x] Supports custom section imlementations
  - [x] Register cells and reusable views automatically
- - [x] Fix scroll indicator clipping at iOS11 (https://stackoverflow.com/questions/46747960/ios11-uicollectionsectionheader-clipping-scroll-indicator)
+ - [x] Fix scroll indicator clipping at iOS11 (http://www.openradar.me/34308893)
 
 # Getting Started
 
@@ -43,7 +43,7 @@ director += section
 Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String, collectionViewSize: CGSize) -> CGSize {
+    static func estimatedSize(item: String?, collectionViewSize: CGSize) -> CGSize {
         return CGSize(width: collectionViewSize.width, height: 50)
     }
 
@@ -63,6 +63,13 @@ let row = CollectionItem<CollectionCell>(item: "text")
         print("i was displayed")
     })
 ```
+Available actions:
+- `onSelect`
+- `onDeselect`
+- `onDisplay`
+- `onEndDisplay`
+- `onHighlight`
+- `onUnighlight`
 
 ## Section configuration
 You can setup inter item spacing, line spacing and section insets using section object:

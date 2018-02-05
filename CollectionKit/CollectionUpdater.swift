@@ -31,7 +31,7 @@ final class CollectionUpdater {
         }
     }
     
-    private func handleItemUpdate(update: ItemUpdate) {
+    func handleItemUpdate(update: ItemUpdate) {
         switch update.type {
         case .reload:
             collectionView.reloadItems(at: update.indexPaths)
@@ -45,7 +45,7 @@ final class CollectionUpdater {
         }
     }
     
-    private func handleSectionUpdate(update: SectionUpdate) {
+    func handleSectionUpdate(update: SectionUpdate) {
         let indexSet = IndexSet(update.indicies)
         switch update.type {
         case .reload:

@@ -6,26 +6,44 @@
 //  Copyright © 2017 Igor Vedeneev. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-//open class CollectionHeaderFooterView<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionReusableView {
-//    open var estimatedSize: CGSize { return CellType.estimatedSize(item: self.item) }
-//    open var item: CellType.T
-//    open var reuseIdentifier: String { return CellType.reuseIdentifier }
-//    open var onSelect: ((_ indexPath: IndexPath) -> Void)?
-//    open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
-//    open var onDisplay: ((_ indexPath: IndexPath) -> Void)?
-//    open var onEndDisplay: ((_ indexPath: IndexPath) -> Void)?
-//    open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
-//    open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
-//    open var shouldHighlight: Bool?
-//    
-//    public init(item: CellType.T) {
-//        self.item = item
-//    }
-//    
-//    public func configure(_ cell: UICollectionReusableView) {
-//        (cell as? CellType)?.configure(item: item)
-//    }
+//public enum SupplementaryViewKind: String {
+//    case header = UICollectionElementKindSectionHeader
+//    case footer = UICollectionElementKindSectionFooter
 //}
 
+open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: AbstractCollectionHeaderFooterItem where ViewType: UICollectionReusableView {
+    public let kind: String
+    public var viewType: AnyClass { return ViewType.self }
+    public var indexPath: String?
+    open var item: ViewType.T
+    open var onDisplay: (() -> Void)?
+    open var onEndDisplay: (() -> Void)?
+    open var reuseIdentifier: String { return ViewType.reuseIdentifier }
+    public let identifier: String = UUID().uuidString
+    public init(item: ViewType.T, kind: String) {
+        self.item = item
+        self.kind = kind
+    }
+    
+    public func configure(_ view: UICollectionReusableView) {
+        (view as? ViewType)?.configure(item: item)
+    }
+    
+    public func estimatedSize(collectionViewSize: CGSize) -> CGSize {
+        return ViewType.estimatedSize(item: self.item, collectionViewSize: collectionViewSize)
+    }
+    
+    @discardableResult
+    public func onDisplay(_ block:@escaping () -> Void) -> Self {
+        self.onDisplay = block
+        return self
+    }
+    
+    @discardableResult
+    public func onEndDisplay(_ block:@escaping () -> Void) -> Self {
+        self.onEndDisplay = block
+        return self
+    }
+}
