@@ -152,9 +152,6 @@ class ViewController: UIViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                 self.director.setNeedsUpdate()
             })
-//            self.director.performUpdates(updates: {  [unowned self] in
-//                self.director.remove(section: self.director.sections.last!)
-//            })
         }))
         
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

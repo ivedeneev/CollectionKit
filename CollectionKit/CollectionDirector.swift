@@ -102,12 +102,10 @@ open class CollectionDirector: NSObject {
     }
     
     open override func responds(to selector: Selector) -> Bool {
-        print(selector.description)
         return super.responds(to: selector) || scrollDelegate?.responds(to: selector) == true
     }
     
     open override func forwardingTarget(for selector: Selector) -> Any? {
-        print(selector.description)
         return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
     }
 }
