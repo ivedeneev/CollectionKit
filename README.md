@@ -9,8 +9,8 @@ Framework to manage complex `UICollectionView` in declarative way and very few l
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
  - [x] Easy way to map your models into cells
  - [x] Convinient updations
- - [x] Supports cells from code and xibs and storyboard
- - [x] Supports custom section imlementations
+ - [x] Supports cells & reusable views from code and xibs and storyboard
+ - [x] Supports custom section implementation
  - [x] Register cells and reusable views automatically
  - [x] Fix scroll indicator clipping at iOS11 (http://www.openradar.me/34308893)
 
