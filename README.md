@@ -1,9 +1,6 @@
 # CollectionKit
 
 
-http://app.appsflyer.com/id1300613369?pid=testcamp_1&c=appfl_test1&af_adset=german&af_dp=https://vtochku.market/products
-
-
 Framework to manage complex `UICollectionView` in declarative way and very few lines of code.
  Heavily inspired by https://github.com/maxsokolov/TableKit
 
