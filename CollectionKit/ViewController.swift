@@ -27,8 +27,9 @@ class ViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         director = CollectionDirector(colletionView: collectionView)
         director.scrollDelegate = self
-        director.shouldUseAutomaticCellRegistration = true
-        collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Header.reuseIdentifier)
+        director.shouldUseAutomaticViewRegistration = true
+//        collectionView.register(Header.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Header.reuseIdentifier)
+        
 //        collectionView.registerClass(CollectionCell.self)
 //        collectionView.registerNib(CellFromXIB.self)
         section = CollectionSection()

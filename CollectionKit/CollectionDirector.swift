@@ -25,7 +25,7 @@ import UIKit
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     public var sections = [AbstractCollectionSection]()
-    open var shouldUseAutomaticCellRegistration: Bool = false
+    open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     open weak var scrollDelegate: UIScrollViewDelegate?
@@ -35,6 +35,7 @@ open class CollectionDirector: NSObject {
     private var deferBatchUpdates: Bool = false
     private lazy var updater = CollectionUpdater(collectionView: self.collectionView)
     private var deferredUpdates: [AbstractCollectionUpdate] = []
+    private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: self.collectionView)
     
     public init(colletionView: UICollectionView) {
         self.collectionView = colletionView
@@ -127,17 +128,8 @@ extension CollectionDirector: UICollectionViewDataSource {
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sections[indexPath.section].item(for: indexPath.row)
-        //todo: refactor: separate method
-        if shouldUseAutomaticCellRegistration && !reuseIdentifiers.contains(item.reuseIdentifier) {
-            reuseIdentifiers.insert(item.reuseIdentifier)
-            
-            let bundle = Bundle(for: item.cellType)
-            if let _ = bundle.path(forResource: item.reuseIdentifier, ofType: "nib") {
-                collectionView.register(UINib(nibName: item.reuseIdentifier, bundle: bundle), forCellWithReuseIdentifier: item.reuseIdentifier)
-            } else {
-                let clz = item.cellType
-                collectionView.register(clz, forCellWithReuseIdentifier: item.reuseIdentifier)
-            }
+        if shouldUseAutomaticViewRegistration {
+            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: item.reuseIdentifier, cellClass: item.cellType)
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
@@ -147,14 +139,21 @@ extension CollectionDirector: UICollectionViewDataSource {
     
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let section = sections[indexPath.section]
+
         switch kind {
         case UICollectionElementKindSectionHeader:
             guard let header = section.headerItem else { return UICollectionReusableView() }
+            if shouldUseAutomaticViewRegistration {
+                viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: header.reuseIdentifier, viewClass: header.viewType, kind: kind)
+            }
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: header.reuseIdentifier, for: indexPath)
             header.configure(headerView)
             return headerView
         case UICollectionElementKindSectionFooter:
             guard let footer = section.footerItem else { return UICollectionReusableView() }
+            if shouldUseAutomaticViewRegistration {
+                viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: footer.reuseIdentifier, viewClass: footer.viewType, kind: kind)
+            }
             let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footer.reuseIdentifier, for: indexPath)
             footer.configure(footerView)
             return footerView
