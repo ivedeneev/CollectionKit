@@ -53,7 +53,7 @@ class ViewController: UIViewController {
             print("on displaaay")
         }
         section.headerItem = header
-        for _ in 0..<6 {
+        for _ in 0..<1 {
             let row = CollectionItem<CollectionCell>(item: "text")
                 .onSelect({ (_) in
                     print("i was tapped!")
@@ -61,6 +61,7 @@ class ViewController: UIViewController {
                 .onDisplay({ (_,_) in
                     print("i was displayed")
                 })
+            row.autoSizedWidth = true
             section += row
         }
         
@@ -71,6 +72,7 @@ class ViewController: UIViewController {
         let  alertController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Append item to 1st section", style: .default, handler: { [unowned self] (_) in
             let row = CollectionItem<CollectionCell>(item: "hello")
+            row.autoSizedWidth = true
             self.director.performUpdates(updates: { [unowned self] in
                 self.director.sections.first?.append(item: row)
             }) {
@@ -115,6 +117,7 @@ class ViewController: UIViewController {
                     .onDisplay({ (_,_) in
                         print("i was displayed")
                     })
+                
                 section += row
             }
             

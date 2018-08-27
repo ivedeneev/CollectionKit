@@ -17,7 +17,6 @@ import UIKit
  4. автоматическая ширина по ширине экрана
  5. автоматическая регистрация хедеров/футеров, также вынести регистрацию в отдельный класс/метод
  6. logging
- 7. rotation
  8. определение уникальности ячейки/секции
  9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
  */
@@ -29,8 +28,8 @@ open class CollectionDirector: NSObject {
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     open weak var scrollDelegate: UIScrollViewDelegate?
+    
     private weak var collectionView: UICollectionView!
-    private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
     private var deferBatchUpdates: Bool = false
     private lazy var updater = CollectionUpdater(collectionView: self.collectionView)
@@ -43,16 +42,7 @@ open class CollectionDirector: NSObject {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleReload),
-                                               name: Notification.Name(rawValue: CKReloadNotificationName),
-                                               object: nil)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleInsertOrDelete),
-                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
-                                               object: nil)
-        
+        setupObservers()
     }
     
     deinit {
@@ -182,8 +172,8 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //FIXME: crash when deleting last row
-        guard sections.count > indexPath.section, sections[indexPath.section].numberOfItems() > indexPath.row else { return }
+        guard sections.count > indexPath.section,
+            sections[indexPath.section].numberOfItems() > indexPath.row else { return }
         let item = sections[indexPath.section].item(for: indexPath.row)
         item.onEndDisplay?(indexPath, cell)
     }
@@ -205,8 +195,21 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let item = sections[indexPath.section].item(for: indexPath.row)
-        return item.estimatedSize(collectionViewSize: collectionView.bounds.size)
+        let section = sections[indexPath.section]
+        let item = section.item(for: indexPath.row)
+        var size = item.estimatedSize(collectionViewSize: collectionView.bounds.size)
+        let inset = section.insetForSection
+        if item.autoSizedWidth {
+            let width = max(size.width, collectionView.bounds.width - (inset.left + inset.right))
+            size.width = width
+        }
+        
+        if item.autoSizedHeight {
+            let width = max(size.height, collectionView.bounds.height - (inset.bottom + inset.top))
+            size.width = width
+        }
+        
+        return size
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -215,6 +218,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = sections[section]
+        
         let value = section_.headerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
         return value
     }
@@ -260,6 +264,22 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         default:
             break
         }
+    }
+}
+
+
+//MARK:- Private
+extension CollectionDirector {
+    func setupObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleReload),
+                                               name: Notification.Name(rawValue: CKReloadNotificationName),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleInsertOrDelete),
+                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
+                                               object: nil)
     }
 }
 
@@ -320,6 +340,7 @@ private extension CollectionDirector {
     }
 }
 
+//MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollDelegate?.scrollViewDidScroll?(scrollView)
