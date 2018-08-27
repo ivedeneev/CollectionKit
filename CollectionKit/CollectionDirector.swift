@@ -24,9 +24,11 @@ import UIKit
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     public var sections = [AbstractCollectionSection]()
+    ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+    ///Forward scrollView delegae messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
@@ -36,11 +38,16 @@ open class CollectionDirector: NSObject {
     private var deferredUpdates: [AbstractCollectionUpdate] = []
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: self.collectionView)
     
-    public init(colletionView: UICollectionView) {
+    public init(colletionView: UICollectionView,
+                sections: [AbstractCollectionSection] = [],
+                shouldUseAutomaticViewRegistration: Bool = true,
+                shouldAdjustSupplementaryViewLayerZPosition: Bool = true) {
         self.collectionView = colletionView
         super.init()
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+        self.shouldUseAutomaticViewRegistration = shouldUseAutomaticViewRegistration
+        self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
         
         setupObservers()
     }
@@ -53,8 +60,8 @@ open class CollectionDirector: NSObject {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
             log("attempt to remove section not @ director", logLevel: .warning)
             return
-            
         }
+        
         sections.remove(at: index)
         let update = SectionUpdate(index: index, type: .delete)
         deferredUpdates.append(update)
@@ -199,13 +206,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         let item = section.item(for: indexPath.row)
         var size = item.estimatedSize(collectionViewSize: collectionView.bounds.size)
         let inset = section.insetForSection
-        if item.autoSizedWidth {
-            let width = max(size.width, collectionView.bounds.width - (inset.left + inset.right))
+        if item.adjustsWidth {
+            let width = collectionView.bounds.width - (inset.left + inset.right)
             size.width = width
         }
         
-        if item.autoSizedHeight {
-            let width = max(size.height, collectionView.bounds.height - (inset.bottom + inset.top))
+        if item.adjustsHeight {
+            let width = collectionView.bounds.height - (inset.bottom + inset.top)
             size.width = width
         }
         
@@ -290,6 +297,7 @@ extension CollectionDirector {
         let update = SectionUpdate(index: sections.count - 1, type: .insert)
         deferredUpdates.append(update)
     }
+    
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
@@ -301,6 +309,14 @@ extension CollectionDirector {
         sections.insert(section, at: index)
         let update = SectionUpdate(index: index, type: .insert)
         deferredUpdates.append(update)
+    }
+    
+    public func append(sections: [AbstractCollectionSection]) {
+        self.sections.append(contentsOf: sections)
+        let oldCount = self.sections.count - sections.count
+        let indicies = Array(oldCount..<self.sections.count)
+        let updates = indicies.map { SectionUpdate(index: $0, type: .insert) }
+        deferredUpdates.append(contentsOf: updates)
     }
 }
 

@@ -61,7 +61,7 @@ class ViewController: UIViewController {
                 .onDisplay({ (_,_) in
                     print("i was displayed")
                 })
-            row.autoSizedWidth = true
+            row.adjustsWidth = true
             section += row
         }
         
@@ -72,7 +72,7 @@ class ViewController: UIViewController {
         let  alertController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: "Append item to 1st section", style: .default, handler: { [unowned self] (_) in
             let row = CollectionItem<CollectionCell>(item: "hello")
-            row.autoSizedWidth = true
+            row.adjustsWidth = true
             self.director.performUpdates(updates: { [unowned self] in
                 self.director.sections.first?.append(item: row)
             }) {
@@ -120,9 +120,35 @@ class ViewController: UIViewController {
                 
                 section += row
             }
-            
             self.director.performUpdates(updates:  { [unowned self] in
                 self.director += section
+            })
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Append 2 sections", style: .default, handler: { [unowned self] (_) in
+            let section1 = CollectionSection()
+            section1.minimumInterItemSpacing = 2
+            section1.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
+            section1.lineSpacing = 1
+            
+            for _ in 0..<2 {
+                let row = CollectionItem<CollectionCell>(item: "1111111111".uppercased())
+                section1 += row
+                row.adjustsWidth = true
+            }
+            
+            let section2 = CollectionSection()
+            section2.minimumInterItemSpacing = 2
+            section2.insetForSection = UIEdgeInsetsMake(20, 50, 20, 50)
+            section2.lineSpacing = 10
+            for _ in 0..<2 {
+                let row = CollectionItem<CollectionCell>(item: "2222222".uppercased())
+                section2 += row
+                row.adjustsWidth = true
+            }
+            
+            self.director.performUpdates(updates:  { [unowned self] in
+                self.director += [section1, section2]
             })
         }))
         

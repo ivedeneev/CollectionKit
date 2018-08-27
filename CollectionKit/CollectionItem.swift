@@ -19,9 +19,9 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
     open var shouldHighlight: Bool?
     /// Width of cell = collectionView.width - horizontal section insets
-    open var autoSizedWidth: Bool = false
+    open var adjustsWidth: Bool = false
     /// Height of cell = collectionView.height - vertical section insets
-    open var autoSizedHeight: Bool = false
+    open var adjustsHeight: Bool = false
     
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }

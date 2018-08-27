@@ -22,7 +22,7 @@ class CollectionCell: UICollectionViewCell {
         imageView.frame = CGRect(x: 15, y: 10, width: 30, height: 30)
         addSubview(imageView)
         imageView.backgroundColor = .red
-        textLabel.frame = CGRect(x: 60, y: 0, width: 200, height: 50)
+        textLabel.frame = CGRect(x: 60, y: 0, width: frame.width * 0.5, height: 50)
         textLabel.backgroundColor = UIColor.red.withAlphaComponent(0.2)
         textLabel.autoresizingMask = [.flexibleWidth]
         addSubview(textLabel)

@@ -34,8 +34,8 @@ public protocol AbstractCollectionItem : AbstractCollectionReusableView, Actiona
     var reuseIdentifier: String { get }
     var identifier: String { get }
     var cellType: AnyClass { get }
-    var autoSizedWidth: Bool { get set }
-    var autoSizedHeight: Bool { get set }
+    var adjustsWidth: Bool { get set }
+    var adjustsHeight: Bool { get set }
     func configure(_: UICollectionReusableView)
     func estimatedSize(collectionViewSize: CGSize) -> CGSize
 }

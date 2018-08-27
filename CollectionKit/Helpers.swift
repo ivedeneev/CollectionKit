@@ -27,23 +27,6 @@ func log(_ message: String, logLevel: LogLevel = .warning) {
     print("CollectionKit: \(logLevel.description.uppercased()): \(message)")
 }
 
-//MARK:- Operators
-public func +=(left: CollectionDirector, right: CollectionSection) {
-    left.append(section: right)
-}
-
-public func +=(left: CollectionSection, right: AbstractCollectionItem) {
-    left.append(item: right)
-}
-
-public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> Bool {
-    return left.identifier == right.identifier
-}
-
-public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
-    return lhs.identifier == rhs.identifier
-}
-
 //MARK:- Notifications
 let CKReloadNotificationName = "com.collection_kit.reload"
 let CKInsertOrDeleteNotificationName = "com.collection_kit.insert_or_delete_item"
