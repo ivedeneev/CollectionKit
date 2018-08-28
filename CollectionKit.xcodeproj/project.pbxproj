@@ -146,7 +146,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D638A8DA1F9D258E00B858E9 /* CollectionKit */ = {
+		D61A2F952135174400165700 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				D638A8DB1F9D258E00B858E9 /* CollectionKit.h */,
+				D638A8DC1F9D258E00B858E9 /* Info.plist */,
+			);
+			path = Framework;
+			sourceTree = "<group>";
+		};
+		D61A2F962135175500165700 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				D69EEF781F68951A002B29E4 /* CollectionDirector.swift */,
@@ -154,14 +163,21 @@
 				D69EEF7C1F689911002B29E4 /* CollectionItem.swift */,
 				D69EEF801F690F70002B29E4 /* CollectionSection.swift */,
 				D6CBBEB01F82F048007CD4A7 /* Helpers.swift */,
-				D638A8DB1F9D258E00B858E9 /* CollectionKit.h */,
-				D638A8DC1F9D258E00B858E9 /* Info.plist */,
 				D6077EF31F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift */,
 				D681B53C1FC4D0E10015A2CF /* CollectionUpdater.swift */,
 				D6ADF7881FDC15B3003A0F41 /* AbstractCollectionSection.swift */,
 				D6D278932029F6A500D2FD68 /* CollectionReusableViewsRegisterer.swift */,
 				D61A2F912134956100165700 /* Protocols.swift */,
 				D61A2F9321349DC200165700 /* Operators.swift */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		D638A8DA1F9D258E00B858E9 /* CollectionKit */ = {
+			isa = PBXGroup;
+			children = (
+				D61A2F962135175500165700 /* Source */,
+				D61A2F952135174400165700 /* Framework */,
 			);
 			path = CollectionKit;
 			sourceTree = "<group>";
