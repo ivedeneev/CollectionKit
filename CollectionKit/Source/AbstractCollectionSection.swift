@@ -38,6 +38,8 @@ public protocol AbstractCollectionSection : class {
     
     func clear()
     func reload()
+    
+    init(items: [AbstractCollectionItem])
 }
 
 extension AbstractCollectionSection {

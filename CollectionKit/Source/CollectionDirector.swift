@@ -17,7 +17,6 @@ import UIKit
  4. автоматическая ширина по ширине экрана
  5. автоматическая регистрация хедеров/футеров, также вынести регистрацию в отдельный класс/метод
  6. logging
- 7. rotation
  8. определение уникальности ячейки/секции
  9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
  */
@@ -25,34 +24,32 @@ import UIKit
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
     public var sections = [AbstractCollectionSection]()
+    ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+    ///Forward scrollView delegae messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
+    
     private weak var collectionView: UICollectionView!
-    private var reuseIdentifiers: Set<String> = []
     private var disableUpdates: Bool = false
     private var deferBatchUpdates: Bool = false
     private lazy var updater = CollectionUpdater(collectionView: self.collectionView)
     private var deferredUpdates: [AbstractCollectionUpdate] = []
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: self.collectionView)
     
-    public init(colletionView: UICollectionView) {
+    public init(colletionView: UICollectionView,
+                sections: [AbstractCollectionSection] = [],
+                shouldUseAutomaticViewRegistration: Bool = true,
+                shouldAdjustSupplementaryViewLayerZPosition: Bool = true) {
         self.collectionView = colletionView
         super.init()
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+        self.shouldUseAutomaticViewRegistration = shouldUseAutomaticViewRegistration
+        self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleReload),
-                                               name: Notification.Name(rawValue: CKReloadNotificationName),
-                                               object: nil)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleInsertOrDelete),
-                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
-                                               object: nil)
-        
+        setupObservers()
     }
     
     deinit {
@@ -63,8 +60,8 @@ open class CollectionDirector: NSObject {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
             log("attempt to remove section not @ director", logLevel: .warning)
             return
-            
         }
+        
         sections.remove(at: index)
         let update = SectionUpdate(index: index, type: .delete)
         deferredUpdates.append(update)
@@ -182,8 +179,8 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //FIXME: crash when deleting last row
-        guard sections.count > indexPath.section, sections[indexPath.section].numberOfItems() > indexPath.row else { return }
+        guard sections.count > indexPath.section,
+            sections[indexPath.section].numberOfItems() > indexPath.row else { return }
         let item = sections[indexPath.section].item(for: indexPath.row)
         item.onEndDisplay?(indexPath, cell)
     }
@@ -205,8 +202,21 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let item = sections[indexPath.section].item(for: indexPath.row)
-        return item.estimatedSize(collectionViewSize: collectionView.bounds.size)
+        let section = sections[indexPath.section]
+        let item = section.item(for: indexPath.row)
+        var size = item.estimatedSize(collectionViewSize: collectionView.bounds.size)
+        let inset = section.insetForSection
+        if item.adjustsWidth {
+            let width = collectionView.bounds.width - (inset.left + inset.right)
+            size.width = width
+        }
+        
+        if item.adjustsHeight {
+            let width = collectionView.bounds.height - (inset.bottom + inset.top)
+            size.width = width
+        }
+        
+        return size
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -215,6 +225,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = sections[section]
+        
         let value = section_.headerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
         return value
     }
@@ -263,6 +274,22 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
 }
 
+
+//MARK:- Private
+extension CollectionDirector {
+    func setupObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleReload),
+                                               name: Notification.Name(rawValue: CKReloadNotificationName),
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleInsertOrDelete),
+                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
+                                               object: nil)
+    }
+}
+
 //MARK:- Insertions
 extension CollectionDirector {
     public func append(section: AbstractCollectionSection) {
@@ -270,6 +297,7 @@ extension CollectionDirector {
         let update = SectionUpdate(index: sections.count - 1, type: .insert)
         deferredUpdates.append(update)
     }
+    
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
@@ -281,6 +309,14 @@ extension CollectionDirector {
         sections.insert(section, at: index)
         let update = SectionUpdate(index: index, type: .insert)
         deferredUpdates.append(update)
+    }
+    
+    public func append(sections: [AbstractCollectionSection]) {
+        self.sections.append(contentsOf: sections)
+        let oldCount = self.sections.count - sections.count
+        let indicies = Array(oldCount..<self.sections.count)
+        let updates = indicies.map { SectionUpdate(index: $0, type: .insert) }
+        deferredUpdates.append(contentsOf: updates)
     }
 }
 
@@ -320,6 +356,7 @@ private extension CollectionDirector {
     }
 }
 
+//MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollDelegate?.scrollViewDidScroll?(scrollView)

@@ -27,23 +27,6 @@ func log(_ message: String, logLevel: LogLevel = .warning) {
     print("CollectionKit: \(logLevel.description.uppercased()): \(message)")
 }
 
-//MARK:- Operators
-public func +=(left: CollectionDirector, right: CollectionSection) {
-    left.append(section: right)
-}
-
-public func +=(left: CollectionSection, right: AbstractCollectionItem) {
-    left.append(item: right)
-}
-
-public func ==(left: AbstractCollectionItem, right: AbstractCollectionItem) -> Bool {
-    return left.identifier == right.identifier
-}
-
-public func ==(lhs: AbstractCollectionSection, rhs: AbstractCollectionSection) -> Bool {
-    return lhs.identifier == rhs.identifier
-}
-
 //MARK:- Notifications
 let CKReloadNotificationName = "com.collection_kit.reload"
 let CKInsertOrDeleteNotificationName = "com.collection_kit.insert_or_delete_item"
@@ -131,52 +114,3 @@ extension Array {
     }
 }
 
-//MARK:- ConfigurableCollectionItem
-public protocol ConfigurableCollectionItem : Reusable {
-    associatedtype T
-    static func estimatedSize(item: T?, collectionViewSize: CGSize) -> CGSize
-    func configure(item: T)
-}
-
-
-//MARK:- ActionableCollectionItem
-//TODO: consider indexpath , item, cell as parameter
-public protocol ActionableCollectionItem {
-    var onSelect: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onDeselect: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
-    var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
-    var onHighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var onUnighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var shouldHighlight: Bool? { get set }
-}
-
-
-//MARK:- AbstractCollectionItem
-public protocol AbstractCollectionItem : AbstractCollectionReusableView, ActionableCollectionItem {
-    var reuseIdentifier: String { get }
-    var identifier: String { get }
-    var cellType: AnyClass { get }
-    func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
-}
-
-//MARK:- AbstractCollectionReusableView
-public protocol AbstractCollectionReusableView {
-    var reuseIdentifier: String { get }
-    var identifier: String { get }
-    func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
-}
-
-//MARK:- AbstractCollectionHeaderFooterItem
-public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableView {
-    var reuseIdentifier: String { get }
-    var identifier: String { get }
-    var viewType: AnyClass { get }
-    var kind: String { get }
-    var onDisplay: (() -> Void)? { get set }
-    var onEndDisplay: (() -> Void)? { get set }
-    func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
-}

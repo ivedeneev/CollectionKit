@@ -10,6 +10,7 @@ import UIKit
 
 //как то различать ячейки и хедеры/футеры
 open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionViewCell {
+    
     open var onSelect: ((_ indexPath: IndexPath) -> Void)?
     open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
     open var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
@@ -17,6 +18,10 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
     open var shouldHighlight: Bool?
+    /// Width of cell = collectionView.width - horizontal section insets
+    open var adjustsWidth: Bool = false
+    /// Height of cell = collectionView.height - vertical section insets
+    open var adjustsHeight: Bool = false
     
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }

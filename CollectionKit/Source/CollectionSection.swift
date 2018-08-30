@@ -9,6 +9,7 @@
 import UIKit
 
 open class CollectionSection : AbstractCollectionSection {
+    
     public let identifier: String = UUID().uuidString
 
     open var items: [AbstractCollectionItem] = []
@@ -20,6 +21,10 @@ open class CollectionSection : AbstractCollectionSection {
     open var lineSpacing: CGFloat = 0
     
     public init() {}
+    
+    public required init(items: [AbstractCollectionItem]) {
+        self.items = items
+    }
     
     open func item(for index: Int) -> AbstractCollectionItem {
         return items[index]
