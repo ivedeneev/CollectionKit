@@ -14,11 +14,8 @@ import UIKit
  1  потестить обновления
  2  потестить с реалмом и кор датой
  3. удаление/добавления хедеры/футеры
- 4. автоматическая ширина по ширине экрана
- 5. автоматическая регистрация хедеров/футеров, также вынести регистрацию в отдельный класс/метод
  6. logging
  8. определение уникальности ячейки/секции
- 9. потестить со сторибордами/ксибами/кастомными reuseIdentifiers
  */
 
 //MARK:- CollectionDirector
@@ -138,7 +135,7 @@ extension CollectionDirector: UICollectionViewDataSource {
         let section = sections[indexPath.section]
 
         switch kind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             guard let header = section.headerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: header.reuseIdentifier, viewClass: header.viewType, kind: kind)
@@ -146,7 +143,7 @@ extension CollectionDirector: UICollectionViewDataSource {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: header.reuseIdentifier, for: indexPath)
             header.configure(headerView)
             return headerView
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             guard let footer = section.footerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: footer.reuseIdentifier, viewClass: footer.viewType, kind: kind)
@@ -246,10 +243,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onDisplay?()
             break
         default:
@@ -262,10 +259,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onEndDisplay?()
             break
         default:
