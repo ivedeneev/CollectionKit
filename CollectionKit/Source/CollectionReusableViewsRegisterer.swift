@@ -30,9 +30,9 @@ final class CollectionReusableViewsRegisterer {
     }
     
     func registerHeaderFooterViewIfNeeded(reuseIdentifier: String, viewClass: AnyClass, kind: String) {
-        if kind == UICollectionView.elementKindSectionHeader && !headersReuseIdentifiers.contains(reuseIdentifier) {
+        if kind == UICollectionElementKindSectionHeader && !headersReuseIdentifiers.contains(reuseIdentifier) {
             headersReuseIdentifiers.insert(reuseIdentifier)
-        } else if kind == UICollectionView.elementKindSectionFooter && !footersReuseIdentifiers.contains(reuseIdentifier) {
+        } else if kind == UICollectionElementKindSectionFooter && !footersReuseIdentifiers.contains(reuseIdentifier) {
             footersReuseIdentifiers.insert(reuseIdentifier)
         }
 

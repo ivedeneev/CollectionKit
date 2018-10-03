@@ -135,7 +135,7 @@ extension CollectionDirector: UICollectionViewDataSource {
         let section = sections[indexPath.section]
 
         switch kind {
-        case UICollectionView.elementKindSectionHeader:
+        case UICollectionElementKindSectionHeader:
             guard let header = section.headerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: header.reuseIdentifier, viewClass: header.viewType, kind: kind)
@@ -143,7 +143,7 @@ extension CollectionDirector: UICollectionViewDataSource {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: header.reuseIdentifier, for: indexPath)
             header.configure(headerView)
             return headerView
-        case UICollectionView.elementKindSectionFooter:
+        case UICollectionElementKindSectionFooter:
             guard let footer = section.footerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: footer.reuseIdentifier, viewClass: footer.viewType, kind: kind)
@@ -243,10 +243,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         switch elementKind {
-        case UICollectionView.elementKindSectionHeader:
+        case UICollectionElementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
             break
-        case UICollectionView.elementKindSectionFooter:
+        case UICollectionElementKindSectionFooter:
             sections[indexPath.section].footerItem?.onDisplay?()
             break
         default:
@@ -259,10 +259,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         switch elementKind {
-        case UICollectionView.elementKindSectionHeader:
+        case UICollectionElementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()
             break
-        case UICollectionView.elementKindSectionFooter:
+        case UICollectionElementKindSectionFooter:
             sections[indexPath.section].footerItem?.onEndDisplay?()
             break
         default:
