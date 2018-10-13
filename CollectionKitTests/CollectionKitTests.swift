@@ -2,13 +2,17 @@
 //  CollectionKitTests.swift
 //  CollectionKitTests
 //
-//  Created by Igor Vedeneev on 28/08/2018.
+//  Created by Igor Vedeneev on 10/12/18.
 //  Copyright © 2018 Igor Vedeneev. All rights reserved.
 //
 
 import XCTest
+import CollectionKit
 
 class CollectionKitTests: XCTestCase {
+    
+    let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+    lazy var director = CollectionDirector(colletionView: collectionView)
     
     override func setUp() {
         super.setUp()
@@ -32,4 +36,50 @@ class CollectionKitTests: XCTestCase {
         }
     }
     
+    func testFillDirector() {
+        
+        let section1 = CollectionSection()
+        section1 += CollectionItem<TestCell>(item: ())
+        section1 += CollectionItem<TestCell>(item: ())
+        director += section1
+        
+        let section2 = CollectionSection()
+        section2 += CollectionItem<TestCell>(item: ())
+        section2 += CollectionItem<TestCell>(item: ())
+        director += section2
+        
+        director.reload()
+        
+        let numberOfSections = collectionView.numberOfSections == 2
+        let numberOfItemsInSection0 = collectionView.numberOfItems(inSection: 0) == 2
+        let numberOfItemsInSection1 = collectionView.numberOfItems(inSection: 1) == 2
+        
+        XCTAssert(numberOfSections && numberOfItemsInSection0 && numberOfItemsInSection1)
+    }
+    
+    func testAppendItem() {
+//        self.director.
+        
+        let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        let director = CollectionDirector(colletionView: collectionView)
+        
+        let section1 = CollectionSection()
+        director += section1
+        director.reload()
+        director.performUpdates(updates: {
+            section1 += CollectionItem<TestCell>(item: ())
+        }) {
+            XCTAssert(collectionView.numberOfItems(inSection: 0) == 1)
+        }
+    }
+}
+
+final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
+    func configure(item: Void) {
+        
+    }
+    
+    static func estimatedSize(item: ()?, collectionViewSize: CGSize) -> CGSize {
+        return CGSize(width: 50, height: 50)
+    }
 }

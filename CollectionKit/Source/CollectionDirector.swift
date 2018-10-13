@@ -87,11 +87,12 @@ open class CollectionDirector: NSObject {
     }
     
     private func commitUpdates(completion: (() -> Void)? = nil) {
-        collectionView.performBatchUpdates({ [unowned self] in
+        collectionView.performBatchUpdates({ [weak self] in
+            guard let `self` = self else { return }
             self.updater.apply(changes: self.deferredUpdates)
-        }) { [unowned self] (finished) in
+        }) { [weak self] (finished) in
             guard finished else { return }
-            self.deferredUpdates.removeAll()
+            self?.deferredUpdates.removeAll()
             completion?()
         }
     }
@@ -107,7 +108,10 @@ open class CollectionDirector: NSObject {
 
 //MARK:- Public
 extension CollectionDirector {
-    
+    public func clear(clearSections: Bool = false) {
+        sections.forEach { $0.clear() }
+        sections.removeAll()
+    }
 }
 
 //MARK:- UICollectionViewDataSource

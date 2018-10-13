@@ -20,7 +20,7 @@ class ViewController: UIViewController {
             navigationController?.navigationBar.prefersLargeTitles = true
         }
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: SectionBackgroundFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray

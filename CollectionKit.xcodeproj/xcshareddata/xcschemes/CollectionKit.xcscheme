@@ -26,14 +26,13 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D69EEF681F6894F5002B29E4"
+               BlueprintIdentifier = "D67569582170B05D009FBAF0"
                BuildableName = "CollectionKitTests.xctest"
                BlueprintName = "CollectionKitTests"
                ReferencedContainer = "container:CollectionKit.xcodeproj">
@@ -43,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D638A8D81F9D258E00B858E9"
-            BuildableName = "CollectionKit.framework"
-            BlueprintName = "CollectionKit"
+            BlueprintIdentifier = "D6077EF51F9FF38600DD8CA6"
+            BuildableName = "Examples.app"
+            BlueprintName = "Examples"
             ReferencedContainer = "container:CollectionKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -56,7 +55,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -67,9 +65,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D638A8D81F9D258E00B858E9"
-            BuildableName = "CollectionKit.framework"
-            BlueprintName = "CollectionKit"
+            BlueprintIdentifier = "D6077EF51F9FF38600DD8CA6"
+            BuildableName = "Examples.app"
+            BlueprintName = "Examples"
             ReferencedContainer = "container:CollectionKit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
