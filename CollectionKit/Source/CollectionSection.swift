@@ -93,6 +93,12 @@ open class CollectionSection : AbstractCollectionSection {
         postReloadNotofication(subject: .section, object: self)
     }
     
+    public func reload(with reloadItems: [AbstractCollectionItem]) {
+        self.items.removeAll()
+        self.items.append(contentsOf: reloadItems)
+        reload()
+    }
+    
     public func clear() {
         let indicies = Array(0..<items.count)
         items.removeAll()

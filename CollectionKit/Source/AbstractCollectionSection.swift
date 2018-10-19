@@ -38,6 +38,7 @@ public protocol AbstractCollectionSection : class {
     
     func clear()
     func reload()
+    func reload(with reloadItems: [AbstractCollectionItem])
     
     init(items: [AbstractCollectionItem])
 }

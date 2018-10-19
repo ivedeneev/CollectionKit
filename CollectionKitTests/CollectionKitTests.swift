@@ -72,6 +72,10 @@ class CollectionKitTests: XCTestCase {
             XCTAssert(collectionView.numberOfItems(inSection: 0) == 1)
         }
     }
+    
+    func testInsertDeleteItems() {
+        
+    }
 }
 
 final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
