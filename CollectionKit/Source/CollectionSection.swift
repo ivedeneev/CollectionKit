@@ -52,6 +52,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func insert(items: [AbstractCollectionItem], at indicies: [Int]) {
+        //TODO: check for correct indicies
         for i in 0..<items.count {
             self.items.insert(items[i], at: indicies[i])
         }
@@ -75,7 +76,8 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func remove(items: [AbstractCollectionItem]) {
-        items.forEach { [unowned self] (item) in
+        items.forEach { [weak self] (item) in
+            guard let `self` = self else { return }
             guard let index = self.items.index(where: { $0.identifier == item.identifier }) else {
                 log("Attempt to delete item , which is not contained at section", logLevel: .error)
                 return

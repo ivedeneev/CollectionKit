@@ -26,21 +26,26 @@ final class CollectionUpdater {
     }
     
     func apply(changes: [AbstractCollectionUpdate]) {
-        changes.forEach { [unowned self] (change) in
+        changes.forEach { [weak self] (change) in
+            guard let `self` = self else { return }
             self.apply(change: change)
         }
     }
     
     func handleItemUpdate(update: ItemUpdate) {
+        let indexPaths = update.indexPaths.filter { [weak self] ip -> Bool in
+            guard let `self` = self else { return false }
+             return self.collectionView.isValidIndexPath(ip)
+        }
         switch update.type {
         case .reload:
-            collectionView.reloadItems(at: update.indexPaths)
+            collectionView.reloadItems(at: indexPaths)
             break
         case .insert:
-            collectionView.insertItems(at: update.indexPaths)
+            collectionView.insertItems(at: indexPaths)
             break
         case .delete:
-            collectionView.deleteItems(at: update.indexPaths)
+            collectionView.deleteItems(at: indexPaths)
             break
         }
     }

@@ -75,6 +75,14 @@ open class CollectionDirector: NSObject {
     public func reload() {
         collectionView.reloadData()
     }
+    
+//    public func append(sections: [AbstractCollectionSection]) {
+//        
+//    }
+//    
+//    public func remove(sections: [AbstractCollectionSection]) {
+//        
+//    }
 
     public func setNeedsUpdate() {
         self.collectionView.performBatchUpdates({}, completion: nil)
@@ -89,6 +97,7 @@ open class CollectionDirector: NSObject {
     private func commitUpdates(completion: (() -> Void)? = nil) {
         collectionView.performBatchUpdates({ [weak self] in
             guard let `self` = self else { return }
+            self.deferredUpdates.sort(by: { $0.type.rawValue < $1.type.rawValue }) // process deletions before othre operations
             self.updater.apply(changes: self.deferredUpdates)
         }) { [weak self] (finished) in
             guard finished else { return }
@@ -364,4 +373,20 @@ extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollDelegate?.scrollViewDidScroll?(scrollView)
     }
+}
+
+extension UICollectionView {
+    
+    func isValidIndexPath(_ indexPath: IndexPath) -> Bool {
+        if indexPath.section >= numberOfSections {
+            return false
+        }
+        
+        if indexPath.row >= numberOfItems(inSection: indexPath.section) {
+            return false
+        }
+        
+        return true
+    }
+    
 }

@@ -53,10 +53,10 @@ func postInsertOrDeleteItemNotification(section: AbstractCollectionSection, indi
 
 
 //MARK:- Update models
-enum UpdateActionType {
-    case insert
-    case delete
-    case reload
+enum UpdateActionType: Int {
+    case delete = 0
+    case insert = 1
+    case reload = 2
 }
 
 enum UpdateSubject : String {
@@ -109,6 +109,10 @@ protocol AbstractCollectionUpdate {
 extension Array {
     mutating func remove(at indexes: [Int]) {
         for index in indexes.sorted(by: >) {
+            guard indices.contains(index) else {
+                log("attemt to delete item with non-exsisting index")
+                return
+            }
             remove(at: index)
         }
     }
