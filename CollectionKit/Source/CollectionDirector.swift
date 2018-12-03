@@ -257,6 +257,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
         case UICollectionElementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
@@ -273,6 +274,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+        guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
         case UICollectionElementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()

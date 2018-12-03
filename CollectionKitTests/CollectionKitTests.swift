@@ -16,7 +16,6 @@ class CollectionKitTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
@@ -37,6 +36,8 @@ class CollectionKitTests: XCTestCase {
     }
     
     func testFillDirector() {
+        director.clear()
+        director.reload()
         
         let section1 = CollectionSection()
         section1 += CollectionItem<TestCell>(item: ())
@@ -53,6 +54,7 @@ class CollectionKitTests: XCTestCase {
         let numberOfSections = collectionView.numberOfSections == 2
         let numberOfItemsInSection0 = collectionView.numberOfItems(inSection: 0) == 2
         let numberOfItemsInSection1 = collectionView.numberOfItems(inSection: 1) == 2
+        print(numberOfSections, numberOfItemsInSection0, numberOfItemsInSection1)
         
         XCTAssert(numberOfSections && numberOfItemsInSection0 && numberOfItemsInSection1)
     }

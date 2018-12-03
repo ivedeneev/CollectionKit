@@ -35,7 +35,7 @@ final class CollectionUpdater {
     func handleItemUpdate(update: ItemUpdate) {
         let indexPaths = update.indexPaths.filter { [weak self] ip -> Bool in
             guard let `self` = self else { return false }
-             return self.collectionView.isValidIndexPath(ip)
+             return self.collectionView.isValidIndexPath(ip) || update.type == UpdateActionType.insert
         }
         switch update.type {
         case .reload:
