@@ -28,8 +28,8 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public let identifier: String = UUID().uuidString
     
-    public func estimatedSize(collectionViewSize: CGSize) -> CGSize {
-        return CellType.estimatedSize(item: self.item, collectionViewSize: collectionViewSize)
+    public func estimatedSize(boundingSize: CGSize) -> CGSize {
+        return CellType.estimatedSize(item: self.item, collectionViewSize: boundingSize)
     }
     
     public var cellType: AnyClass {

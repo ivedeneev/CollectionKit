@@ -31,8 +31,8 @@ open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: Abs
         (view as? ViewType)?.configure(item: item)
     }
     
-    public func estimatedSize(collectionViewSize: CGSize) -> CGSize {
-        return ViewType.estimatedSize(item: self.item, collectionViewSize: collectionViewSize)
+    public func estimatedSize(boundingSize: CGSize) -> CGSize {
+        return ViewType.estimatedSize(item: self.item, collectionViewSize: boundingSize)
     }
     
     @discardableResult

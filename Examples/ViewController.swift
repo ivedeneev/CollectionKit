@@ -38,15 +38,7 @@ class ViewController: UIViewController {
         let vm = HeaderViewModel()
         vm.title = "Показать все"
         vm.handler = { [unowned self] in
-//            self.section.isExpanded = !self.section.isExpanded
-//            self.director.performUpdates {
-//                if self.section.isExpanded {
-////                    self.section.remove
-//                }
-////                self.section.reload()
-////                self.section.inser
-//            }
-//            self.director.setNeedsUpdate()
+
         }
         let header = CollectionHeaderFooterView<Header>(item: vm, kind: UICollectionElementKindSectionHeader)
         header.onDisplay = {
@@ -109,6 +101,7 @@ class ViewController: UIViewController {
             section.minimumInterItemSpacing = 2
             section.insetForSection = UIEdgeInsetsMake(20, 20, 20, 20)
             section.lineSpacing = 1
+            
             for _ in 0..<4 {
                 let row = CollectionItem<CollectionCell>(item: "Inserted Section".uppercased())
                     .onSelect({ (_) in
@@ -117,7 +110,7 @@ class ViewController: UIViewController {
                     .onDisplay({ (_,_) in
                         print("i was displayed")
                     })
-                
+                row.adjustsWidth = true
                 section += row
             }
             self.director.performUpdates(updates:  { [unowned self] in

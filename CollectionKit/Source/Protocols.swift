@@ -37,7 +37,7 @@ public protocol AbstractCollectionItem : AbstractCollectionReusableView, Actiona
     var adjustsWidth: Bool { get set }
     var adjustsHeight: Bool { get set }
     func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize) -> CGSize
 }
 
 //MARK:- AbstractCollectionReusableView
@@ -45,7 +45,7 @@ public protocol AbstractCollectionReusableView {
     var reuseIdentifier: String { get }
     var identifier: String { get }
     func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize) -> CGSize
 }
 
 //MARK:- AbstractCollectionHeaderFooterItem
@@ -57,5 +57,5 @@ public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableV
     var onDisplay: (() -> Void)? { get set }
     var onEndDisplay: (() -> Void)? { get set }
     func configure(_: UICollectionReusableView)
-    func estimatedSize(collectionViewSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize) -> CGSize
 }

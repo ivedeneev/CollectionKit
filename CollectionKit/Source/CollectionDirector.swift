@@ -214,18 +214,18 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let section = sections[indexPath.section]
         let item = section.item(for: indexPath.row)
-        var size = item.estimatedSize(collectionViewSize: collectionView.bounds.size)
+        var size = item.estimatedSize(boundingSize: collectionView.bounds.size)
+        size.width -= (collectionView.contentInset.left + collectionView.contentInset.right)
+        size.height -= (collectionView.contentInset.top + collectionView.contentInset.bottom)
         let inset = section.insetForSection
         if item.adjustsWidth {
-            let paddings = inset.left + inset.right + collectionView.contentInset.left + collectionView.contentInset.right
-            let width = collectionView.bounds.width - paddings
-            size.width = width
+            let paddings = inset.left + inset.right
+            size.width -= paddings
         }
         
         if item.adjustsHeight {
-            let paddings = inset.top + inset.bottom + collectionView.contentInset.top + collectionView.contentInset.bottom
-            let width = collectionView.bounds.height - paddings
-            size.width = width
+            let paddings = inset.top + inset.bottom
+            size.width -= paddings
         }
         
         return size
@@ -238,13 +238,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = sections[section]
         
-        let value = section_.headerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
+        let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
         return value
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         let section_ = sections[section]        
-        let value = section_.footerItem?.estimatedSize(collectionViewSize: collectionView.bounds.size) ?? .zero
+        let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
         return value
     }
     
@@ -274,6 +274,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+        guard indexPath.count > 0 else { return }
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
         case UICollectionElementKindSectionHeader:
