@@ -11,6 +11,7 @@ import Foundation
 //todo: добавть equals и перенести все методы по работе с секцией в протокол, добавить в ридми про абстрактные секции
 public protocol AbstractCollectionSection : class {
     var identifier: String { get }
+    var idsBeforeUpdate: [String] { get }
     var headerItem: AbstractCollectionHeaderFooterItem? { get set }
     var footerItem: AbstractCollectionHeaderFooterItem? { get set }
     
@@ -36,9 +37,12 @@ public protocol AbstractCollectionSection : class {
     func remove(items: [AbstractCollectionItem])
     func remove(at indicies: [Int])
     
-    func clear()
+    func removeAll()
     func reload()
     func reload(with reloadItems: [AbstractCollectionItem])
+    
+    func resetLastUpdatesIds()
+    func currentItemIds() -> [String]
     
     init(items: [AbstractCollectionItem])
 }
@@ -47,6 +51,6 @@ extension AbstractCollectionSection {
     public var isEmpty: Bool { return numberOfItems() == 0 }
     
     public func reload() {
-        postReloadNotofication(subject: .section, object: self)
+//        postReloadNotofication(subject: .section, object: self)
     }
 }

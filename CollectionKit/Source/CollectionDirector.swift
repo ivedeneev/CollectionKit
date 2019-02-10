@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import DeepDiff
 
 /*
  1  потестить обновления
@@ -29,16 +29,20 @@ open class CollectionDirector: NSObject {
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
-    private var disableUpdates: Bool = false
-    private var deferBatchUpdates: Bool = false
-    private lazy var updater = CollectionUpdater(collectionView: self.collectionView)
-    private var deferredUpdates: [AbstractCollectionUpdate] = []
-    private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: self.collectionView)
+//    private var disableUpdates: Bool = false
+//    private var deferBatchUpdates: Bool = false
+    private lazy var updater = CollectionUpdater(collectionView: collectionView)
+//    private var deferredUpdates: [AbstractCollectionUpdate] = []
+//    private var test sectionChanges
+    private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
+    private var sectionIds: [String] = []
     
     public init(colletionView: UICollectionView,
                 sections: [AbstractCollectionSection] = [],
                 shouldUseAutomaticViewRegistration: Bool = true,
-                shouldAdjustSupplementaryViewLayerZPosition: Bool = true) {
+                shouldAdjustSupplementaryViewLayerZPosition: Bool = true)
+    {
+        
         self.collectionView = colletionView
         super.init()
         self.collectionView.dataSource = self
@@ -46,12 +50,12 @@ open class CollectionDirector: NSObject {
         self.shouldUseAutomaticViewRegistration = shouldUseAutomaticViewRegistration
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
         
-        setupObservers()
+//        setupObservers()
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
+//    deinit {
+//        NotificationCenter.default.removeObserver(self)
+//    }
     
     public func remove(section: AbstractCollectionSection) {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
@@ -60,20 +64,21 @@ open class CollectionDirector: NSObject {
         }
         
         sections.remove(at: index)
-        let update = SectionUpdate(index: index, type: .delete)
-        deferredUpdates.append(update)
+//        let update = SectionUpdate(index: index, type: .delete)
+//        deferredUpdates.append(update)
     }
     
     public func removeSection(at index: Int) {
         sections.remove(at: index)
-        let update = SectionUpdate(index: index, type: .delete)
-        deferredUpdates.append(update)
+//        let update = SectionUpdate(index: index, type: .delete)
+//        deferredUpdates.append(update)
     }
     
     //todo: add/remove array of sections
     
     public func reload() {
         collectionView.reloadData()
+        sections.forEach { $0.resetLastUpdatesIds() }
     }
     
 //    public func append(sections: [AbstractCollectionSection]) {
@@ -88,21 +93,65 @@ open class CollectionDirector: NSObject {
         self.collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    public func performUpdates(updates: (() -> Void), completion: (() -> Void)? = nil) {
-        deferredUpdates.removeAll()
-        updates()
-        commitUpdates(completion: completion)
-    }
+//    public func performUpdates(updates: (() -> Void), completion: (() -> Void)? = nil) {
+//        deferredUpdates.removeAll()
+//        updates()
+//        commitUpdates(completion: completion)
+//    }
     
-    private func commitUpdates(completion: (() -> Void)? = nil) {
-        collectionView.performBatchUpdates({ [weak self] in
-            guard let `self` = self else { return }
-            self.deferredUpdates.sort(by: { $0.type.rawValue < $1.type.rawValue }) // process deletions before othre operations
-            self.updater.apply(changes: self.deferredUpdates)
-        }) { [weak self] (finished) in
-            guard finished else { return }
-            self?.deferredUpdates.removeAll()
+    public func testUpdate(completion: (() -> Void)? = nil) {
+        //todo: section updates
+        
+        /////////
+        var deletes: [(Delete<String>, IndexPath)] = []
+        var inserts: [(Insert<String>, IndexPath)] = []
+        var reloads: [(Replace<String>, IndexPath)] = []
+        var moves: [(IndexPath, IndexPath)] = []
+        
+        sections.enumerated().forEach { (idx, section) in
+            let diff_ = diff(old: section.idsBeforeUpdate, new: section.currentItemIds())
+            let d = diff_.compactMap { $0.delete }.map { ($0, IndexPath(row: $0.index, section: idx)) }
+            let i = diff_.compactMap { $0.insert }.map { ($0, IndexPath(row: $0.index, section: idx)) }
+            let r = diff_.compactMap { $0.replace }.map { ($0, IndexPath(row: $0.index, section: idx)) }
+            let m = diff_.compactMap { $0.move }.map { (IndexPath(row: $0.fromIndex, section: idx), IndexPath(row: $0.toIndex, section: idx)) }
+            
+            deletes.append(contentsOf: d)
+            inserts.append(contentsOf: i)
+            reloads.append(contentsOf: r)
+            moves.append(contentsOf: m)
+        }
+        
+        deletes.enumerated().forEach { idx, del in
+            let fromIp = del.1
+            if let ins = inserts.firstIndex(where: { $0.0.item == del.0.item }) {
+                let toIp = inserts[ins].1
+                deletes.remove(at: idx)
+                inserts.remove(at: ins)
+                moves.append((fromIp, toIp))
+            }
+        }
+        
+        collectionView.performBatchUpdates({ [unowned self] in
+            deletes.map { $0.0 }.executeIfPresent { _ in
+                self.collectionView.deleteItems(at: deletes.map { $1 })
+            }
+            
+            inserts.map { $0.0 }.executeIfPresent { _ in
+                self.collectionView.insertItems(at: inserts.map { $1 })
+            }
+            
+            moves.executeIfPresent {
+                $0.forEach { move in
+                    self.collectionView.moveItem(at: move.0, to: move.1)
+                }
+            }
+        }) { [unowned self] _ in
+            self.sections.forEach { $0.resetLastUpdatesIds() }
             completion?()
+        }
+        
+        reloads.executeIfPresent { [unowned self] _ in
+            self.collectionView.reloadItems(at: reloads.map { $1 })
         }
     }
     
@@ -117,8 +166,11 @@ open class CollectionDirector: NSObject {
 
 //MARK:- Public
 extension CollectionDirector {
-    public func clear(clearSections: Bool = false) {
-        sections.forEach { $0.clear() }
+    public func removeAll(clearSections: Bool = false) {
+        if clearSections {
+            sections.forEach { $0.removeAll() }
+        }
+        
         sections.removeAll()
     }
 }
@@ -291,85 +343,85 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
 
 
 //MARK:- Private
-extension CollectionDirector {
-    func setupObservers() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleReload),
-                                               name: Notification.Name(rawValue: CKReloadNotificationName),
-                                               object: nil)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleInsertOrDelete),
-                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
-                                               object: nil)
-    }
-}
+//extension CollectionDirector {
+//    func setupObservers() {
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(handleReload),
+//                                               name: Notification.Name(rawValue: CKReloadNotificationName),
+//                                               object: nil)
+//
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(handleInsertOrDelete),
+//                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
+//                                               object: nil)
+//    }
+//}
 
 //MARK:- Insertions
 extension CollectionDirector {
     public func append(section: AbstractCollectionSection) {
         sections.append(section)
-        let update = SectionUpdate(index: sections.count - 1, type: .insert)
-        deferredUpdates.append(update)
+//        let update = SectionUpdate(index: sections.count - 1, type: .insert)
+//        deferredUpdates.append(update)
     }
     
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
-        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
-        deferredUpdates.append(update)
+//        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
+//        deferredUpdates.append(update)
     }
     
     public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
-        let update = SectionUpdate(index: index, type: .insert)
-        deferredUpdates.append(update)
+//        let update = SectionUpdate(index: index, type: .insert)
+//        deferredUpdates.append(update)
     }
     
     public func append(sections: [AbstractCollectionSection]) {
         self.sections.append(contentsOf: sections)
-        let oldCount = self.sections.count - sections.count
-        let indicies = Array(oldCount..<self.sections.count)
-        let updates = indicies.map { SectionUpdate(index: $0, type: .insert) }
-        deferredUpdates.append(contentsOf: updates)
+//        let oldCount = self.sections.count - sections.count
+//        let indicies = Array(oldCount..<self.sections.count)
+//        let updates = indicies.map { SectionUpdate(index: $0, type: .insert) }
+//        deferredUpdates.append(contentsOf: updates)
     }
 }
 
 //MARK:- Updates handling
-private extension CollectionDirector {
-    @objc private func handleReload(notification: Notification) {
-        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
-        switch subject {
-        case .item:
-            guard let item = notification.object as? AbstractCollectionItem else { return }
-            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
-            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
-            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-            let update = ItemUpdate(indexPath: indexPath, type: .reload)
-            deferredUpdates.append(update)
-            break
-        case .section:
-            guard let section = notification.object as? AbstractCollectionSection,
-                let index = sections.index(where: { $0 == section }) else { return }
-            
-            let update = SectionUpdate(index: index, type: .reload)
-            deferredUpdates.append(update)
-            break
-        }
-    }
-    
-    @objc private func handleInsertOrDelete(notification: Notification) {
-        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
-            let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
-            let itemIndicies = notification.userInfo?[CKItemIndexKey] as? [Int] else { return }
-        
-        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
-        
-        let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
-        let update = ItemUpdate(indexPaths: indexPaths, type: action)
-        deferredUpdates.append(update)
-    }
-}
+//private extension CollectionDirector {
+//    @objc private func handleReload(notification: Notification) {
+//        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
+//        switch subject {
+//        case .item:
+//            guard let item = notification.object as? AbstractCollectionItem else { return }
+//            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
+//            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
+//            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+//            let update = ItemUpdate(indexPath: indexPath, type: .reload)
+//            deferredUpdates.append(update)
+//            break
+//        case .section:
+//            guard let section = notification.object as? AbstractCollectionSection,
+//                let index = sections.index(where: { $0 == section }) else { return }
+//
+//            let update = SectionUpdate(index: index, type: .reload)
+//            deferredUpdates.append(update)
+//            break
+//        }
+//    }
+//
+//    @objc private func handleInsertOrDelete(notification: Notification) {
+//        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
+//            let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
+//            let itemIndicies = notification.userInfo?[CKItemIndexKey] as? [Int] else { return }
+//
+//        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
+//
+//        let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
+//        let update = ItemUpdate(indexPaths: indexPaths, type: action)
+//        deferredUpdates.append(update)
+//    }
+//}
 
 //MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {

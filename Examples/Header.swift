@@ -9,7 +9,13 @@
 import UIKit
 import CollectionKit
 
-class HeaderViewModel {
+class HeaderViewModel: Hashable {
+    static func == (lhs: HeaderViewModel, rhs: HeaderViewModel) -> Bool {
+        return lhs.title == rhs.title
+    }
+    
+    public var hashValue: Int { return title.hashValue }
+    
     var title: String?
     var handler: (() ->Void)?
 }

@@ -26,7 +26,9 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     
-    public let identifier: String = UUID().uuidString
+    public var identifier: String {
+        return reuseIdentifier + "_" + "\(item.hashValue)"
+    }
     
     public func estimatedSize(boundingSize: CGSize) -> CGSize {
         return CellType.estimatedSize(item: self.item, collectionViewSize: boundingSize)
@@ -82,6 +84,18 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     @discardableResult
     public func onUnighlight(_ block:@escaping (_ indexPath: IndexPath) -> Void) -> Self {
         self.onUnighlight = block
+        return self
+    }
+    
+    @discardableResult
+    public func adjustsWidth(_ adjusts: Bool) -> Self {
+        self.adjustsWidth = adjusts
+        return self
+    }
+    
+    @discardableResult
+    public func adjustsHeight(_ adjusts: Bool) -> Self {
+        self.adjustsHeight = adjusts
         return self
     }
 }

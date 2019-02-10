@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import DeepDiff
 
 open class CollectionSection : AbstractCollectionSection {
-    
+
     public let identifier: String = UUID().uuidString
 
     open var items: [AbstractCollectionItem] = []
@@ -19,6 +20,10 @@ open class CollectionSection : AbstractCollectionSection {
     open var insetForSection: UIEdgeInsets = .zero
     open var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
     open var lineSpacing: CGFloat = 0
+    
+    /// if itemsBeforeUpdate != nil this means update in progress
+    /// !!!! MUST be set to nil after all updates
+    public internal(set) var idsBeforeUpdate: [String] = []
     
     public init() {}
     
@@ -33,15 +38,31 @@ open class CollectionSection : AbstractCollectionSection {
     open func numberOfItems() -> Int {
         return items.count
     }
+    
+    open func resetLastUpdatesIds() {
+        idsBeforeUpdate = items.map { $0.identifier }
+    }
+    
+    open func currentItemIds() -> [String] {
+        return items.map { $0.identifier }
+    }
 
     open func append(item: AbstractCollectionItem) {
+//        if itemsBeforeUpdate.isEmpty {
+//            itemsBeforeUpdate = items
+//        }
+//
+//        let identifiersBeforeUpdate = itemsBeforeUpdate.map { $0.identifier }
         items.append(item)
-        postInsertOrDeleteItemNotification(section: self, indicies: [ items.count - 1 ], action: .insert)
+//        let t2 = items.map { $0.identifier }
+//        let diff_ = diff(old: identifiersBeforeUpdate, new: t2)
+//        pendingChanges = diff_
+//        postInsertOrDeleteItemNotification(section: self, indicies: [ items.count - 1 ], action: .insert)
     }
 
     public func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
-        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .insert)
+//        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .insert)
     }
     
     public func append(items: [AbstractCollectionItem]) {
@@ -56,14 +77,14 @@ open class CollectionSection : AbstractCollectionSection {
         for i in 0..<items.count {
             self.items.insert(items[i], at: indicies[i])
         }
-        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
+//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
     }
     
     public func remove(at index: Int) {
         //todo: consider more correct condition
         guard index < items.count else { return }
         items.remove(at: index)
-        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .delete)
+//        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .delete)
     }
     
     public func remove(item: AbstractCollectionItem) {
@@ -88,7 +109,7 @@ open class CollectionSection : AbstractCollectionSection {
     
     public func remove(at indicies: [Int]) {
         items.remove(at: indicies)
-        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
+//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
     open func reload() {
@@ -101,10 +122,10 @@ open class CollectionSection : AbstractCollectionSection {
         reload()
     }
     
-    public func clear() {
-        let indicies = Array(0..<items.count)
+    public func removeAll() {
+//        let indicies = Array(0..<items.count)
         items.removeAll()
-        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
+//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
     public func contains(item: AbstractCollectionItem) -> Bool {
