@@ -16,6 +16,7 @@
 		D6077F001F9FF38600DD8CA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D638A8FD1F9D25AF00B858E9 /* Assets.xcassets */; };
 		D6077F021F9FF38600DD8CA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D69EEF5C1F6894F5002B29E4 /* Main.storyboard */; };
 		D6077F041F9FF38600DD8CA6 /* CollectionKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D638A8D91F9D258E00B858E9 /* CollectionKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D60811B2221206AD004C2CD8 /* UpdateSectionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */; };
 		D61985101FCB201E00D6BCB1 /* CellFromXIB.swift in Sources */ = {isa = PBXBuildFile; fileRef = D619850F1FCB201E00D6BCB1 /* CellFromXIB.swift */; };
 		D61985121FCB235C00D6BCB1 /* CellFromXIB.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61985111FCB235C00D6BCB1 /* CellFromXIB.xib */; };
 		D61A2F922134956100165700 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61A2F912134956100165700 /* Protocols.swift */; };
@@ -133,6 +134,7 @@
 /* Begin PBXFileReference section */
 		D6077EF31F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionHeaderFooterView.swift; sourceTree = "<group>"; };
 		D6077F081F9FF38600DD8CA6 /* Examples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Examples.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSectionsViewController.swift; sourceTree = "<group>"; };
 		D619850F1FCB201E00D6BCB1 /* CellFromXIB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellFromXIB.swift; sourceTree = "<group>"; };
 		D61985111FCB235C00D6BCB1 /* CellFromXIB.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CellFromXIB.xib; sourceTree = "<group>"; };
 		D61A2F912134956100165700 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				D61985111FCB235C00D6BCB1 /* CellFromXIB.xib */,
 				D66BFA941FD3648E0095EC38 /* Header.swift */,
 				D6DDE6641FDD55F000F457D4 /* ExpandableSection.swift */,
+				D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */,
 			);
 			path = Examples;
 			sourceTree = "<group>";
@@ -502,6 +505,7 @@
 				D66BFA951FD3648E0095EC38 /* Header.swift in Sources */,
 				D6077EF91F9FF38600DD8CA6 /* ViewController.swift in Sources */,
 				D6077EFA1F9FF38600DD8CA6 /* AppDelegate.swift in Sources */,
+				D60811B2221206AD004C2CD8 /* UpdateSectionsViewController.swift in Sources */,
 				D6BA76D02170E9FC005C0849 /* SectionBackgroundFlowLayout.swift in Sources */,
 				D6DDE6651FDD55F000F457D4 /* ExpandableSection.swift in Sources */,
 				D6077EFB1F9FF38600DD8CA6 /* CollectionCell.swift in Sources */,

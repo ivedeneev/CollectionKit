@@ -29,11 +29,7 @@ open class CollectionDirector: NSObject {
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
-//    private var disableUpdates: Bool = false
-//    private var deferBatchUpdates: Bool = false
     private lazy var updater = CollectionUpdater(collectionView: collectionView)
-//    private var deferredUpdates: [AbstractCollectionUpdate] = []
-//    private var test sectionChanges
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     private var sectionIds: [String] = []
     
@@ -49,13 +45,7 @@ open class CollectionDirector: NSObject {
         self.collectionView.delegate = self
         self.shouldUseAutomaticViewRegistration = shouldUseAutomaticViewRegistration
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
-        
-//        setupObservers()
     }
-    
-//    deinit {
-//        NotificationCenter.default.removeObserver(self)
-//    }
     
     public func remove(section: AbstractCollectionSection) {
         guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
@@ -64,21 +54,22 @@ open class CollectionDirector: NSObject {
         }
         
         sections.remove(at: index)
-//        let update = SectionUpdate(index: index, type: .delete)
-//        deferredUpdates.append(update)
     }
     
     public func removeSection(at index: Int) {
         sections.remove(at: index)
-//        let update = SectionUpdate(index: index, type: .delete)
-//        deferredUpdates.append(update)
     }
     
     //todo: add/remove array of sections
     
     public func reload() {
         collectionView.reloadData()
+        updateSectionIds()
         sections.forEach { $0.resetLastUpdatesIds() }
+    }
+    
+    public func contains(section: AbstractCollectionSection) -> Bool {
+        return sections.contains(where: { $0.identifier == section.identifier })
     }
     
 //    public func append(sections: [AbstractCollectionSection]) {
@@ -90,17 +81,18 @@ open class CollectionDirector: NSObject {
 //    }
 
     public func setNeedsUpdate() {
-        self.collectionView.performBatchUpdates({}, completion: nil)
+        collectionView.performBatchUpdates({}, completion: nil)
     }
     
-//    public func performUpdates(updates: (() -> Void), completion: (() -> Void)? = nil) {
-//        deferredUpdates.removeAll()
-//        updates()
-//        commitUpdates(completion: completion)
-//    }
+    private func updateSectionIds() {
+        sectionIds = sections.map { $0.identifier }
+    }
     
     public func testUpdate(completion: (() -> Void)? = nil) {
         //todo: section updates
+        let newIds = sections.map { $0.identifier }
+        let oldIds = sectionIds
+        let sectionDiff = diff(old: oldIds, new: newIds)
         
         /////////
         var deletes: [(Delete<String>, IndexPath)] = []
@@ -121,18 +113,23 @@ open class CollectionDirector: NSObject {
             moves.append(contentsOf: m)
         }
         
-        deletes.enumerated().forEach { idx, del in
+        deletes.forEach { del in
+            guard let idx = deletes.firstIndex(where: { $0.0.item == del.0.item }),
+            let ins = inserts.firstIndex(where: { $0.0.item == del.0.item }) else { return }
+            
+            let toIp = inserts[ins].1
             let fromIp = del.1
-            if let ins = inserts.firstIndex(where: { $0.0.item == del.0.item }) {
-                let toIp = inserts[ins].1
-                deletes.remove(at: idx)
-                inserts.remove(at: ins)
-                moves.append((fromIp, toIp))
-            }
+            deletes.remove(at: idx)
+            inserts.remove(at: ins)
+            moves.append((fromIp, toIp))
         }
         
+        let hasSectionChanges = sectionDiff.isEmpty
+        
         collectionView.performBatchUpdates({ [unowned self] in
+            print("performBatchUpdates")
             deletes.map { $0.0 }.executeIfPresent { _ in
+//                print(self.collectionView.numberOfSections, self.collectionView.numberOfItems(inSection: 1))
                 self.collectionView.deleteItems(at: deletes.map { $1 })
             }
             
@@ -142,10 +139,30 @@ open class CollectionDirector: NSObject {
             
             moves.executeIfPresent {
                 $0.forEach { move in
-                    self.collectionView.moveItem(at: move.0, to: move.1)
+                    let from = move.0
+                    let to = move.1
+                    self.collectionView.moveItem(at: from, to: to)
                 }
             }
+            
+            let v = self.collectionView.dataSource!.numberOfSections!(in: self.collectionView)
+            let sectionDeletes = sectionDiff.compactMap { $0.delete?.index }
+            sectionDeletes.executeIfPresent({ (deletes) in
+                self.collectionView.deleteSections(IndexSet(deletes))
+            })
+            
+            let sectionInserts = sectionDiff.compactMap { $0.insert?.index }
+            sectionInserts.executeIfPresent({ (inserts) in
+                self.collectionView.insertSections(IndexSet(inserts))
+            })
+            
+            let sectionReloads = sectionDiff.compactMap { $0.replace?.index }
+            sectionReloads.executeIfPresent({ (reloads) in
+                self.collectionView.reloadSections(IndexSet(reloads))
+            })
+            
         }) { [unowned self] _ in
+            self.updateSectionIds()
             self.sections.forEach { $0.resetLastUpdatesIds() }
             completion?()
         }
@@ -178,10 +195,12 @@ extension CollectionDirector {
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
+        print("numberOfSections(in")
         return sections.count
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("numberOfItemsInSection")
         return sections[section].numberOfItems()
     }
     
@@ -341,87 +360,25 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
 }
 
-
-//MARK:- Private
-//extension CollectionDirector {
-//    func setupObservers() {
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(handleReload),
-//                                               name: Notification.Name(rawValue: CKReloadNotificationName),
-//                                               object: nil)
-//
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(handleInsertOrDelete),
-//                                               name: Notification.Name(rawValue: CKInsertOrDeleteNotificationName),
-//                                               object: nil)
-//    }
-//}
-
 //MARK:- Insertions
 extension CollectionDirector {
     public func append(section: AbstractCollectionSection) {
         sections.append(section)
-//        let update = SectionUpdate(index: sections.count - 1, type: .insert)
-//        deferredUpdates.append(update)
     }
     
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
         guard let afterIndex = sections.index(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
-//        let update = SectionUpdate(index: afterIndex + 1, type: .insert)
-//        deferredUpdates.append(update)
     }
     
     public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
-//        let update = SectionUpdate(index: index, type: .insert)
-//        deferredUpdates.append(update)
     }
     
     public func append(sections: [AbstractCollectionSection]) {
         self.sections.append(contentsOf: sections)
-//        let oldCount = self.sections.count - sections.count
-//        let indicies = Array(oldCount..<self.sections.count)
-//        let updates = indicies.map { SectionUpdate(index: $0, type: .insert) }
-//        deferredUpdates.append(contentsOf: updates)
     }
 }
-
-//MARK:- Updates handling
-//private extension CollectionDirector {
-//    @objc private func handleReload(notification: Notification) {
-//        guard let subject = notification.userInfo?[CKUpdateSubjectKey] as? UpdateSubject else { return }
-//        switch subject {
-//        case .item:
-//            guard let item = notification.object as? AbstractCollectionItem else { return }
-//            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
-//            guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
-//            let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-//            let update = ItemUpdate(indexPath: indexPath, type: .reload)
-//            deferredUpdates.append(update)
-//            break
-//        case .section:
-//            guard let section = notification.object as? AbstractCollectionSection,
-//                let index = sections.index(where: { $0 == section }) else { return }
-//
-//            let update = SectionUpdate(index: index, type: .reload)
-//            deferredUpdates.append(update)
-//            break
-//        }
-//    }
-//
-//    @objc private func handleInsertOrDelete(notification: Notification) {
-//        guard let action = notification.userInfo?[CKUpdateActionKey] as? UpdateActionType,
-//            let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
-//            let itemIndicies = notification.userInfo?[CKItemIndexKey] as? [Int] else { return }
-//
-//        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
-//
-//        let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
-//        let update = ItemUpdate(indexPaths: indexPaths, type: action)
-//        deferredUpdates.append(update)
-//    }
-//}
 
 //MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {

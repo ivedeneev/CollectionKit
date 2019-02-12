@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,15 +20,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="agj-Fx-G4N">
-                        <rect key="frame" x="20" y="25" width="52" height="55"/>
+                        <rect key="frame" x="16" y="8" width="84" height="89"/>
                         <color key="backgroundColor" red="1" green="0.42189825240000001" blue="0.47111650760000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="55" id="Qvs-3m-zRT"/>
                             <constraint firstAttribute="width" secondItem="agj-Fx-G4N" secondAttribute="height" multiplier="52:55" id="jHG-oC-Mni"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cell from XIB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M8C-02-wz7">
-                        <rect key="frame" x="92" y="42.5" width="184" height="21"/>
+                        <rect key="frame" x="120" y="42" width="156" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -41,8 +39,10 @@
                 <constraint firstItem="9k3-3I-Nxf" firstAttribute="trailing" secondItem="M8C-02-wz7" secondAttribute="trailing" constant="20" id="5pH-Qe-VvV"/>
                 <constraint firstItem="agj-Fx-G4N" firstAttribute="centerY" secondItem="9k3-3I-Nxf" secondAttribute="centerY" id="KqL-r7-ihh"/>
                 <constraint firstItem="M8C-02-wz7" firstAttribute="leading" secondItem="agj-Fx-G4N" secondAttribute="trailing" constant="20" id="YCf-WR-tES"/>
+                <constraint firstItem="agj-Fx-G4N" firstAttribute="top" secondItem="sGW-xh-PUe" secondAttribute="top" constant="8" id="fyR-qk-CwF"/>
                 <constraint firstItem="M8C-02-wz7" firstAttribute="centerY" secondItem="agj-Fx-G4N" secondAttribute="centerY" id="g4M-dJ-5w7"/>
-                <constraint firstItem="agj-Fx-G4N" firstAttribute="leading" secondItem="sGW-xh-PUe" secondAttribute="leading" constant="20" id="mhv-3u-UNd"/>
+                <constraint firstAttribute="bottom" secondItem="agj-Fx-G4N" secondAttribute="bottom" constant="8" id="jeT-Df-rKX"/>
+                <constraint firstItem="agj-Fx-G4N" firstAttribute="leading" secondItem="sGW-xh-PUe" secondAttribute="leading" constant="16" id="mhv-3u-UNd"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="9k3-3I-Nxf"/>
             <size key="customSize" width="296" height="105"/>
