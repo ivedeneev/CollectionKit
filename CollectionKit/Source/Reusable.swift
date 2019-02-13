@@ -15,6 +15,7 @@ public protocol Reusable {
 }
 
 public extension Reusable {
+    /// Assume that nib file name matches class name
     static var nib: UINib {
         return UINib(nibName: String(describing: self), bundle: nil)
     }

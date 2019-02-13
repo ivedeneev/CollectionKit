@@ -8,19 +8,19 @@
 
 import Foundation
 
-public func +=(left: CollectionDirector, right: CollectionSection) {
+public func +=(left: CollectionDirector, right: AbstractCollectionSection) {
     left.append(section: right)
 }
 
-public func +=(left: CollectionSection, right: AbstractCollectionItem) {
+public func +=(left: AbstractCollectionSection, right: AbstractCollectionItem) {
     left.append(item: right)
 }
 
-public func +=(left: CollectionDirector, right: [CollectionSection]) {
+public func +=(left: CollectionDirector, right: [AbstractCollectionSection]) {
     left.append(sections: right)
 }
 
-public func +=(left: CollectionSection, right: [AbstractCollectionItem]) {
+public func +=(left: AbstractCollectionSection, right: [AbstractCollectionItem]) {
     left.append(items: right)
 }
 

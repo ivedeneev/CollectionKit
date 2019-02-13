@@ -17,7 +17,8 @@ final class UpdateSectionsViewController : UIViewController {
     let section2 = CollectionSection()
     let section3 = CollectionSection()
     
-    var array1 = ["privet", "kak", "dela", "ska"]
+//    var array1 = ["privet", "kak", "dela", "ska"]
+    var array1 = [String]()
     var array2 = ["cska", "real", "juventus", "chelsea"]
     var array3 = ["facebook", "instargam", "pinterest", "linkedin"]
     
@@ -30,51 +31,74 @@ final class UpdateSectionsViewController : UIViewController {
         collectionView.alwaysBounceVertical = true
         director = CollectionDirector(colletionView: collectionView)
         
-        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
-        section1.lineSpacing = 2
-        section1.minimumInterItemSpacing = 1
-        director += section1
-        section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
-        
-        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0) })
-        section2.lineSpacing = 2
-        section2.minimumInterItemSpacing = 1
-        director += section2
-        section2.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
-        
-        section3.items.append(contentsOf: array3.map { CollectionItem<CellFromXIB>(item: $0) })
-        section3.lineSpacing = 2
-        section3.minimumInterItemSpacing = 1
-        section3.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
+        configureDirector()
         
         director.reload()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(performReload))
     }
     
-    @objc func performReload() {
-        guard let item1 = array2.first, let item2 = array2.last else { return }
-        array1.append(contentsOf: [item1, item2])
-        array2.removeLast()
-        array2.removeFirst()
+    func configureDirector() {
+        director.removeAll()
         
         section1.removeAll()
         section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
+        section1.lineSpacing = 2
+        section1.minimumInterItemSpacing = 1
+//        if !section1.isEmpty {
+            director += section1
+//        }
         
-//        print("old: ", section2.numberOfItems())
+        section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
+        
         section2.removeAll()
         section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0) })
-//        print("new: ", section2.numberOfItems())
-        
-        
-        if director.contains(section: section3) {
-            director.remove(section: section1)
-        } else {
-//            director += section3
-//            director.remove(section: section1)
-            director.insert(section: section3, at: 0)
+        section2.lineSpacing = 2
+        section2.minimumInterItemSpacing = 1
+        if !section2.isEmpty {
+            director += section2
         }
         
+        section2.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
+        
+//        section3.items.append(contentsOf: array3.map { CollectionItem<CellFromXIB>(item: $0) })
+//        section3.lineSpacing = 2
+//        section3.minimumInterItemSpacing = 1
+//        section3.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
+//
+//        if !section3.isEmpty {
+//            director += section3
+//        }
+    }
+    
+    @objc func performReload() {
+//        guard let item1 = self.array2.first, let item2 = self.array2.last else { return }
+//        self.array1.append(contentsOf: [item1, item2])
+//        self.array2.removeLast()
+//        self.array2.removeFirst()
+//
+//        self.section1.removeAll()
+//        self.section1.items.append(contentsOf: self.array1.map { CollectionItem<CellFromXIB>(item: $0) })
+//
+//        self.section2.removeAll()
+//        self.section2.items.append(contentsOf: self.array2.map { CollectionItem<CellFromXIB>(item: $0) })
+//
+//
+//        if self.director.contains(section: self.section3) {
+//            self.director.remove(section: self.section3)
+//        } else {
+//            //                self.director += self.section3
+//            //            self.director.remove(section: self.section1)
+//            self.director.insert(section: self.section3, at: 0)
+//        }
+//
+//        director.testUpdate(updates: { [unowned self] in
+//
+//        }, completion: nil)
+        
+        array1.append(array2.first!)
+        array2.remove(at: 0)
+        configureDirector()
         director.testUpdate()
     }
 }

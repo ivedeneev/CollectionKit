@@ -48,21 +48,11 @@ open class CollectionSection : AbstractCollectionSection {
     }
 
     open func append(item: AbstractCollectionItem) {
-//        if itemsBeforeUpdate.isEmpty {
-//            itemsBeforeUpdate = items
-//        }
-//
-//        let identifiersBeforeUpdate = itemsBeforeUpdate.map { $0.identifier }
         items.append(item)
-//        let t2 = items.map { $0.identifier }
-//        let diff_ = diff(old: identifiersBeforeUpdate, new: t2)
-//        pendingChanges = diff_
-//        postInsertOrDeleteItemNotification(section: self, indicies: [ items.count - 1 ], action: .insert)
     }
 
     public func insert(item: AbstractCollectionItem, at index: Int) {
         items.insert(item, at: index)
-//        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .insert)
     }
     
     public func append(items: [AbstractCollectionItem]) {
@@ -77,14 +67,11 @@ open class CollectionSection : AbstractCollectionSection {
         for i in 0..<items.count {
             self.items.insert(items[i], at: indicies[i])
         }
-//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
     }
     
     public func remove(at index: Int) {
-        //todo: consider more correct condition
-        guard index < items.count else { return }
+        guard items.indices.contains(index) else { return }
         items.remove(at: index)
-//        postInsertOrDeleteItemNotification(section: self, indicies: [ index ], action: .delete)
     }
     
     public func remove(item: AbstractCollectionItem) {
@@ -109,23 +96,16 @@ open class CollectionSection : AbstractCollectionSection {
     
     public func remove(at indicies: [Int]) {
         items.remove(at: indicies)
-//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
-    }
-    
-    open func reload() {
-        postReloadNotofication(subject: .section, object: self)
     }
     
     public func reload(with reloadItems: [AbstractCollectionItem]) {
-        self.items.removeAll()
-        self.items.append(contentsOf: reloadItems)
+        items.removeAll()
+        items.append(contentsOf: reloadItems)
         reload()
     }
     
     public func removeAll() {
-//        let indicies = Array(0..<items.count)
         items.removeAll()
-//        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .delete)
     }
     
     public func contains(item: AbstractCollectionItem) -> Bool {

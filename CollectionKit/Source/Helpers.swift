@@ -24,7 +24,9 @@ enum LogLevel: CustomStringConvertible {
 }
 
 func log(_ message: String, logLevel: LogLevel = .warning) {
+    #if DEBUG
     print("CollectionKit: \(logLevel.description.uppercased()): \(message)")
+    #endif
 }
 
 //MARK:- Notifications

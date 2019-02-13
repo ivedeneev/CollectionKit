@@ -20,12 +20,13 @@ import DeepDiff
 
 //MARK:- CollectionDirector
 open class CollectionDirector: NSObject {
+    /// Array of sections models
     public var sections = [AbstractCollectionSection]()
     ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
-    ///Forward scrollView delegae messages to specific object
+    ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
@@ -60,8 +61,6 @@ open class CollectionDirector: NSObject {
         sections.remove(at: index)
     }
     
-    //todo: add/remove array of sections
-    
     public func reload() {
         collectionView.reloadData()
         updateSectionIds()
@@ -72,13 +71,17 @@ open class CollectionDirector: NSObject {
         return sections.contains(where: { $0.identifier == section.identifier })
     }
     
-//    public func append(sections: [AbstractCollectionSection]) {
-//        
-//    }
-//    
-//    public func remove(sections: [AbstractCollectionSection]) {
-//        
-//    }
+    public func append(sectionsToAppend: [AbstractCollectionSection]) {
+        sections.append(contentsOf: sectionsToAppend)
+    }
+
+    public func remove(sectionsToRemove: [AbstractCollectionSection]) {
+        let indicies = sectionsToRemove.compactMap { [unowned self] sec in
+            return self.sections.firstIndex(where: { $0 == sec })
+        }
+        
+        sections.remove(at: indicies.sorted().reversed())
+    }
 
     public func setNeedsUpdate() {
         collectionView.performBatchUpdates({}, completion: nil)
@@ -89,10 +92,9 @@ open class CollectionDirector: NSObject {
     }
     
     public func testUpdate(completion: (() -> Void)? = nil) {
-        //todo: section updates
-        let newIds = sections.map { $0.identifier }
-        let oldIds = sectionIds
-        let sectionDiff = diff(old: oldIds, new: newIds)
+        let newSectionIds = self.sections.map { $0.identifier }
+        let oldSectionIds = self.sectionIds
+        let sectionDiff = diff(old: oldSectionIds, new: newSectionIds)
         
         /////////
         var deletes: [(Delete<String>, IndexPath)] = []
@@ -100,7 +102,7 @@ open class CollectionDirector: NSObject {
         var reloads: [(Replace<String>, IndexPath)] = []
         var moves: [(IndexPath, IndexPath)] = []
         
-        sections.enumerated().forEach { (idx, section) in
+        self.sections.enumerated().forEach { (idx, section) in
             let diff_ = diff(old: section.idsBeforeUpdate, new: section.currentItemIds())
             let d = diff_.compactMap { $0.delete }.map { ($0, IndexPath(row: $0.index, section: idx)) }
             let i = diff_.compactMap { $0.insert }.map { ($0, IndexPath(row: $0.index, section: idx)) }
@@ -113,9 +115,12 @@ open class CollectionDirector: NSObject {
             moves.append(contentsOf: m)
         }
         
+        
         deletes.forEach { del in
             guard let idx = deletes.firstIndex(where: { $0.0.item == del.0.item }),
-            let ins = inserts.firstIndex(where: { $0.0.item == del.0.item }) else { return }
+                  let ins = inserts.firstIndex(where: { $0.0.item == del.0.item })/*,
+                  oldSectionIds.contains(newSectionIds[inserts[ins].1.section])*/
+            else { return }
             
             let toIp = inserts[ins].1
             let fromIp = del.1
@@ -124,38 +129,46 @@ open class CollectionDirector: NSObject {
             moves.append((fromIp, toIp))
         }
         
-        let hasSectionChanges = sectionDiff.isEmpty
-        
         collectionView.performBatchUpdates({ [unowned self] in
-            print("performBatchUpdates")
+
+             //todo: sort desc
             deletes.map { $0.0 }.executeIfPresent { _ in
-//                print(self.collectionView.numberOfSections, self.collectionView.numberOfItems(inSection: 1))
                 self.collectionView.deleteItems(at: deletes.map { $1 })
             }
             
+             //todo: sort asc
             inserts.map { $0.0 }.executeIfPresent { _ in
                 self.collectionView.insertItems(at: inserts.map { $1 })
             }
             
             moves.executeIfPresent {
                 $0.forEach { move in
-                    let from = move.0
+                    let sectionId = newSectionIds[move.0.section]
+                    guard let oldSectionNumber = oldSectionIds.firstIndex(of: sectionId) else {
+                        let errorMsg = "Attemt to move from section which doesnt belong to director before update."
+                        fatalError(errorMsg)
+                    }
+                    let from = IndexPath(row: move.0.row, section: oldSectionNumber)
                     let to = move.1
                     self.collectionView.moveItem(at: from, to: to)
                 }
             }
             
-            let v = self.collectionView.dataSource!.numberOfSections!(in: self.collectionView)
+            //todo: separate to deletes and inserts
+            reloads.executeIfPresent { [unowned self] _ in
+                self.collectionView.reloadItems(at: reloads.map { $1 })
+            }
+             //todo: sort
             let sectionDeletes = sectionDiff.compactMap { $0.delete?.index }
             sectionDeletes.executeIfPresent({ (deletes) in
                 self.collectionView.deleteSections(IndexSet(deletes))
             })
-            
+             //todo: sort
             let sectionInserts = sectionDiff.compactMap { $0.insert?.index }
             sectionInserts.executeIfPresent({ (inserts) in
                 self.collectionView.insertSections(IndexSet(inserts))
             })
-            
+             //todo: separate
             let sectionReloads = sectionDiff.compactMap { $0.replace?.index }
             sectionReloads.executeIfPresent({ (reloads) in
                 self.collectionView.reloadSections(IndexSet(reloads))
@@ -165,10 +178,6 @@ open class CollectionDirector: NSObject {
             self.updateSectionIds()
             self.sections.forEach { $0.resetLastUpdatesIds() }
             completion?()
-        }
-        
-        reloads.executeIfPresent { [unowned self] _ in
-            self.collectionView.reloadItems(at: reloads.map { $1 })
         }
     }
     
@@ -195,12 +204,10 @@ extension CollectionDirector {
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
-        print("numberOfSections(in")
         return sections.count
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("numberOfItemsInSection")
         return sections[section].numberOfItems()
     }
     
