@@ -61,6 +61,7 @@ open class CollectionDirector: NSObject {
         sections.remove(at: index)
     }
     
+    /// Reloads collectionview and saves director state
     public func reload() {
         collectionView.reloadData()
         updateSectionIds()
@@ -91,7 +92,11 @@ open class CollectionDirector: NSObject {
         sectionIds = sections.map { $0.identifier }
     }
     
-    public func testUpdate(completion: (() -> Void)? = nil) {
+    /// Calculates and performs managed UICollectionView updates based on diff between sections array state
+    /// afert last update or reload and current state
+    /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
+    ///
+    public func performUpdates(completion: (() -> Void)? = nil) {
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = self.sectionIds
         let sectionDiff = diff(old: oldSectionIds, new: newSectionIds)
@@ -118,12 +123,15 @@ open class CollectionDirector: NSObject {
         
         deletes.forEach { del in
             guard let idx = deletes.firstIndex(where: { $0.0.item == del.0.item }),
-                  let ins = inserts.firstIndex(where: { $0.0.item == del.0.item })/*,
-                  oldSectionIds.contains(newSectionIds[inserts[ins].1.section])*/
+                  let ins = inserts.firstIndex(where: { $0.0.item == del.0.item })
             else { return }
             
             let toIp = inserts[ins].1
             let fromIp = del.1
+            let newSectionId = sections[toIp.section].identifier
+            // Check if director contained section before update.
+            // If it dosent all animations will be discareded and reload data will be called
+            guard oldSectionIds.contains(newSectionId) else { return }
             deletes.remove(at: idx)
             inserts.remove(at: ins)
             moves.append((fromIp, toIp))
@@ -138,6 +146,7 @@ open class CollectionDirector: NSObject {
             
              //todo: sort asc
             inserts.map { $0.0 }.executeIfPresent { _ in
+                print(inserts.map { $1 })
                 self.collectionView.insertItems(at: inserts.map { $1 })
             }
             

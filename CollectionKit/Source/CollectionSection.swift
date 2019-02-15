@@ -57,9 +57,6 @@ open class CollectionSection : AbstractCollectionSection {
     
     public func append(items: [AbstractCollectionItem]) {
         self.items.append(contentsOf: items)
-        let oldCount = self.items.count - items.count - 1
-        let indicies = Array(oldCount..<self.items.count)
-        postInsertOrDeleteItemNotification(section: self, indicies: indicies, action: .insert)
     }
     
     public func insert(items: [AbstractCollectionItem], at indicies: [Int]) {

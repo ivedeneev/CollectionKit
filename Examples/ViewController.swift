@@ -81,7 +81,7 @@ class ViewController: UIViewController {
                 (sec as! CollectionSection) += row
             }
 
-            self.director.testUpdate()
+            self.director.performUpdates()
         }))
         
 //        alertController.addAction(UIAlertAction(title: "Append item to 1st section", style: .default, handler: { [unowned self] (_) in

@@ -96,9 +96,10 @@ final class UpdateSectionsViewController : UIViewController {
 //
 //        }, completion: nil)
         
-        array1.append(array2.first!)
-        array2.remove(at: 0)
+//        array1.append(array2.first!)
+//        array2.remove(at: 0)
+        array2.append("blackburn")
         configureDirector()
-        director.testUpdate()
+        director.performUpdates()
     }
 }
