@@ -97,6 +97,7 @@ open class CollectionDirector: NSObject {
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
     public func performUpdates(completion: (() -> Void)? = nil) {
+        //todo: move this to collection updater
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = self.sectionIds
         let sectionDiff = diff(old: oldSectionIds, new: newSectionIds)
