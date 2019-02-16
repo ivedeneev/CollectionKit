@@ -48,7 +48,7 @@ extension Header : ConfigurableCollectionItem {
         titleLabel.text = item.title?.uppercased()
     }
     
-    static func estimatedSize(item: HeaderViewModel?, collectionViewSize: CGSize) -> CGSize {
-        return CGSize(width: collectionViewSize.width, height: 48)
+    static func estimatedSize(item: HeaderViewModel?, boundingSize: CGSize) -> CGSize {
+        return CGSize(width: boundingSize.width, height: 48)
     }
 }

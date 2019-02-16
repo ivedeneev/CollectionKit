@@ -1,0 +1,6 @@
+[submodule "Submodules/DeepDiff"]
+	path = Submodules/DeepDiff
+	url = https://github.com/onmyway133/DeepDiff
+[submodule "CollectionKit/Source/Submodules/DeepDiff"]
+	path = CollectionKit/Source/Submodules/DeepDiff
+	url = https://github.com/onmyway133/DeepDiff

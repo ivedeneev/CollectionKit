@@ -20,6 +20,10 @@ class CollectionKitTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        if collectionView.superview == nil {
+            guard let w = UIApplication.shared.delegate?.window else { return }
+            w?.addSubview(collectionView)
+        }
         director.removeAll()
         director.reload()
         super.tearDown()
@@ -78,7 +82,7 @@ final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
         
     }
     
-    static func estimatedSize(item: String?, collectionViewSize: CGSize) -> CGSize {
+    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
         return CGSize(width: 50, height: 50)
     }
 }

@@ -17,6 +17,7 @@
 		D6077F021F9FF38600DD8CA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D69EEF5C1F6894F5002B29E4 /* Main.storyboard */; };
 		D6077F041F9FF38600DD8CA6 /* CollectionKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D638A8D91F9D258E00B858E9 /* CollectionKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D60811B2221206AD004C2CD8 /* UpdateSectionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */; };
+		D60811BD22183165004C2CD8 /* DeepDiff.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D60811BC22183165004C2CD8 /* DeepDiff.framework */; };
 		D61985101FCB201E00D6BCB1 /* CellFromXIB.swift in Sources */ = {isa = PBXBuildFile; fileRef = D619850F1FCB201E00D6BCB1 /* CellFromXIB.swift */; };
 		D61985121FCB235C00D6BCB1 /* CellFromXIB.xib in Resources */ = {isa = PBXBuildFile; fileRef = D61985111FCB235C00D6BCB1 /* CellFromXIB.xib */; };
 		D61A2F922134956100165700 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61A2F912134956100165700 /* Protocols.swift */; };
@@ -45,6 +46,55 @@
 			remoteGlobalIDString = D638A8D81F9D258E00B858E9;
 			remoteInfo = CollectionKit;
 		};
+		D60811CB22185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D5B2E89F1C3A780C00C0327D;
+			remoteInfo = "DeepDiff-iOS";
+		};
+		D60811CD22185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D5B2E8A91C3A780C00C0327D;
+			remoteInfo = "DeepDiff-iOS-Tests";
+		};
+		D60811CF22185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D5C629401C3A7FAA007F7B7C;
+			remoteInfo = "DeepDiff-macOS";
+		};
+		D60811D122185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D5C629491C3A7FAA007F7B7C;
+			remoteInfo = "DeepDiff-macOS-Tests";
+		};
+		D60811D322185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D284B0FC1F79038B00D94AF3;
+			remoteInfo = "DeepDiff-tvOS";
+		};
+		D60811D522185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D284B1041F79038B00D94AF3;
+			remoteInfo = "DeepDiff-tvOS-Tests";
+		};
+		D60811D722185450004C2CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D284B1181F79039F00D94AF3;
+			remoteInfo = "DeepDiff-watchOS";
+		};
 		D675695F2170B05E009FBAF0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D69EEF4D1F6894F5002B29E4 /* Project object */;
@@ -58,62 +108,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = D6077EF51F9FF38600DD8CA6;
 			remoteInfo = Examples;
-		};
-		D6A9CEE7220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D5B2E89F1C3A780C00C0327D;
-			remoteInfo = "DeepDiff-iOS";
-		};
-		D6A9CEE9220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D5B2E8A91C3A780C00C0327D;
-			remoteInfo = "DeepDiff-iOS-Tests";
-		};
-		D6A9CEEB220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D5C629401C3A7FAA007F7B7C;
-			remoteInfo = "DeepDiff-macOS";
-		};
-		D6A9CEED220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D5C629491C3A7FAA007F7B7C;
-			remoteInfo = "DeepDiff-macOS-Tests";
-		};
-		D6A9CEEF220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D284B0FC1F79038B00D94AF3;
-			remoteInfo = "DeepDiff-tvOS";
-		};
-		D6A9CEF1220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D284B1041F79038B00D94AF3;
-			remoteInfo = "DeepDiff-tvOS-Tests";
-		};
-		D6A9CEF3220EF9C200ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D284B1181F79039F00D94AF3;
-			remoteInfo = "DeepDiff-watchOS";
-		};
-		D6A9CEF5220EF9D800ECAC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D5B2E89E1C3A780C00C0327D;
-			remoteInfo = "DeepDiff-iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -135,6 +129,8 @@
 		D6077EF31F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionHeaderFooterView.swift; sourceTree = "<group>"; };
 		D6077F081F9FF38600DD8CA6 /* Examples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Examples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSectionsViewController.swift; sourceTree = "<group>"; };
+		D60811BC22183165004C2CD8 /* DeepDiff.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DeepDiff.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DeepDiff.xcodeproj; path = Source/Submodules/DeepDiff/DeepDiff.xcodeproj; sourceTree = "<group>"; };
 		D619850F1FCB201E00D6BCB1 /* CellFromXIB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellFromXIB.swift; sourceTree = "<group>"; };
 		D61985111FCB235C00D6BCB1 /* CellFromXIB.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CellFromXIB.xib; sourceTree = "<group>"; };
 		D61A2F912134956100165700 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -158,7 +154,6 @@
 		D69EEF7C1F689911002B29E4 /* CollectionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
 		D69EEF7E1F689C98002B29E4 /* CollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionCell.swift; sourceTree = "<group>"; };
 		D69EEF801F690F70002B29E4 /* CollectionSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSection.swift; sourceTree = "<group>"; };
-		D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DeepDiff.xcodeproj; path = "../../Downloads/DeepDiff-master/DeepDiff.xcodeproj"; sourceTree = "<group>"; };
 		D6ADF7881FDC15B3003A0F41 /* AbstractCollectionSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractCollectionSection.swift; sourceTree = "<group>"; };
 		D6BA76CF2170E9FC005C0849 /* SectionBackgroundFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionBackgroundFlowLayout.swift; sourceTree = "<group>"; };
 		D6CBBEB01F82F048007CD4A7 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -181,6 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D60811BD22183165004C2CD8 /* DeepDiff.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +191,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		54381717428271647FAF3B9C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D60811BC22183165004C2CD8 /* DeepDiff.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D60811C222185450004C2CD8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D60811CC22185450004C2CD8 /* DeepDiff.framework */,
+				D60811CE22185450004C2CD8 /* DeepDiff-iOS-Tests.xctest */,
+				D60811D022185450004C2CD8 /* DeepDiff.framework */,
+				D60811D222185450004C2CD8 /* DeepDiff-macOS-Tests.xctest */,
+				D60811D422185450004C2CD8 /* DeepDiff_tvOS.framework */,
+				D60811D622185450004C2CD8 /* DeepDiff-tvOS-Tests.xctest */,
+				D60811D822185450004C2CD8 /* DeepDiff_watchOS.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		D61A2F952135174400165700 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,7 +243,7 @@
 		D638A8DA1F9D258E00B858E9 /* CollectionKit */ = {
 			isa = PBXGroup;
 			children = (
-				D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */,
+				D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */,
 				D61A2F962135175500165700 /* Source */,
 				D61A2F952135174400165700 /* Framework */,
 			);
@@ -268,6 +286,7 @@
 				D638A8F51F9D25AF00B858E9 /* Examples */,
 				D675695A2170B05E009FBAF0 /* CollectionKitTests */,
 				D69EEF561F6894F5002B29E4 /* Products */,
+				54381717428271647FAF3B9C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -277,20 +296,6 @@
 				D638A8D91F9D258E00B858E9 /* CollectionKit.framework */,
 				D6077F081F9FF38600DD8CA6 /* Examples.app */,
 				D67569592170B05E009FBAF0 /* CollectionKitTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		D6A9CEDE220EF9C100ECAC06 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D6A9CEE8220EF9C200ECAC06 /* DeepDiff.framework */,
-				D6A9CEEA220EF9C200ECAC06 /* DeepDiff-iOS-Tests.xctest */,
-				D6A9CEEC220EF9C200ECAC06 /* DeepDiff.framework */,
-				D6A9CEEE220EF9C200ECAC06 /* DeepDiff-macOS-Tests.xctest */,
-				D6A9CEF0220EF9C200ECAC06 /* DeepDiff_tvOS.framework */,
-				D6A9CEF2220EF9C200ECAC06 /* DeepDiff-tvOS-Tests.xctest */,
-				D6A9CEF4220EF9C200ECAC06 /* DeepDiff_watchOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -340,7 +345,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				D6A9CEF6220EF9D800ECAC06 /* PBXTargetDependency */,
 			);
 			name = CollectionKit;
 			productName = CollectionKit;
@@ -404,8 +408,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = D6A9CEDE220EF9C100ECAC06 /* Products */;
-					ProjectRef = D6A9CEDD220EF9C100ECAC06 /* DeepDiff.xcodeproj */;
+					ProductGroup = D60811C222185450004C2CD8 /* Products */;
+					ProjectRef = D60811C122185450004C2CD8 /* DeepDiff.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -418,53 +422,53 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		D6A9CEE8220EF9C200ECAC06 /* DeepDiff.framework */ = {
+		D60811CC22185450004C2CD8 /* DeepDiff.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = DeepDiff.framework;
-			remoteRef = D6A9CEE7220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811CB22185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEEA220EF9C200ECAC06 /* DeepDiff-iOS-Tests.xctest */ = {
+		D60811CE22185450004C2CD8 /* DeepDiff-iOS-Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "DeepDiff-iOS-Tests.xctest";
-			remoteRef = D6A9CEE9220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811CD22185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEEC220EF9C200ECAC06 /* DeepDiff.framework */ = {
+		D60811D022185450004C2CD8 /* DeepDiff.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = DeepDiff.framework;
-			remoteRef = D6A9CEEB220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811CF22185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEEE220EF9C200ECAC06 /* DeepDiff-macOS-Tests.xctest */ = {
+		D60811D222185450004C2CD8 /* DeepDiff-macOS-Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "DeepDiff-macOS-Tests.xctest";
-			remoteRef = D6A9CEED220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811D122185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEF0220EF9C200ECAC06 /* DeepDiff_tvOS.framework */ = {
+		D60811D422185450004C2CD8 /* DeepDiff_tvOS.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = DeepDiff_tvOS.framework;
-			remoteRef = D6A9CEEF220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811D322185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEF2220EF9C200ECAC06 /* DeepDiff-tvOS-Tests.xctest */ = {
+		D60811D622185450004C2CD8 /* DeepDiff-tvOS-Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "DeepDiff-tvOS-Tests.xctest";
-			remoteRef = D6A9CEF1220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811D522185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D6A9CEF4220EF9C200ECAC06 /* DeepDiff_watchOS.framework */ = {
+		D60811D822185450004C2CD8 /* DeepDiff_watchOS.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = DeepDiff_watchOS.framework;
-			remoteRef = D6A9CEF3220EF9C200ECAC06 /* PBXContainerItemProxy */;
+			remoteRef = D60811D722185450004C2CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -556,11 +560,6 @@
 			isa = PBXTargetDependency;
 			target = D6077EF51F9FF38600DD8CA6 /* Examples */;
 			targetProxy = D67569642170B35F009FBAF0 /* PBXContainerItemProxy */;
-		};
-		D6A9CEF6220EF9D800ECAC06 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "DeepDiff-iOS";
-			targetProxy = D6A9CEF5220EF9D800ECAC06 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

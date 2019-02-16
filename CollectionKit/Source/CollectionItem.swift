@@ -31,7 +31,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     }
     
     public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return CellType.estimatedSize(item: self.item, collectionViewSize: boundingSize)
+        return CellType.estimatedSize(item: self.item, boundingSize: boundingSize)
     }
     
     public var cellType: AnyClass {

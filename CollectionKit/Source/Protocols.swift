@@ -11,7 +11,7 @@ import UIKit
 //MARK:- ConfigurableCollectionItem
 public protocol ConfigurableCollectionItem : Reusable {
     associatedtype T: Hashable
-    static func estimatedSize(item: T?, collectionViewSize: CGSize) -> CGSize
+    static func estimatedSize(item: T?, boundingSize: CGSize) -> CGSize
     func configure(item: T)
 }
 

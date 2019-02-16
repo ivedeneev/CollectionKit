@@ -46,7 +46,7 @@ final class UpdateSectionsViewController : UIViewController {
         section1.lineSpacing = 2
         section1.minimumInterItemSpacing = 1
 //        if !section1.isEmpty {
-            director += section1
+//            director += section1
 //        }
         
         section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)

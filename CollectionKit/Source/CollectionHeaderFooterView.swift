@@ -32,7 +32,7 @@ open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: Abs
     }
     
     public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return ViewType.estimatedSize(item: self.item, collectionViewSize: boundingSize)
+        return ViewType.estimatedSize(item: self.item, boundingSize: boundingSize)
     }
     
     @discardableResult
