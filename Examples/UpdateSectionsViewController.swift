@@ -17,8 +17,8 @@ final class UpdateSectionsViewController : UIViewController {
     let section2 = CollectionSection()
     let section3 = CollectionSection()
     
-//    var array1 = ["privet", "kak", "dela", "ska"]
-    var array1 = [String]()
+    var array1 = ["privet", "kak", "dela", "ska"]
+//    var array1 = [String]()
     var array2 = ["cska", "real", "juventus", "chelsea"]
     var array3 = ["facebook", "instargam", "pinterest", "linkedin"]
     
@@ -45,9 +45,9 @@ final class UpdateSectionsViewController : UIViewController {
         section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
         section1.lineSpacing = 2
         section1.minimumInterItemSpacing = 1
-//        if !section1.isEmpty {
-//            director += section1
-//        }
+        if !section1.isEmpty {
+            director += section1
+        }
         
         section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
         
@@ -72,18 +72,18 @@ final class UpdateSectionsViewController : UIViewController {
     }
     
     @objc func performReload() {
-//        guard let item1 = self.array2.first, let item2 = self.array2.last else { return }
-//        self.array1.append(contentsOf: [item1, item2])
-//        self.array2.removeLast()
-//        self.array2.removeFirst()
-//
-//        self.section1.removeAll()
-//        self.section1.items.append(contentsOf: self.array1.map { CollectionItem<CellFromXIB>(item: $0) })
-//
-//        self.section2.removeAll()
-//        self.section2.items.append(contentsOf: self.array2.map { CollectionItem<CellFromXIB>(item: $0) })
-//
-//
+        guard let item1 = self.array2.first, let item2 = self.array2.last else { return }
+        self.array1.append(contentsOf: [item1, item2])
+        self.array2.removeLast()
+        self.array2.removeFirst()
+
+        self.section1.removeAll()
+        self.section1.items.append(contentsOf: self.array1.map { CollectionItem<CellFromXIB>(item: $0) })
+
+        self.section2.removeAll()
+        self.section2.items.append(contentsOf: self.array2.map { CollectionItem<CellFromXIB>(item: $0) })
+
+
 //        if self.director.contains(section: self.section3) {
 //            self.director.remove(section: self.section3)
 //        } else {
@@ -91,14 +91,10 @@ final class UpdateSectionsViewController : UIViewController {
 //            //            self.director.remove(section: self.section1)
 //            self.director.insert(section: self.section3, at: 0)
 //        }
-//
-//        director.testUpdate(updates: { [unowned self] in
-//
-//        }, completion: nil)
         
 //        array1.append(array2.first!)
 //        array2.remove(at: 0)
-        array2.append("blackburn")
+//        array2.append("blackburn")
         configureDirector()
         director.performUpdates()
     }

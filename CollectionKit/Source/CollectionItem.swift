@@ -23,12 +23,16 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     /// Height of cell = collectionView.height - vertical section insets
     open var adjustsHeight: Bool = false
     
-    open var item: CellType.T
+    open var item: CellType.T {
+        didSet { configureId() }
+    }
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     
     public var identifier: String {
-        return reuseIdentifier + "_" + "\(item.hashValue)"
+        return reuseIdentifier + "_" + internalIdentifier//"\(item.hashValue)"
     }
+    
+    private var internalIdentifier: String!
     
     public func estimatedSize(boundingSize: CGSize) -> CGSize {
         return CellType.estimatedSize(item: self.item, boundingSize: boundingSize)
@@ -40,6 +44,12 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public init(item: CellType.T) {
         self.item = item
+        configureId()
+    }
+    
+    private func configureId() {
+        let hashValue = (self.item as? AnyHashable)?.hashValue ?? UUID().uuidString.hashValue
+        self.internalIdentifier = String(hashValue)
     }
     
     public func configure(_ cell: UICollectionReusableView) {
