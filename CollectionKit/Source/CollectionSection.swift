@@ -11,7 +11,7 @@ import DeepDiff
 
 open class CollectionSection : AbstractCollectionSection {
 
-    public let identifier: String = UUID().uuidString
+    public let identifier: String
 
     open var items: [AbstractCollectionItem] = []
     open var headerItem: AbstractCollectionHeaderFooterItem?
@@ -25,10 +25,13 @@ open class CollectionSection : AbstractCollectionSection {
     /// !!!! MUST be set to nil after all updates
     public internal(set) var idsBeforeUpdate: [String] = []
     
-    public init() {}
+    public init(id: String = UUID().uuidString) {
+        self.identifier = id
+    }
     
-    public required init(items: [AbstractCollectionItem]) {
+    public required init(id: String = UUID().uuidString, items: [AbstractCollectionItem]) {
         self.items = items
+        self.identifier = id
     }
     
     open func item(for index: Int) -> AbstractCollectionItem {

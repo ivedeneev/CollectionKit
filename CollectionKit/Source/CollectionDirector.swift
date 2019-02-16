@@ -303,17 +303,19 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         let section = sections[indexPath.section]
         let item = section.item(for: indexPath.row)
         var size = item.estimatedSize(boundingSize: collectionView.bounds.size)
-        size.width -= (collectionView.contentInset.left + collectionView.contentInset.right)
-        size.height -= (collectionView.contentInset.top + collectionView.contentInset.bottom)
+        
+        
         let inset = section.insetForSection
         if item.adjustsWidth {
+            size.width -= (collectionView.contentInset.left + collectionView.contentInset.right)
             let paddings = inset.left + inset.right
             size.width -= paddings
         }
         
         if item.adjustsHeight {
+            size.height -= (collectionView.contentInset.top + collectionView.contentInset.bottom)
             let paddings = inset.top + inset.bottom
-            size.width -= paddings
+            size.height -= paddings
         }
         
         return size

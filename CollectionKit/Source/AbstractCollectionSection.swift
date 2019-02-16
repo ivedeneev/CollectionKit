@@ -43,14 +43,12 @@ public protocol AbstractCollectionSection : class {
     
     func resetLastUpdatesIds()
     func currentItemIds() -> [String]
-    
-    init(items: [AbstractCollectionItem])
 }
 
 extension AbstractCollectionSection {
     public var isEmpty: Bool { return numberOfItems() == 0 }
     
     public func reload() {
-//        postReloadNotofication(subject: .section, object: self)
+        //is this needed????
     }
 }
