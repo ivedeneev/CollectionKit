@@ -40,6 +40,7 @@ public protocol AbstractCollectionItem : AbstractCollectionReusableView, Actiona
     func estimatedSize(boundingSize: CGSize) -> CGSize
 }
 
+
 //MARK:- AbstractCollectionReusableView
 public protocol AbstractCollectionReusableView {
     var reuseIdentifier: String { get }
@@ -47,6 +48,7 @@ public protocol AbstractCollectionReusableView {
     func configure(_: UICollectionReusableView)
     func estimatedSize(boundingSize: CGSize) -> CGSize
 }
+
 
 //MARK:- AbstractCollectionHeaderFooterItem
 public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableView {

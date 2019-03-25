@@ -34,6 +34,8 @@ open class CollectionDirector: NSObject {
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     private var sectionIds: [String] = []
     
+    private var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
+    
     public init(colletionView: UICollectionView,
                 sections: [AbstractCollectionSection] = [],
                 shouldUseAutomaticViewRegistration: Bool = true,
@@ -65,7 +67,8 @@ open class CollectionDirector: NSObject {
     public func reload() {
         collectionView.reloadData()
         updateSectionIds()
-        sections.forEach { $0.resetLastUpdatesIds() }
+//        sections.forEach { $0.resetLastUpdatesIds() }
+        updateLastCommitedIdentifiers()
     }
     
     public func contains(section: AbstractCollectionSection) -> Bool {
@@ -109,7 +112,8 @@ open class CollectionDirector: NSObject {
         var moves: [(IndexPath, IndexPath)] = []
         
         self.sections.enumerated().forEach { (idx, section) in
-            let diff_ = diff(old: section.idsBeforeUpdate, new: section.currentItemIds())
+            let oldSectionIds = lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
+            let diff_ = diff(old: oldSectionIds, new: section.currentItemIds())
             let d = diff_.compactMap { $0.delete }.map { ($0, IndexPath(row: $0.index, section: idx)) }
             let i = diff_.compactMap { $0.insert }.map { ($0, IndexPath(row: $0.index, section: idx)) }
             let r = diff_.compactMap { $0.replace }.map { ($0, IndexPath(row: $0.index, section: idx)) }
@@ -138,6 +142,8 @@ open class CollectionDirector: NSObject {
             moves.append((fromIp, toIp))
         }
         
+        updateLastCommitedIdentifiers()
+        
         collectionView.performBatchUpdates({ [unowned self] in
 
              //todo: sort desc
@@ -147,7 +153,6 @@ open class CollectionDirector: NSObject {
             
              //todo: sort asc
             inserts.map { $0.0 }.executeIfPresent { _ in
-                print(inserts.map { $1 })
                 self.collectionView.insertItems(at: inserts.map { $1 })
             }
             
@@ -185,9 +190,17 @@ open class CollectionDirector: NSObject {
             })
             
         }) { [unowned self] _ in
-            self.updateSectionIds()
-            self.sections.forEach { $0.resetLastUpdatesIds() }
+//            self.updateSectionIds()
+//            self.sections.forEach { $0.resetLastUpdatesIds() }
             completion?()
+        }
+    }
+    
+    private func updateLastCommitedIdentifiers() {
+        lastCommitedSectionAndItemsIdentifiers.removeAll()
+        for section in sections {
+            let itemIds = (0..<section.numberOfItems()).map { section.item(for: $0).identifier }
+            lastCommitedSectionAndItemsIdentifiers[section.identifier] = itemIds
         }
     }
     
@@ -307,17 +320,17 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         
         let inset = section.insetForSection
         if item.adjustsWidth {
-            size.width -= (collectionView.contentInset.left + collectionView.contentInset.right)
+            let horizontalContentInsets = collectionView.contentInset.left + collectionView.contentInset.right
             let paddings = inset.left + inset.right
-            size.width -= paddings
+            size.width = collectionView.bounds.width - horizontalContentInsets - paddings
         }
         
         if item.adjustsHeight {
-            size.height -= (collectionView.contentInset.top + collectionView.contentInset.bottom)
+            let verticalContentInsets = collectionView.contentInset.top + collectionView.contentInset.bottom
             let paddings = inset.top + inset.bottom
-            size.height -= paddings
+            size.height -= collectionView.bounds.height - verticalContentInsets - paddings
         }
-        
+
         return size
     }
     

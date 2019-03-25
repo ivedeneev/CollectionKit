@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D606A4C22238552D00A6B7C7 /* CollectionSectionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D606A4C12238552D00A6B7C7 /* CollectionSectionAdapter.swift */; };
 		D6077EF41F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6077EF31F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift */; };
 		D6077EF91F9FF38600DD8CA6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69EEF5A1F6894F5002B29E4 /* ViewController.swift */; };
 		D6077EFA1F9FF38600DD8CA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69EEF581F6894F5002B29E4 /* AppDelegate.swift */; };
@@ -126,6 +127,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D606A4C12238552D00A6B7C7 /* CollectionSectionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSectionAdapter.swift; sourceTree = "<group>"; };
 		D6077EF31F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionHeaderFooterView.swift; sourceTree = "<group>"; };
 		D6077F081F9FF38600DD8CA6 /* Examples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Examples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60811B1221206AD004C2CD8 /* UpdateSectionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSectionsViewController.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				D6D278932029F6A500D2FD68 /* CollectionReusableViewsRegisterer.swift */,
 				D61A2F912134956100165700 /* Protocols.swift */,
 				D61A2F9321349DC200165700 /* Operators.swift */,
+				D606A4C12238552D00A6B7C7 /* CollectionSectionAdapter.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -524,6 +527,7 @@
 				D638A9071F9D25EE00B858E9 /* Reusable.swift in Sources */,
 				D638A9061F9D25EE00B858E9 /* CollectionDirector.swift in Sources */,
 				D681B53D1FC4D0E10015A2CF /* CollectionUpdater.swift in Sources */,
+				D606A4C22238552D00A6B7C7 /* CollectionSectionAdapter.swift in Sources */,
 				D6077EF41F9FF1A100DD8CA6 /* CollectionHeaderFooterView.swift in Sources */,
 				D638A9081F9D25EE00B858E9 /* CollectionItem.swift in Sources */,
 				D61A2F922134956100165700 /* Protocols.swift in Sources */,

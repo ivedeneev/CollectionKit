@@ -42,7 +42,7 @@ final class UpdateSectionsViewController : UIViewController {
         director.removeAll()
         
         section1.removeAll()
-        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
+        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0).adjustsWidth(true) })
         section1.lineSpacing = 2
         section1.minimumInterItemSpacing = 1
         if !section1.isEmpty {
@@ -52,7 +52,7 @@ final class UpdateSectionsViewController : UIViewController {
         section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
         
         section2.removeAll()
-        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0) })
+        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0).adjustsWidth(true) })
         section2.lineSpacing = 2
         section2.minimumInterItemSpacing = 1
         if !section2.isEmpty {
@@ -72,16 +72,20 @@ final class UpdateSectionsViewController : UIViewController {
     }
     
     @objc func performReload() {
-        guard let item1 = self.array2.first, let item2 = self.array2.last else { return }
-        self.array1.append(contentsOf: [item1, item2])
-        self.array2.removeLast()
-        self.array2.removeFirst()
+        guard let item1 = array2.first, let item2 = array2.last, array2.count > 1 else { return }
+        array1.append(contentsOf: [item1, item2])
+        array2.removeLast()
+        array2.removeFirst()
+        if !array2.contains("psv") {
+            array2.append("psv")
+        }
+        
 
-        self.section1.removeAll()
-        self.section1.items.append(contentsOf: self.array1.map { CollectionItem<CellFromXIB>(item: $0) })
+//        section1.removeAll()
+//        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
 
-        self.section2.removeAll()
-        self.section2.items.append(contentsOf: self.array2.map { CollectionItem<CellFromXIB>(item: $0) })
+//        section2.removeAll()
+//        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0) })
 
 
 //        if self.director.contains(section: self.section3) {

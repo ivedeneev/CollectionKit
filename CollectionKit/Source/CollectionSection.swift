@@ -18,12 +18,8 @@ open class CollectionSection : AbstractCollectionSection {
     open var footerItem: AbstractCollectionHeaderFooterItem?
     
     open var insetForSection: UIEdgeInsets = .zero
-    open var minimumInterItemSpacing: CGFloat = CGFloat.leastNormalMagnitude
+    open var minimumInterItemSpacing: CGFloat = .leastNormalMagnitude
     open var lineSpacing: CGFloat = 0
-    
-    /// if itemsBeforeUpdate != nil this means update in progress
-    /// !!!! MUST be set to nil after all updates
-    public internal(set) var idsBeforeUpdate: [String] = []
     
     public init(id: String = UUID().uuidString) {
         self.identifier = id
@@ -40,10 +36,6 @@ open class CollectionSection : AbstractCollectionSection {
     
     open func numberOfItems() -> Int {
         return items.count
-    }
-    
-    open func resetLastUpdatesIds() {
-        idsBeforeUpdate = items.map { $0.identifier }
     }
     
     open func currentItemIds() -> [String] {
@@ -86,7 +78,7 @@ open class CollectionSection : AbstractCollectionSection {
     public func remove(items: [AbstractCollectionItem]) {
         items.forEach { [weak self] (item) in
             guard let `self` = self else { return }
-            guard let index = self.items.index(where: { $0.identifier == item.identifier }) else {
+            guard let index = self.items.index(where: { $0 == item }) else {
                 log("Attempt to delete item , which is not contained at section", logLevel: .error)
                 return
             }

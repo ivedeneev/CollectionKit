@@ -15,9 +15,5 @@ class ExpandableSection : CollectionSection {
     override func numberOfItems() -> Int {
         return isExpanded ? items.count : 3
     }
-
-//    override func reload() {
-//
-//    }
 }
 

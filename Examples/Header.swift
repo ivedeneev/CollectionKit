@@ -27,7 +27,7 @@ final class Header: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         titleLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
-        titleLabel.frame = CGRect(x: 20, y: 20, width: frame.width, height: 13)
+        titleLabel.frame = CGRect(x: 20, y: 20, width: frame.width - 40, height: 13)
         titleLabel.textAlignment = .center
         addSubview(titleLabel)
     }
