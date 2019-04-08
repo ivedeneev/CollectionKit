@@ -104,7 +104,6 @@ open class CollectionDirector: NSObject {
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = self.sectionIds
         let sectionDiff = diff(old: oldSectionIds, new: newSectionIds)
-        
         /////////
         var deletes: [(Delete<String>, IndexPath)] = []
         var inserts: [(Insert<String>, IndexPath)] = []
@@ -189,9 +188,8 @@ open class CollectionDirector: NSObject {
                 self.collectionView.reloadSections(IndexSet(reloads))
             })
             
-        }) { [unowned self] _ in
-//            self.updateSectionIds()
-//            self.sections.forEach { $0.resetLastUpdatesIds() }
+        }) { [weak self] _ in
+            self?.updateSectionIds()
             completion?()
         }
     }

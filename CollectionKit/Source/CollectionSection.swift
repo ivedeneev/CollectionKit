@@ -7,8 +7,10 @@
 //
 
 import UIKit
-import DeepDiff
 
+/// Class represents `UICollectionView` section model.
+/// It contains models for each cell in section, models for header and footer
+/// Also it contains values for `insetForSection`, `minimumInterItemSpacing` and `lineSpacing`
 open class CollectionSection : AbstractCollectionSection {
 
     public let identifier: String

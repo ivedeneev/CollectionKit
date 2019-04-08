@@ -8,9 +8,10 @@
 
 import UIKit
 
-//как то различать ячейки и хедеры/футеры
+/// Class represents cell model. Stores cell viewModel.
+/// Responsible for cell size calculation and all events handling(e.g `onSelect`, `onDisplay`)
 open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollectionItem where CellType: UICollectionViewCell {
-    
+    /// called when `collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)` called
     open var onSelect: ((_ indexPath: IndexPath) -> Void)?
     open var onDeselect: ((_ indexPath: IndexPath) -> Void)?
     open var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
@@ -18,18 +19,20 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
     open var shouldHighlight: Bool?
-    /// Width of cell = collectionView.width - horizontal section insets
+    /// Width of cell = collectionView.width - horizontal section insets - horizontal collectionView insets.
+    /// Width from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsWidth: Bool = false
-    /// Height of cell = collectionView.height - vertical section insets
+    /// Height of cell = collectionView.height - vertical section insets - vertical collectionView insets
+    /// Height from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsHeight: Bool = false
-    
+    /// ViewModel for
     open var item: CellType.T {
         didSet { configureId() }
     }
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
-    
+    /// identifier used for diff calculating
     public var identifier: String {
-        return reuseIdentifier + "_" + internalIdentifier//"\(item.hashValue)"
+        return reuseIdentifier + "_" + internalIdentifier
     }
     
     private var internalIdentifier: String!
@@ -58,7 +61,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public func reload(item: CellType.T) {
         self.item = item
-        postReloadNotofication(subject: .item, object: self)
     }
     
     @discardableResult
@@ -96,13 +98,15 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         self.onUnighlight = block
         return self
     }
-    
+    /// Width of cell = collectionView.width - horizontal section insets - horizontal collectionView insets.
+    /// Width from `estimatedSize(boundingSize:)` will be ignored
     @discardableResult
     public func adjustsWidth(_ adjusts: Bool) -> Self {
         self.adjustsWidth = adjusts
         return self
     }
-    
+    /// Height of cell = collectionView.height - vertical section insets - vertical collectionView insets
+    /// Height from `estimatedSize(boundingSize:)` will be ignored
     @discardableResult
     public func adjustsHeight(_ adjusts: Bool) -> Self {
         self.adjustsHeight = adjusts

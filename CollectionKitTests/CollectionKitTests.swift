@@ -63,13 +63,15 @@ class CollectionKitTests: XCTestCase {
     }
     
     func testAppendItem() {
-        let section1 = CollectionSection()
-        director += section1
-        director.reload()
-        section1 += CollectionItem<TestCell>(item: "()")
-        director.performUpdates(completion: { [unowned self] in
-            XCTAssert(self.collectionView.numberOfItems(inSection: 0) == 1)
-        })
+            let section1 = CollectionSection()
+            self.director += section1
+            self.director.reload()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+            section1 += CollectionItem<TestCell>(item: "()")
+            self.director.performUpdates(completion: { [unowned self] in
+                XCTAssert(self.collectionView.numberOfItems(inSection: 0) == 1)
+            })
+        }
     }
     
     func testInsertDeleteItems() {

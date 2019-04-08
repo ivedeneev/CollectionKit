@@ -9,7 +9,7 @@
 import Foundation
 
 final class CollectionReusableViewsRegisterer {
-    let collectionView: UICollectionView
+    weak var collectionView: UICollectionView?
     private var cellReuseIdentifiers: Set<String> = []
     private var headersReuseIdentifiers: Set<String> = []
     private var footersReuseIdentifiers: Set<String> = []
@@ -23,9 +23,9 @@ final class CollectionReusableViewsRegisterer {
         cellReuseIdentifiers.insert(reuseIdentifier)
         let bundle = Bundle(for: cellClass)
         if let _ = bundle.path(forResource: reuseIdentifier, ofType: "nib") {
-            collectionView.register(UINib(nibName: reuseIdentifier, bundle: bundle), forCellWithReuseIdentifier: reuseIdentifier)
+            collectionView?.register(UINib(nibName: reuseIdentifier, bundle: bundle), forCellWithReuseIdentifier: reuseIdentifier)
         } else {
-            collectionView.register(cellClass, forCellWithReuseIdentifier: reuseIdentifier)
+            collectionView?.register(cellClass, forCellWithReuseIdentifier: reuseIdentifier)
         }
     }
     
@@ -38,9 +38,9 @@ final class CollectionReusableViewsRegisterer {
 
         let bundle = Bundle(for: viewClass)
         if let _ = bundle.path(forResource: reuseIdentifier, ofType: "nib") {
-            collectionView.register(UINib(nibName: reuseIdentifier, bundle: bundle), forSupplementaryViewOfKind: kind, withReuseIdentifier: reuseIdentifier)
+            collectionView?.register(UINib(nibName: reuseIdentifier, bundle: bundle), forSupplementaryViewOfKind: kind, withReuseIdentifier: reuseIdentifier)
         } else {
-            collectionView.register(viewClass, forSupplementaryViewOfKind: kind, withReuseIdentifier: reuseIdentifier)
+            collectionView?.register(viewClass, forSupplementaryViewOfKind: kind, withReuseIdentifier: reuseIdentifier)
         }
     }
 }
