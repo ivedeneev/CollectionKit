@@ -54,7 +54,7 @@ open class CollectionDirector: NSObject {
     }
     
     public func remove(section: AbstractCollectionSection) {
-        guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
+        guard let index = sections.firstIndex(where: { $0.identifier == section.identifier }) else {
             log("attempt to remove section not @ director", logLevel: .warning)
             return
         }
@@ -148,7 +148,7 @@ extension CollectionDirector: UICollectionViewDataSource {
         let section = sections[indexPath.section]
 
         switch kind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             guard let header = section.headerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: header.reuseIdentifier, viewClass: header.viewType, kind: kind)
@@ -156,7 +156,7 @@ extension CollectionDirector: UICollectionViewDataSource {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: header.reuseIdentifier, for: indexPath)
             header.configure(headerView)
             return headerView
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             guard let footer = section.footerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: footer.reuseIdentifier, viewClass: footer.viewType, kind: kind)
@@ -259,10 +259,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onDisplay?()
             break
         default:
@@ -277,10 +277,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         guard indexPath.count > 0 else { return }
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onEndDisplay?()
             break
         default:
@@ -314,7 +314,7 @@ extension CollectionDirector {
     }
     
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
-        guard let afterIndex = sections.index(where: { section == $0 }) else { return }
+        guard let afterIndex = sections.firstIndex(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
         let update = SectionUpdate(index: afterIndex + 1, type: .insert)
         deferredUpdates.append(update)
@@ -342,7 +342,7 @@ private extension CollectionDirector {
         switch subject {
         case .item:
             guard let item = notification.object as? AbstractCollectionItem else { return }
-            guard let sectionIndex = sections.index(where: { $0.contains(item: item) }) else { return }
+            guard let sectionIndex = sections.firstIndex(where: { $0.contains(item: item) }) else { return }
             guard let itemIndex = sections[sectionIndex].index(for: item) else { return }
             let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
             let update = ItemUpdate(indexPath: indexPath, type: .reload)
@@ -350,7 +350,7 @@ private extension CollectionDirector {
             break
         case .section:
             guard let section = notification.object as? AbstractCollectionSection,
-                let index = sections.index(where: { $0 == section }) else { return }
+                let index = sections.firstIndex(where: { $0 == section }) else { return }
             
             let update = SectionUpdate(index: index, type: .reload)
             deferredUpdates.append(update)
@@ -363,7 +363,7 @@ private extension CollectionDirector {
             let section = notification.userInfo?[CKTargetSectionKey] as? AbstractCollectionSection,
             let itemIndicies = notification.userInfo?[CKItemIndexKey] as? [Int] else { return }
         
-        guard let sectionIndex = sections.index(where: { $0.identifier == section.identifier }) else { return }
+        guard let sectionIndex = sections.firstIndex(where: { $0.identifier == section.identifier }) else { return }
         
         let indexPaths = itemIndicies.map { IndexPath(item: $0, section: sectionIndex) }
         let update = ItemUpdate(indexPaths: indexPaths, type: action)

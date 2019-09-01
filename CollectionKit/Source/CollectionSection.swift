@@ -67,7 +67,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func remove(item: AbstractCollectionItem) {
-        guard let index = items.index(where: { $0 == item }) else {
+        guard let index = items.firstIndex(where: { $0 == item }) else {
             log("Attempt to remove item from section, which it doesnt belongs to", logLevel: .error)
             return
         }
@@ -78,7 +78,7 @@ open class CollectionSection : AbstractCollectionSection {
     public func remove(items: [AbstractCollectionItem]) {
         items.forEach { [weak self] (item) in
             guard let `self` = self else { return }
-            guard let index = self.items.index(where: { $0.identifier == item.identifier }) else {
+            guard let index = self.items.firstIndex(where: { $0.identifier == item.identifier }) else {
                 log("Attempt to delete item , which is not contained at section", logLevel: .error)
                 return
             }
@@ -112,6 +112,6 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func index(for item: AbstractCollectionItem) -> Int? {
-        return items.index(where: {$0 == item})
+        return items.firstIndex(where: {$0 == item})
     }
 }
