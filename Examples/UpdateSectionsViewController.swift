@@ -17,14 +17,14 @@ final class UpdateSectionsViewController : UIViewController {
     let section2 = CollectionSection()
     let section3 = CollectionSection()
     
-    var array1 = ["privet", "kak", "dela", "ska"]
-//    var array1 = [String]()
+//    var array1 = ["privet", "kak", "dela", "ska"]
+    var array1 = [String]()
     var array2 = ["cska", "real", "juventus", "chelsea"]
     var array3 = ["facebook", "instargam", "pinterest", "linkedin"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: SectionBackgroundFlowLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -32,74 +32,53 @@ final class UpdateSectionsViewController : UIViewController {
         director = CollectionDirector(colletionView: collectionView)
         
         configureDirector()
-        
         director.reload()
+//         director.performUpdates()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(performReload))
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
     }
     
     func configureDirector() {
         director.removeAll()
         
-        section1.removeAll()
-        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0).adjustsWidth(true) })
-        section1.lineSpacing = 2
-        section1.minimumInterItemSpacing = 1
-        if !section1.isEmpty {
-            director += section1
-        }
-        
-        section1.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
-        
-        section2.removeAll()
-        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0).adjustsWidth(true) })
-        section2.lineSpacing = 2
-        section2.minimumInterItemSpacing = 1
-        if !section2.isEmpty {
-            director += section2
-        }
-        
-        section2.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
-        
-//        section3.items.append(contentsOf: array3.map { CollectionItem<CellFromXIB>(item: $0) })
-//        section3.lineSpacing = 2
-//        section3.minimumInterItemSpacing = 1
-//        section3.insetForSection = UIEdgeInsetsMake(30, 25, 0, 25)
-//
-//        if !section3.isEmpty {
-//            director += section3
-//        }
+        director += section(with: array2, id: "futbol")
+        director += section(with: array3, id: "siliconwalley")
+        director += section(with: ["5ka", "perek", "next", "domru"], id: "agima")
     }
     
     @objc func performReload() {
-        guard let item1 = array2.first, let item2 = array2.last, array2.count > 1 else { return }
-        array1.append(contentsOf: [item1, item2])
-        array2.removeLast()
-        array2.removeFirst()
-        if !array2.contains("psv") {
-            array2.append("psv")
-        }
+//        configureDirector()
+//
+        director.sections.first?.append(item: CollectionItem<CellFromXIB>(item: "inserted").adjustsWidth(true))
+        director.sections[1].append(item: CollectionItem<CellFromXIB>(item: "inserted").adjustsWidth(true))
+//
+//        let s1 = CollectionSection(id: "s1")
+//        s1 += CollectionItem<CellFromXIB>(item: "test1").adjustsWidth(true)
+//        s1 += CollectionItem<CellFromXIB>(item: "test2").adjustsWidth(true)
+//        s1.insetForSection = UIEdgeInsetsMake(25, 0, 0, 0)
+//
+//        let s2 = CollectionSection(id: "s2")
+//        s2 += CollectionItem<CellFromXIB>(item: "s2_1").adjustsWidth(true)
+//        s2 += CollectionItem<CellFromXIB>(item: "s2_2").adjustsWidth(true)
+//        s2.insetForSection = UIEdgeInsetsMake(25, 0, 0, 0)
+//
+//        director.append(sections: [s1, s2])
+        director.removeSection(at: 0)
         
-
-//        section1.removeAll()
-//        section1.items.append(contentsOf: array1.map { CollectionItem<CellFromXIB>(item: $0) })
-
-//        section2.removeAll()
-//        section2.items.append(contentsOf: array2.map { CollectionItem<CellFromXIB>(item: $0) })
-
-
-//        if self.director.contains(section: self.section3) {
-//            self.director.remove(section: self.section3)
-//        } else {
-//            //                self.director += self.section3
-//            //            self.director.remove(section: self.section1)
-//            self.director.insert(section: self.section3, at: 0)
-//        }
-        
-//        array1.append(array2.first!)
-//        array2.remove(at: 0)
-//        array2.append("blackburn")
-        configureDirector()
         director.performUpdates()
+    }
+    
+    func section(with array: [String], id: String) -> AbstractCollectionSection {
+        let s1 = CollectionSection(id: id)
+        s1.lineSpacing = 2
+        s1.minimumInterItemSpacing = 1
+        s1 += array.map { CollectionItem<CellFromXIB>(item: $0).adjustsWidth(true) }
+        s1.insetForSection = UIEdgeInsets(top: 25, left: 8, bottom: 0, right: 8)
+        return s1
     }
 }

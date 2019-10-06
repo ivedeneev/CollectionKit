@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 //            navigationController?.navigationBar.prefersLargeTitles = true
         }
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: SectionBackgroundFlowLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
         collectionView.backgroundColor = .lightGray
@@ -34,30 +34,49 @@ class ViewController: UIViewController {
         section.lineSpacing = 2
         let vm = HeaderViewModel()
         vm.title = "Показать все"
-        let header = CollectionHeaderFooterView<Header>(item: vm, kind: UICollectionElementKindSectionHeader)
+        let header = CollectionHeaderFooterView<Header>(item: vm, kind: UICollectionView.elementKindSectionHeader)
         section.headerItem = header
         
         let texts1 = ["Акция", "для", "дибилов"]
-        texts1.forEach {
-            let row = CollectionItem<CollectionCell>(item: $0)
-            row.adjustsWidth = true
-            section += row
+        texts1.forEach {_ in
+//            let row = CollectionItem<CollectionCell>(item: $0)
+//            row.adjustsWidth = true
+//            section += row
         }
         
         director += section
         
         let s2 = CollectionSection()
-        s2.insetForSection = UIEdgeInsetsMake(30, 0, 0, 0)
+        s2.insetForSection = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
         let texts2 = ["Пятерочка", "дифф", "алло"]
-        texts2.forEach {
-            let row = CollectionItem<CollectionCell>(item: $0)
-            row.adjustsWidth = true
-            s2 += row
+        texts2.forEach {_ in
+//            let row = CollectionItem<CollectionCell>(item: $0)
+//            row.adjustsWidth = true
+//            s2 += row
         }
         
         director += s2
         
         director.reload()
+        
+        let style = NSParagraphStyle()
+//        style
+        let ttt = NSAttributedString(string: "Fixing layout issues is as simple as using the Xcode debugger. Remember that on a 2x device, view frame coordinates will be snapped to half-point boundaries (x.0 and x.5 only), while on 3x devices they are on 1/3-point boundaries (x.0, x.333, and x.667). The offsets used for view alignment do not need to be rounded (and generally shouldn’t be, to avoid accumulating rounding error), but view sizes should be.", attributes: [.kern : 4])
+        
+        let h = ttt.boundingRect(with: CGSize(width: 320, height: 99999), options: [.usesFontLeading, .usesLineFragmentOrigin], context: nil)
+        
+        print(h.height)
+        
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.attributedText = ttt
+        view.addSubview(label)
+        label.frame = h
+        label.frame.origin.y = 64
+        label.backgroundColor = UIColor.green
+        print(label.frame)
+        label.sizeToFit()
+        print(label.frame)
     }
     
     @IBAction func addAction(_ sender: Any) {
@@ -74,11 +93,11 @@ class ViewController: UIViewController {
             
             self.director.sections.last?.removeAll()
             let texts2 = ["test", "дифф", "алло", "konec"]
-            texts2.forEach {
-                let row = CollectionItem<CollectionCell>(item: $0)
-                row.adjustsWidth = true
-                let sec = self.director.sections.last!
-                (sec as! CollectionSection) += row
+            texts2.forEach {_ in
+//                let row = CollectionItem<CollectionCell>(item: $0)
+//                row.adjustsWidth = true
+//                let sec = self.director.sections.last!
+//                (sec as! CollectionSection) += row
             }
 
             self.director.performUpdates()

@@ -247,7 +247,7 @@ extension CollectionDirector: UICollectionViewDataSource {
         let section = sections[indexPath.section]
 
         switch kind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             guard let header = section.headerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: header.reuseIdentifier, viewClass: header.viewType, kind: kind)
@@ -255,7 +255,7 @@ extension CollectionDirector: UICollectionViewDataSource {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: header.reuseIdentifier, for: indexPath)
             header.configure(headerView)
             return headerView
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             guard let footer = section.footerItem else { return UICollectionReusableView() }
             if shouldUseAutomaticViewRegistration {
                 viewsRegisterer.registerHeaderFooterViewIfNeeded(reuseIdentifier: footer.reuseIdentifier, viewClass: footer.viewType, kind: kind)
@@ -357,13 +357,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         return sections[section].lineSpacing
     }
     
-    public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onDisplay?()
             break
         default:
@@ -374,14 +374,14 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         view.layer.zPosition = 0
     }
     
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         guard indexPath.count > 0 else { return }
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()
             break
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             sections[indexPath.section].footerItem?.onEndDisplay?()
             break
         default:
@@ -397,7 +397,7 @@ extension CollectionDirector {
     }
     
     public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
-        guard let afterIndex = sections.index(where: { section == $0 }) else { return }
+        guard let afterIndex = sections.firstIndex(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
     }
     
