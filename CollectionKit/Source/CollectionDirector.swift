@@ -220,6 +220,11 @@ extension CollectionDirector {
         
         sections.removeAll()
     }
+    
+    @available(*, deprecated, renamed: "removeAll")
+    public func clear(clearSections: Bool = false) {
+        removeAll(clearSections: clearSections)
+    }
 }
 
 //MARK:- UICollectionViewDataSource

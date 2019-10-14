@@ -36,6 +36,7 @@ public protocol AbstractCollectionSection : class {
     func remove(items: [AbstractCollectionItem])
     func remove(at indicies: [Int])
     
+    func clear()
     func removeAll()
     func reload()
     func reload(with reloadItems: [AbstractCollectionItem])
@@ -48,5 +49,10 @@ extension AbstractCollectionSection {
     
     public func reload() {
         //is this needed????
+    }
+    
+    @available(*, deprecated, renamed: "removeAll")
+    public func clear() {
+        removeAll()
     }
 }
