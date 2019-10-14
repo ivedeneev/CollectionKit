@@ -51,7 +51,7 @@ open class CollectionDirector: NSObject {
     }
     
     public func remove(section: AbstractCollectionSection) {
-        guard let index = sections.index(where: { $0.identifier == section.identifier }) else {
+        guard let index = sections.firstIndex(where: { $0.identifier == section.identifier }) else {
             log("attempt to remove section not @ director", logLevel: .warning)
             return
         }

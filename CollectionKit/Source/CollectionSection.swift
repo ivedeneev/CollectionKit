@@ -107,6 +107,6 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     public func index(for item: AbstractCollectionItem) -> Int? {
-        return items.index(where: {$0 == item})
+        return items.firstIndex(where: {$0 == item})
     }
 }

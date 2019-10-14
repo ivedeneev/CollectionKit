@@ -38,7 +38,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     private var internalIdentifier: String!
     
     public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return CellType.estimatedSize(item: self.item, boundingSize: boundingSize)
+        return CellType.estimatedSize(item: item, boundingSize: boundingSize)
     }
     
     public var cellType: AnyClass {
@@ -51,7 +51,8 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     }
     
     private func configureId() {
-        let hashValue = (self.item as? AnyHashable)?.hashValue ?? UUID().uuidString.hashValue
+        let hashableId: AnyHashable = (item as? AnyHashable) ?? UUID().uuidString as AnyHashable
+        let hashValue = hashableId.hashValue
         self.internalIdentifier = String(hashValue)
     }
     
@@ -112,4 +113,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         self.adjustsHeight = adjusts
         return self
     }
+    
+    
 }
