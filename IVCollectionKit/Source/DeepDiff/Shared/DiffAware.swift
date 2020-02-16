@@ -22,14 +22,14 @@ public extension DiffAware where Self: Hashable {
     var diffId: Self {
         return self
     }
-
+    
     static func compareContent(_ a: Self, _ b: Self) -> Bool {
         return a == b
     }
 }
 
-extension Int: DiffAware {}
+//extension Int: DiffAware {}
 extension String: DiffAware {}
-extension Character: DiffAware {}
-extension UUID: DiffAware {}
+//extension Character: DiffAware {}
+//extension UUID: DiffAware {}
 

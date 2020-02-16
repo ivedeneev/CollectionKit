@@ -9,19 +9,29 @@
 import XCTest
 @testable import IVCollectionKit
 
-class IVCollectionKitTests: XCTestCase {
-    
+class IVTestCase: XCTestCase {
     let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
     lazy var director = CollectionDirector(colletionView: collectionView)
-    
-    override func setUp() {
-        super.setUp()
-    }
     
     override func tearDown() {
         director.removeAll()
         director.reload()
+        collectionView.layoutIfNeeded()
         super.tearDown()
+    }
+    
+    override func setUp() {
+        super.setUp()
+    }
+}
+
+class IVCollectionKitTests: IVTestCase {
+    
+//    let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+//    lazy var director = CollectionDirector(colletionView: collectionView)
+    
+    override func setUp() {
+        super.setUp()
     }
 
     func testPerformanceExample() {
@@ -29,27 +39,6 @@ class IVCollectionKitTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
-    }
-    
-    func testFillDirector() {
-        
-        let section1 = CollectionSection()
-        section1 += CollectionItem<TestCell>(item: ())
-        section1 += CollectionItem<TestCell>(item: ())
-        director += section1
-        
-        let section2 = CollectionSection()
-        section2 += CollectionItem<TestCell>(item: ())
-        section2 += CollectionItem<TestCell>(item: ())
-        director += section2
-        
-        director.reload()
-        
-        let numberOfSections = collectionView.numberOfSections == 2
-        let numberOfItemsInSection0 = collectionView.numberOfItems(inSection: 0) == 2
-        let numberOfItemsInSection1 = collectionView.numberOfItems(inSection: 1) == 2
-        
-        XCTAssert(numberOfSections && numberOfItemsInSection0 && numberOfItemsInSection1)
     }
     
 //    func testAppendItem() {
@@ -84,7 +73,7 @@ final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
 }
 
 
-extension String: DiffAware {
+extension String {
     public var diffId: String {
         return self
     }

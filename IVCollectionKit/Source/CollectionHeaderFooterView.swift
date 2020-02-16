@@ -22,6 +22,7 @@ open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: Abs
     open var onEndDisplay: (() -> Void)?
     open var reuseIdentifier: String { return ViewType.reuseIdentifier }
     public let identifier: String = UUID().uuidString
+    
     public init(item: ViewType.T, kind: String) {
         self.item = item
         self.kind = kind

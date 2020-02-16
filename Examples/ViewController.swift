@@ -44,7 +44,7 @@ class ViewController: UIViewController {
         section2.lineSpacing = 2
         section2.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         director += section2
-//        director.reload()
+
         director.performUpdates()
     }
     
@@ -52,11 +52,9 @@ class ViewController: UIViewController {
         section1.items.shuffle()
         imageSection.items.shuffle()
         
-        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>.init(item: "insert")])
+        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "insert")])
         director.insert(section: sectionToInsert, at: 0)
-        director.performUpdates {
-            print("shuffle end")
-        }
+        director.performUpdates()
     }
     
     @objc func crazyUpdate() {

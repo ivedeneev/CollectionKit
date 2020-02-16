@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D631D82923F751D40024C23F /* AdjustWidthHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */; };
+		D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82B23F87F0D0024C23F /* DataSourceTests.swift */; };
 		D655C19823E2178F00405D88 /* IVCollectionKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D655C18E23E2178F00405D88 /* IVCollectionKit.framework */; };
 		D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */; };
 		D655C19F23E2178F00405D88 /* IVCollectionKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D655C19123E2178F00405D88 /* IVCollectionKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -96,6 +98,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustWidthHeightTests.swift; sourceTree = "<group>"; };
+		D631D82B23F87F0D0024C23F /* DataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceTests.swift; sourceTree = "<group>"; };
 		D655C18E23E2178F00405D88 /* IVCollectionKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IVCollectionKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D655C19123E2178F00405D88 /* IVCollectionKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVCollectionKit.h; sourceTree = "<group>"; };
 		D655C19223E2178F00405D88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -198,6 +202,8 @@
 			children = (
 				D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */,
 				D655C19E23E2178F00405D88 /* Info.plist */,
+				D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */,
+				D631D82B23F87F0D0024C23F /* DataSourceTests.swift */,
 			);
 			path = IVCollectionKitTests;
 			sourceTree = "<group>";
@@ -462,6 +468,7 @@
 				D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */,
 				D655C1F423E2195700405D88 /* Array+Extensions.swift in Sources */,
 				D655C1CE23E2181000405D88 /* Operators.swift in Sources */,
+				D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */,
 				D655C1DA23E2181000405D88 /* CollectionUpdater.swift in Sources */,
 				D655C20423E2195700405D88 /* UITableView+Extensions.swift in Sources */,
 				D655C1F823E2195700405D88 /* WagnerFischer.swift in Sources */,
@@ -474,6 +481,7 @@
 				D655C1DE23E2181000405D88 /* Protocols.swift in Sources */,
 				D655C1E423E2181000405D88 /* CollectionItem.swift in Sources */,
 				D655C1D023E2181000405D88 /* CollectionReusableViewsRegisterer.swift in Sources */,
+				D631D82923F751D40024C23F /* AdjustWidthHeightTests.swift in Sources */,
 				D655C1D223E2181000405D88 /* CollectionDirector.swift in Sources */,
 				D655C1D623E2181000405D88 /* AbstractCollectionSection.swift in Sources */,
 				D655C1E223E2181000405D88 /* CollectionSection.swift in Sources */,

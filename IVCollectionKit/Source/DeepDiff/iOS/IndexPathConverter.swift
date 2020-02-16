@@ -15,6 +15,7 @@ public struct ChangeWithIndexPath {
   public let deletes: [IndexPath]
   public let replaces: [IndexPath]
   public let moves: [(from: IndexPath, to: IndexPath)]
+  public let isEmpty: Bool
 
   public init(
     inserts: [IndexPath],
@@ -26,6 +27,7 @@ public struct ChangeWithIndexPath {
     self.deletes = deletes
     self.replaces = replaces
     self.moves = moves
+    self.isEmpty = inserts.isEmpty && deletes.isEmpty && replaces.isEmpty && moves.isEmpty
   }
 }
 
