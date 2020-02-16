@@ -9,10 +9,8 @@
 import UIKit
 import IVCollectionKit
 
-class ViewController: UIViewController {
-    
-    @IBOutlet weak var collectionView: UICollectionView!
-    lazy var director: CollectionDirector = CollectionDirector(colletionView: collectionView)
+class ViewController: CollectionViewController {
+
     var section1: CollectionSection!
     var imageSection: CollectionSection!
     var section2: CollectionSection!
@@ -26,7 +24,7 @@ class ViewController: UIViewController {
 
         collectionView.alwaysBounceVertical = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fastForward, target: self, action: #selector(shuffle))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(crazyUpdate))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(crazyUpdate))
         
         let itemsForSection1 = pokerCombos.prefix(5).map { CollectionItem<TextCell>(item: $0).adjustsWidth(true) }
         section1 = CollectionSection(items: itemsForSection1)
@@ -49,8 +47,11 @@ class ViewController: UIViewController {
     }
     
     @objc func shuffle() {
-        section1.items.shuffle()
-        imageSection.items.shuffle()
+//        section1.items.shuffle()
+//        imageSection.items.shuffle()
+        
+        section1.items.removeLast()
+        section1 += CollectionItem<TextCell>(item: "reload?")
         
         let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "insert")])
         director.insert(section: sectionToInsert, at: 0)

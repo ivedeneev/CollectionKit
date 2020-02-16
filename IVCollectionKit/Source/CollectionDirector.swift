@@ -80,14 +80,6 @@ open class CollectionDirector: NSObject {
         
         sections.remove(at: indicies.sorted().reversed())
     }
-
-    public func setNeedsUpdate() {
-        collectionView.performBatchUpdates({}, completion: nil)
-    }
-    
-    private func updateSectionIds() {
-        sectionIds = sections.map { $0.identifier }
-    }
     
     /// Calculates and performs managed UICollectionView updates based on diff between sections array state
     /// afert last update or reload and current state
@@ -122,18 +114,27 @@ open class CollectionDirector: NSObject {
         self.updateSectionIds()
         self.updateLastCommitedIdentifiers()
 
-        if sectionChanges.isEmpty && itemChanges.isEmpty {
-            collectionView.reloadData()
-            completion?()
-            return
-        }
+//        if sectionChanges.isEmpty && itemChanges.isEmpty {
+//            collectionView.reloadData()
+//            completion?()
+//            return
+//        }
 
         collectionView.performBatchUpdates({ [weak self] in
             guard let `self` = self else { return }
 
             itemChanges.forEach { (changesWithIndexPath) in
                 changesWithIndexPath.deletes.executeIfPresent {
-                    self.collectionView.deleteItems(at: $0)
+                    let indexPaths: [IndexPath]
+                    
+                    if !sectionChanges.isEmpty {
+                        let oldIndicies = oldSectionIds.compactMap { oldSectionIds.firstIndex(of: $0) }
+                        indexPaths = zip($0, oldIndicies).map { IndexPath(item: $0.item, section: $1) }
+                    } else {
+                        indexPaths = $0
+                    }
+                    
+                    self.collectionView.deleteItems(at: indexPaths)
                 }
 
                 changesWithIndexPath.inserts.executeIfPresent {
@@ -179,12 +180,20 @@ open class CollectionDirector: NSObject {
 //        collectionView.reloadSections(IndexSet(sectionChanges.flatMap { $0.replace?.index }))
     }
     
+    public func setNeedsUpdate() {
+        collectionView.performBatchUpdates({}, completion: nil)
+    }
+    
     private func updateLastCommitedIdentifiers() {
         lastCommitedSectionAndItemsIdentifiers = [:]
 
         for s in sections {
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
         }
+    }
+    
+    private func updateSectionIds() {
+        sectionIds = sections.map { $0.identifier }
     }
     
     open override func responds(to selector: Selector) -> Bool {
@@ -340,7 +349,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         return sections[section].lineSpacing
     }
     
-    public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
@@ -357,7 +366,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         view.layer.zPosition = 0
     }
     
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         guard indexPath.count > 0 else { return }
         guard sections.indices.contains(indexPath.section) else { return }
         switch elementKind {

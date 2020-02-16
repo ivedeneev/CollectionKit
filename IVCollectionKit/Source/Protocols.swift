@@ -37,6 +37,7 @@ public protocol AbstractCollectionItem : AbstractCollectionReusableView, Actiona
     var adjustsWidth: Bool { get set }
     var adjustsHeight: Bool { get set }
     func configure(_: UICollectionReusableView)
+    //TODO: consider section as parameter
     func estimatedSize(boundingSize: CGSize) -> CGSize
 }
 
