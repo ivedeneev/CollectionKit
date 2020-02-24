@@ -83,10 +83,11 @@ open class CollectionDirector: NSObject {
     
     /// Calculates and performs managed UICollectionView updates based on diff between sections array state
     /// afert last update or reload and current state
-    /// if `UICollectionView` is empty performs reload inseted of batch updates to prevent crash
+    /// if `UICollectionView` is empty performs `reloadData` instead of batch updates to prevent crash
+    /// - parameter forceReloadDataForLargeAmountOfChanges: if there is > 50 section changes perform reload data instead of animated updates
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
-    public func performUpdates(completion: (() -> Void)? = nil) {
+    public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false, completion: (() -> Void)? = nil) {
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = sectionIds
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
@@ -103,6 +104,7 @@ open class CollectionDirector: NSObject {
         self.sections.enumerated().forEach { [unowned self] (idx, section) in
             let oldSectionIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
             let diff_ = diff(old: oldSectionIds, new: section.currentItemIds())
+            guard !diff_.isEmpty else { return }
             itemChanges.append(converter.convert(changes: diff_, section: idx))
         }
 
@@ -111,27 +113,28 @@ open class CollectionDirector: NSObject {
              return
         }
 
-        self.updateSectionIds()
-        self.updateLastCommitedIdentifiers()
-
-//        if sectionChanges.isEmpty && itemChanges.isEmpty {
-//            collectionView.reloadData()
-//            completion?()
-//            return
-//        }
-
+        updateSectionIds()
+        updateLastCommitedIdentifiers()
+        
+        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
+            collectionView.reloadData()
+            completion?()
+            return
+        }
+        
         collectionView.performBatchUpdates({ [weak self] in
             guard let `self` = self else { return }
 
             itemChanges.forEach { (changesWithIndexPath) in
-                changesWithIndexPath.deletes.executeIfPresent {
+                
+                changesWithIndexPath.deletes.executeIfPresent { deletes in
                     let indexPaths: [IndexPath]
                     
                     if !sectionChanges.isEmpty {
-                        let oldIndicies = oldSectionIds.compactMap { oldSectionIds.firstIndex(of: $0) }
-                        indexPaths = zip($0, oldIndicies).map { IndexPath(item: $0.item, section: $1) }
+                        let oldSections = deletes.map { newSectionIds[$0.section] }.compactMap { oldSectionIds.firstIndex(of: $0) }
+                        indexPaths = zip(deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
                     } else {
-                        indexPaths = $0
+                        indexPaths = deletes
                     }
                     
                     self.collectionView.deleteItems(at: indexPaths)
@@ -154,6 +157,7 @@ open class CollectionDirector: NSObject {
                     } else {
                         from = move.from
                     }
+
                     self.collectionView.moveItem(at: from, to: to)
                   }
                 }
@@ -176,8 +180,13 @@ open class CollectionDirector: NSObject {
             completion?()
         }
 
-//        collectionView.reloadItems(at: itemChanges.flatMap { $0.replaces })
-//        collectionView.reloadSections(IndexSet(sectionChanges.flatMap { $0.replace?.index }))
+        itemChanges.flatMap { $0.replaces }.executeIfPresent { [weak self] in
+            self?.collectionView.reloadItems(at: $0)
+        }
+        
+        sectionChanges.compactMap { $0.replace?.index }.executeIfPresent { [weak self] in
+            self?.collectionView.reloadSections(IndexSet($0))
+        }
     }
     
     public func setNeedsUpdate() {
