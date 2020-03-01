@@ -47,14 +47,14 @@ class ViewController: CollectionViewController {
     }
     
     @objc func shuffle() {
-//        section1.items.shuffle()
-//        imageSection.items.shuffle()
+        section1.items.shuffle()
+        imageSection.items.shuffle()
         
         section1.items.removeLast()
         section1 += CollectionItem<TextCell>(item: "reload?")
         
-        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "insert")])
-        director.insert(section: sectionToInsert, at: 0)
+//        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "insert")])
+//        director.insert(section: sectionToInsert, at: 0)
         director.performUpdates()
     }
     

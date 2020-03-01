@@ -21,6 +21,7 @@
 		D631D84623FBBD030024C23F /* ProfileInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84523FBBD030024C23F /* ProfileInfoCell.swift */; };
 		D631D84823FC69690024C23F /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84723FC69690024C23F /* FriendCell.swift */; };
 		D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84923FC85DB0024C23F /* ButtonFooter.swift */; };
+		D631D84D24041D4A0024C23F /* AnimatedUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */; };
 		D655C19823E2178F00405D88 /* IVCollectionKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D655C18E23E2178F00405D88 /* IVCollectionKit.framework */; };
 		D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */; };
 		D655C19F23E2178F00405D88 /* IVCollectionKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D655C19123E2178F00405D88 /* IVCollectionKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -124,6 +125,7 @@
 		D631D84523FBBD030024C23F /* ProfileInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoCell.swift; sourceTree = "<group>"; };
 		D631D84723FC69690024C23F /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 		D631D84923FC85DB0024C23F /* ButtonFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonFooter.swift; sourceTree = "<group>"; };
+		D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedUpdatesTests.swift; sourceTree = "<group>"; };
 		D655C18E23E2178F00405D88 /* IVCollectionKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IVCollectionKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D655C19123E2178F00405D88 /* IVCollectionKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVCollectionKit.h; sourceTree = "<group>"; };
 		D655C19223E2178F00405D88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				D655C19E23E2178F00405D88 /* Info.plist */,
 				D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */,
 				D631D82B23F87F0D0024C23F /* DataSourceTests.swift */,
+				D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */,
 			);
 			path = IVCollectionKitTests;
 			sourceTree = "<group>";
@@ -557,6 +560,7 @@
 				D655C20423E2195700405D88 /* UITableView+Extensions.swift in Sources */,
 				D655C1F823E2195700405D88 /* WagnerFischer.swift in Sources */,
 				D655C1DC23E2181000405D88 /* Helpers.swift in Sources */,
+				D631D84D24041D4A0024C23F /* AnimatedUpdatesTests.swift in Sources */,
 				D655C1FA23E2195700405D88 /* Heckel.swift in Sources */,
 				D655C20623E2195700405D88 /* UICollectionView+Extensions.swift in Sources */,
 				D655C20223E2195700405D88 /* IndexPathConverter.swift in Sources */,

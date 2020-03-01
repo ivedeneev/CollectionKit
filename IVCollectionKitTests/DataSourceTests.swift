@@ -7,8 +7,16 @@
 //
 
 import XCTest
+@testable import IVCollectionKit
 
 class DataSourceTests: IVTestCase {
+    
+    func test_delegateAndDataSource_wasSet() {
+        director.reload() // since director is lazy we need to call if first to initialize director instance
+        XCTAssert(collectionView.delegate === director)
+        XCTAssert(collectionView.dataSource === director)
+    }
+    
     func testDataSource_numberOfSectionsAndRows() {
         
         let section1 = CollectionSection()
