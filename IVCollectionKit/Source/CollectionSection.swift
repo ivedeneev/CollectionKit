@@ -89,7 +89,7 @@ open class CollectionSection : AbstractCollectionSection {
         return items[index].adjustsWidth
     }
     
-    public func itemAdjustsHeight(at index: Int) -> Bool {
+    open func itemAdjustsHeight(at index: Int) -> Bool {
         guard !isEmpty else { return false }
         return items[index].adjustsHeight
     }

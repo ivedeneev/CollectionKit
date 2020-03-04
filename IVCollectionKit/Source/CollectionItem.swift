@@ -26,7 +26,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     /// Height from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsHeight: Bool = false
     /// ViewModel for
-    open var item: CellType.T {
+    open private(set) var item: CellType.T {
         didSet { configureId() }
     }
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
@@ -58,10 +58,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public func configure(_ cell: UICollectionReusableView) {
         (cell as? CellType)?.configure(item: item)
-    }
-    
-    public func reload(item: CellType.T) {
-        self.item = item
     }
     
     @discardableResult
@@ -113,6 +109,4 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         self.adjustsHeight = adjusts
         return self
     }
-    
-    
 }

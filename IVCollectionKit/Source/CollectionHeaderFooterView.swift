@@ -8,11 +8,6 @@
 
 import UIKit
 
-//public enum SupplementaryViewKind: String {
-//    case header = UICollectionElementKindSectionHeader
-//    case footer = UICollectionElementKindSectionFooter
-//}
-
 open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: AbstractCollectionHeaderFooterItem where ViewType: UICollectionReusableView {
     public let kind: String
     public var viewType: AnyClass { return ViewType.self }

@@ -62,7 +62,7 @@ open class CollectionDirector: NSObject {
         collectionView.reloadData()
         //TODO: refactor
         updateSectionIds()
-        updateLastCommitedIdentifiers()
+        commitUpdates()
     }
     
     public func contains(section: AbstractCollectionSection) -> Bool {
@@ -114,7 +114,7 @@ open class CollectionDirector: NSObject {
         }
 
         updateSectionIds()
-        updateLastCommitedIdentifiers()
+        commitUpdates()
         
         if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
             collectionView.reloadData()
@@ -193,7 +193,8 @@ open class CollectionDirector: NSObject {
         collectionView.performBatchUpdates({}, completion: nil)
     }
     
-    private func updateLastCommitedIdentifiers() {
+    /// Save all section and items identifiers "snapshot". It will be used to compare current state during next update
+    private func commitUpdates() {
         lastCommitedSectionAndItemsIdentifiers = [:]
 
         for s in sections {

@@ -22,7 +22,11 @@ final class MenuViewController: CollectionViewController {
             self?.navigationController?.pushViewController(ProfileViewController(), animated: true)
         }
         
-        let s1 = CollectionSection(items: [cells, social])
+        let filter = CollectionItem<TextCell>(item: "Complex filter").adjustsWidth(true).onSelect { [weak self] (_) in
+            self?.navigationController?.pushViewController(FilterViewController(), animated: true)
+        }
+        
+        let s1 = CollectionSection(items: [cells, social, filter])
         s1.lineSpacing = 1
         s1.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "Complex", kind: UICollectionView.elementKindSectionHeader)
         s1.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
@@ -37,6 +41,11 @@ final class MenuViewController: CollectionViewController {
         s2.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom section", kind: UICollectionView.elementKindSectionHeader)
         s2.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         director += s2
+        
+        let s3 = CollectionSection(items: [photos])
+        s3.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom layout", kind: UICollectionView.elementKindSectionHeader)
+        s3.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        director += s3
         
         director.performUpdates()
     }

@@ -77,6 +77,10 @@
 		D655C20923E21B7600405D88 /* IVCollectionKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D655C18E23E2178F00405D88 /* IVCollectionKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D655C20E23E21C7500405D88 /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D655C20D23E21C7500405D88 /* TextCell.swift */; };
 		D655C21023E2203200405D88 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D655C20F23E2203200405D88 /* ImageCell.swift */; };
+		D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A67240D775D00F0A110 /* FilterViewController.swift */; };
+		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
+		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
+		D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +167,10 @@
 		D655C1F223E2195700405D88 /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		D655C20D23E21C7500405D88 /* TextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
 		D655C20F23E2203200405D88 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		D6C74A67240D775D00F0A110 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
+		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
+		D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +302,7 @@
 		D655C1AD23E217C400405D88 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				D6C74A66240D774700F0A110 /* Filter */,
 				D631D83C23FB42190024C23F /* SocialNetworkProfile */,
 				D631D83323F9CA2A0024C23F /* PhotoGrid */,
 				D631D83023F9C79B0024C23F /* Menu */,
@@ -376,6 +385,17 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D6C74A66240D774700F0A110 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */,
+				D6C74A67240D775D00F0A110 /* FilterViewController.swift */,
+				D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */,
+				D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -583,7 +603,9 @@
 			files = (
 				D631D82F23F9C4220024C23F /* CollectionViewController.swift in Sources */,
 				D631D83723F9CC790024C23F /* PhotoGridSection.swift in Sources */,
+				D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */,
 				D655C1B323E217C400405D88 /* ViewController.swift in Sources */,
+				D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */,
 				D631D84823FC69690024C23F /* FriendCell.swift in Sources */,
 				D655C1AF23E217C400405D88 /* AppDelegate.swift in Sources */,
 				D631D83223F9C7AD0024C23F /* MenuViewController.swift in Sources */,
@@ -593,11 +615,13 @@
 				D631D83923F9CDBF0024C23F /* PhotoCell.swift in Sources */,
 				D655C1B123E217C400405D88 /* SceneDelegate.swift in Sources */,
 				D631D84223FB42F10024C23F /* AvatarCell.swift in Sources */,
+				D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */,
 				D631D83B23F9E83C0024C23F /* CollectionHeader.swift in Sources */,
 				D655C21023E2203200405D88 /* ImageCell.swift in Sources */,
 				D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */,
 				D631D83523F9CA9D0024C23F /* PhotoGridViewController.swift in Sources */,
 				D631D84623FBBD030024C23F /* ProfileInfoCell.swift in Sources */,
+				D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
