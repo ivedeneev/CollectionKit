@@ -41,7 +41,7 @@ class FloatingLabelTextField : UITextField {
     private func initialSetup() {
         placeholderFont = .systemFont(ofSize: 13)
         layer.addSublayer(underlineLayer)
-        underlineLayer.backgroundColor = UIColor.separator.cgColor//Color.separator.cgColor
+        underlineLayer.backgroundColor = UIColor.separator.cgColor
         borderStyle = .none
         clipsToBounds = false
         

@@ -15,6 +15,13 @@ let filterCellHeight: CGFloat = 56
 final class RadioButtonCell: UICollectionViewCell {
     private let titleLabel = UILabel()
     private let radioButtonImageView = UIImageView()
+    var cancellable: Cancellable?
+    
+    override var isHighlighted: Bool {
+        didSet {
+            backgroundColor = isHighlighted ? UIColor(white: 0.85, alpha: 1) : .systemBackground
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,10 +33,6 @@ final class RadioButtonCell: UICollectionViewCell {
         radioButtonImageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         radioButtonImageView.widthAnchor.constraint(equalToConstant: 18).isActive = true
         radioButtonImageView.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        radioButtonImageView.clipsToBounds = true
-        radioButtonImageView.layer.borderWidth = 1
-        radioButtonImageView.layer.cornerRadius = 9
-        radioButtonImageView.layer.borderColor = UIColor.separator.cgColor
         
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -41,6 +44,11 @@ final class RadioButtonCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        cancellable?.cancel()
+        cancellable = nil
+    }
 }
 
 extension RadioButtonCell: ConfigurableCollectionItem {
@@ -50,18 +58,28 @@ extension RadioButtonCell: ConfigurableCollectionItem {
     
     func configure(item: RadioButtonViewModel) {
         titleLabel.text = item.title
+        cancellable = item.output
+            .map { [item] in $0 ? item.selectionStyle.onImage : item.selectionStyle.offImage }
+            .assign(to: \.image, on: radioButtonImageView)
     }
 }
 
 final class RadioButtonViewModel {
     let title: String
     let id: String
+    let selectionStyle: SelectionStyle
     lazy var output: AnyPublisher<Bool, Never> = _output.eraseToAnyPublisher()
-    private let _output = CurrentValueSubject<Bool, Never>.init(false)
+    private let _output: CurrentValueSubject<Bool, Never>
     
-    init(title: String, id: String) {
-        self.title = title
-        self.id = id
+    init(filter: SelectableFilterProtocol, initiallySelected: Bool, selectionStyle: SelectionStyle) {
+        self.title = filter.title
+        self.id = filter.id
+        self.selectionStyle = selectionStyle
+        self._output = CurrentValueSubject<Bool, Never>(initiallySelected)
+    }
+    
+    func toggle() {
+        _output.send(!_output.value)
     }
 }
 

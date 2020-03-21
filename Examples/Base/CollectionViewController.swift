@@ -14,6 +14,9 @@ class CollectionViewController: UIViewController {
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     lazy var director: CollectionDirector = CollectionDirector(colletionView: collectionView)
     
+    var topConstraint: NSLayoutConstraint!
+    var bottomConstraint: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
@@ -22,8 +25,10 @@ class CollectionViewController: UIViewController {
     private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        topConstraint = collectionView.topAnchor.constraint(equalTo: view.topAnchor)
+        topConstraint.isActive = true
+        bottomConstraint = collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        bottomConstraint.isActive = true
         collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.backgroundColor = .systemGroupedBackground

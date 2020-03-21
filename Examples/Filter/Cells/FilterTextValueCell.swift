@@ -24,6 +24,7 @@ final class FilterTextValueCell: UICollectionViewCell {
         textField.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         textField.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.isEnabled = false
         backgroundColor = .systemBackground
     }
     
@@ -56,22 +57,31 @@ protocol FilterEntryProtocol {
 //    var filterId: String { get }
 }
 
-enum FilterType {
-    case singleSelect([String])
-    case multiSelect([String])
-    case dateRange(Date, Date)
-    case numRange(Float, Float)
-    case bool
-}
+
 
 final class TextSelectViewModel {
     let title: String
     let id: String
-    lazy var output: AnyPublisher<String?, Never> = _output.map { $0.first }.eraseToAnyPublisher()
-    private let _output = CurrentValueSubject<[String], Never>.init([])
+    lazy var output: AnyPublisher<String?, Never> = _output
+        .map { entries -> String in
+            return entries.reduce(into: "", {
+                if !$0.isEmpty {
+                    $0.append(", ")
+                }
+                $0.append($1.title) })
+    }.eraseToAnyPublisher()
+    private let _output = CurrentValueSubject<[SelectableFilterProtocol], Never>([])
     
-    init(title: String, id: String) {
-        self.title = title
-        self.id = id
+    init(filter: FilterProtocol) {
+        self.title = filter.title
+        self.id = filter.id
+    }
+    
+    func updateSelection(_ entries: [SelectableFilterProtocol]) {
+        _output.send(entries)
+    }
+    
+    func currentValue() -> [SelectableFilterProtocol] {
+        return _output.value
     }
 }

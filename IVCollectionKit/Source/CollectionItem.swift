@@ -110,3 +110,17 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         return self
     }
 }
+
+protocol SelectableCellViewModel {
+    var onSelect: ((IndexPath) -> ())? { get set }
+}
+
+extension CollectionItem where CellType.T: SelectableCellViewModel {
+    /// Если viewModel для ячейки реализует протокол `SelectableCellViewModel`, то достаточно вызвать `onSelectFromViewModel()` у `CollectionItem`
+    @discardableResult
+    func onSelectFromViewModel() -> Self {
+        return onSelect { [weak self] (indexPath) in
+            self?.item.onSelect?(indexPath)
+        }
+    }
+}

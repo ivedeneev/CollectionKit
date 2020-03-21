@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D61AEA5324253AB700FB7FFD /* PopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AEA5224253AB700FB7FFD /* PopupController.swift */; };
+		D61AEA5524253B5D00FB7FFD /* StringFilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AEA5424253B5D00FB7FFD /* StringFilterPopup.swift */; };
 		D631D82923F751D40024C23F /* AdjustWidthHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */; };
 		D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82B23F87F0D0024C23F /* DataSourceTests.swift */; };
 		D631D82F23F9C4220024C23F /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82E23F9C4220024C23F /* CollectionViewController.swift */; };
@@ -22,6 +24,9 @@
 		D631D84823FC69690024C23F /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84723FC69690024C23F /* FriendCell.swift */; };
 		D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84923FC85DB0024C23F /* ButtonFooter.swift */; };
 		D631D84D24041D4A0024C23F /* AnimatedUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */; };
+		D64FA9952425E33100624969 /* FilterRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64FA9942425E33100624969 /* FilterRouter.swift */; };
+		D64FA9972425E3A200624969 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64FA9962425E3A200624969 /* Model.swift */; };
+		D64FA99C2425E71E00624969 /* SelectFilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64FA99B2425E71E00624969 /* SelectFilterCell.swift */; };
 		D655C19823E2178F00405D88 /* IVCollectionKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D655C18E23E2178F00405D88 /* IVCollectionKit.framework */; };
 		D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */; };
 		D655C19F23E2178F00405D88 /* IVCollectionKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D655C19123E2178F00405D88 /* IVCollectionKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -115,6 +120,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D61AEA5224253AB700FB7FFD /* PopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupController.swift; sourceTree = "<group>"; };
+		D61AEA5424253B5D00FB7FFD /* StringFilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFilterPopup.swift; sourceTree = "<group>"; };
 		D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustWidthHeightTests.swift; sourceTree = "<group>"; };
 		D631D82B23F87F0D0024C23F /* DataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceTests.swift; sourceTree = "<group>"; };
 		D631D82E23F9C4220024C23F /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
@@ -130,6 +137,9 @@
 		D631D84723FC69690024C23F /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 		D631D84923FC85DB0024C23F /* ButtonFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonFooter.swift; sourceTree = "<group>"; };
 		D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedUpdatesTests.swift; sourceTree = "<group>"; };
+		D64FA9942425E33100624969 /* FilterRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterRouter.swift; sourceTree = "<group>"; };
+		D64FA9962425E3A200624969 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		D64FA99B2425E71E00624969 /* SelectFilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectFilterCell.swift; sourceTree = "<group>"; };
 		D655C18E23E2178F00405D88 /* IVCollectionKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IVCollectionKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D655C19123E2178F00405D88 /* IVCollectionKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVCollectionKit.h; sourceTree = "<group>"; };
 		D655C19223E2178F00405D88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -254,6 +264,33 @@
 				D631D84323FB45140024C23F /* User.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		D64FA9982425E43900624969 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D64FA99B2425E71E00624969 /* SelectFilterCell.swift */,
+				D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */,
+				D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		D64FA9992425E44800624969 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				D61AEA5224253AB700FB7FFD /* PopupController.swift */,
+				D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		D64FA99A2425E47500624969 /* Popups */ = {
+			isa = PBXGroup;
+			children = (
+				D61AEA5424253B5D00FB7FFD /* StringFilterPopup.swift */,
+			);
+			path = Popups;
 			sourceTree = "<group>";
 		};
 		D655C18423E2178F00405D88 = {
@@ -390,10 +427,12 @@
 		D6C74A66240D774700F0A110 /* Filter */ = {
 			isa = PBXGroup;
 			children = (
-				D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */,
+				D64FA99A2425E47500624969 /* Popups */,
+				D64FA9992425E44800624969 /* Core */,
+				D64FA9982425E43900624969 /* Cells */,
 				D6C74A67240D775D00F0A110 /* FilterViewController.swift */,
-				D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */,
-				D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */,
+				D64FA9942425E33100624969 /* FilterRouter.swift */,
+				D64FA9962425E3A200624969 /* Model.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -611,15 +650,20 @@
 				D631D83223F9C7AD0024C23F /* MenuViewController.swift in Sources */,
 				D655C20E23E21C7500405D88 /* TextCell.swift in Sources */,
 				D631D84423FB45140024C23F /* User.swift in Sources */,
+				D64FA9972425E3A200624969 /* Model.swift in Sources */,
 				D631D83E23FB42670024C23F /* ProfileViewController.swift in Sources */,
 				D631D83923F9CDBF0024C23F /* PhotoCell.swift in Sources */,
+				D61AEA5324253AB700FB7FFD /* PopupController.swift in Sources */,
 				D655C1B123E217C400405D88 /* SceneDelegate.swift in Sources */,
+				D61AEA5524253B5D00FB7FFD /* StringFilterPopup.swift in Sources */,
 				D631D84223FB42F10024C23F /* AvatarCell.swift in Sources */,
 				D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */,
 				D631D83B23F9E83C0024C23F /* CollectionHeader.swift in Sources */,
 				D655C21023E2203200405D88 /* ImageCell.swift in Sources */,
 				D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */,
+				D64FA9952425E33100624969 /* FilterRouter.swift in Sources */,
 				D631D83523F9CA9D0024C23F /* PhotoGridViewController.swift in Sources */,
+				D64FA99C2425E71E00624969 /* SelectFilterCell.swift in Sources */,
 				D631D84623FBBD030024C23F /* ProfileInfoCell.swift in Sources */,
 				D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */,
 			);
