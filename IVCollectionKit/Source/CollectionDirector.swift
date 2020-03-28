@@ -17,6 +17,7 @@ open class CollectionDirector: NSObject {
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
+    open weak var sectionProvider: SectionProvider?
     
     private weak var collectionView: UICollectionView!
     private lazy var updater = CollectionUpdater(collectionView: collectionView)
@@ -206,6 +207,10 @@ open class CollectionDirector: NSObject {
         sectionIds = sections.map { $0.identifier }
     }
     
+    private func section(for index: Int) -> AbstractCollectionSection {
+        return sectionProvider?.section(for: index) ?? sections[index]
+    }
+    
     open override func responds(to selector: Selector) -> Bool {
         return super.responds(to: selector) || scrollDelegate?.responds(to: selector) == true
     }
@@ -217,6 +222,7 @@ open class CollectionDirector: NSObject {
 
 //MARK:- Public
 extension CollectionDirector {
+    /// If sections are provided by `sectionProvider` this method does nothing
     public func removeAll(clearSections: Bool = false) {
         if clearSections {
             sections.forEach { $0.removeAll() }
@@ -229,15 +235,15 @@ extension CollectionDirector {
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
+        return sectionProvider?.numberOfSections() ?? sections.count
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return sections[section].numberOfItems()
+        return self.section(for: section).numberOfItems()
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let item = sections[indexPath.section].item(for: indexPath.row)
+        let item = section(for: indexPath.section).item(for: indexPath.row)
         if shouldUseAutomaticViewRegistration {
             viewsRegisterer.registerCellIfNeeded(reuseIdentifier: item.reuseIdentifier, cellClass: item.cellType)
         }
@@ -248,7 +254,7 @@ extension CollectionDirector: UICollectionViewDataSource {
     }
     
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let section = sections[indexPath.section]
+        let section = self.section(for: indexPath.section)
 
         switch kind {
         case UICollectionView.elementKindSectionHeader:
@@ -277,38 +283,38 @@ extension CollectionDirector: UICollectionViewDataSource {
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        sections[indexPath.section].didSelectItem(at: indexPath)
+        section(for: indexPath.section).didSelectItem(at: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        sections[indexPath.section].didDeselectItem(at: indexPath)
+        section(for: indexPath.section).didDeselectItem(at: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        sections[indexPath.section].willDisplayItem(at: indexPath, cell: cell)
+        section(for: indexPath.section).willDisplayItem(at: indexPath, cell: cell)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard sections.count > indexPath.section,
-            sections[indexPath.section].numberOfItems() > indexPath.row else { return }
+            section(for: indexPath.section).numberOfItems() > indexPath.row else { return }
         
-        sections[indexPath.section].didEndDisplayingItem(at: indexPath, cell: cell)
+        section(for: indexPath.section).didEndDisplayingItem(at: indexPath, cell: cell)
     }
     
     open func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        sections[indexPath.section].shouldHighlightItem(at: indexPath)
+        section(for: indexPath.section).shouldHighlightItem(at: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        sections[indexPath.section].didHighlightItem(at: indexPath)
+        section(for: indexPath.section).didHighlightItem(at: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
-        sections[indexPath.section].didUnhighlightItem(at: indexPath)
+        section(for: indexPath.section).didUnhighlightItem(at: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let section = sections[indexPath.section]
+        let section = self.section(for: indexPath.section)
         
         let adjustsWidth = section.itemAdjustsWidth(at: indexPath.item)
         let adjustsHeight = section.itemAdjustsHeight(at: indexPath.item)
@@ -335,11 +341,11 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return sections[section].insetForSection
+        return self.section(for: section).insetForSection
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let section_ = sections[section]
+        let section_ = self.section(for: section)
         
         let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
         return value
@@ -352,15 +358,23 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return sections[section].minimumInterItemSpacing
+        return self.section(for: section).minimumInterItemSpacing
     }
     
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return sections[section].lineSpacing
+    open func collectionView(_ collectionView: UICollectionView,
+                             layout collectionViewLayout: UICollectionViewLayout,
+                             minimumLineSpacingForSectionAt section: Int) -> CGFloat
+    {
+        return self.section(for: section).lineSpacing
     }
     
-    open func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        guard sections.indices.contains(indexPath.section) else { return }
+    open func collectionView(_ collectionView: UICollectionView,
+                             willDisplaySupplementaryView view: UICollectionReusableView,
+                             forElementKind elementKind: String,
+                             at indexPath: IndexPath)
+    {
+        guard (sectionProvider?.numberOfSections() ?? sections.count) > indexPath.section else { return }
+        
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onDisplay?()
@@ -376,9 +390,14 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         view.layer.zPosition = 0
     }
     
-    open func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView,
+                             didEndDisplayingSupplementaryView view: UICollectionReusableView,
+                             forElementOfKind elementKind: String,
+                             at indexPath: IndexPath)
+    {
         guard indexPath.count > 0 else { return }
-        guard sections.indices.contains(indexPath.section) else { return }
+        guard (sectionProvider?.numberOfSections() ?? sections.count) > indexPath.section else { return }
+        
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
             sections[indexPath.section].headerItem?.onEndDisplay?()
@@ -394,19 +413,25 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
 
 //MARK:- Insertions
 extension CollectionDirector {
+    /// If sections are provided by `sectionProvider` this method does nothing
     public func append(section: AbstractCollectionSection) {
         sections.append(section)
     }
     
-    public func insert(section: AbstractCollectionSection, after afterSection: AbstractCollectionSection) {
+    /// If sections are provided by `sectionProvider` this method does nothing
+    public func insert(section: AbstractCollectionSection,
+                       after afterSection: AbstractCollectionSection)
+    {
         guard let afterIndex = sections.firstIndex(where: { section == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
     }
     
+    /// If sections are provided by `sectionProvider` this method does nothing
     public func insert(section: AbstractCollectionSection, at index: Int) {
         sections.insert(section, at: index)
     }
     
+    /// If sections are provided by `sectionProvider` this method does nothing
     public func append(sections: [AbstractCollectionSection]) {
         self.sections.append(contentsOf: sections)
     }
