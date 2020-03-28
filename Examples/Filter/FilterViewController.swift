@@ -10,7 +10,15 @@ import UIKit
 import IVCollectionKit
 import Combine
 
+
+
 final class FilterViewController: CollectionViewController {
+    
+    let df: DateFormatter = {
+        let d = DateFormatter()
+        d.dateFormat = "yyyy"
+        return d
+    }()
     
     
     override func viewDidLoad() {
@@ -25,10 +33,13 @@ final class FilterViewController: CollectionViewController {
         s2.lineSpacing = 1
         
         let filters: [FilterProtocol] = [
-            StringFilter(type: .singleSelect, title: "Владельцев по ПТС", entries: ["Один", "Не более двух"].map(StringFilterEntry.init), multiselect: false),
-            StringFilter(type: .singleSelect, title: "Коробка", entries: ["Автомат", "Механика"].map(StringFilterEntry.init), multiselect: true),
-            StringFilter(type: .singleSelect, title: "Привод", entries: ["Передний", "Полный", "Задний"].map(StringFilterEntry.init), multiselect: true),
-            StringFilter(type: .singleSelect, title: "Расположение руля", entries: ["Левый", "Правый"].map(StringFilterEntry.init), multiselect: false)
+            StringFilter(type: .singleSelect, title: "Владельцев по ПТС", payload: StringFilter.Payload(entries: ["Один", "Не более двух"].map(StringFilterEntry.init), multiselect: false)),
+            NumberFilter(title: "Год выпуска", payload: NumberFilter.Payload(min: 1890, max: 2020, step: 1, selectedMin: nil, selectedMax: nil)),
+            NumberFilter(title: "Объем двигателя", payload: NumberFilter.Payload(min: 0.2, max: 4.4, step: 0.1, selectedMin: nil, selectedMax: nil)),
+            StringFilter(type: .singleSelect, title: "Коробка", payload: StringFilter.Payload(entries: ["Автомат", "Механика"].map(StringFilterEntry.init), multiselect: true)),
+            StringFilter(type: .singleSelect, title: "Привод", payload: StringFilter.Payload(entries: ["Передний", "Полный", "Задний"].map(StringFilterEntry.init), multiselect: true)),
+            StringFilter(type: .singleSelect, title: "Расположение руля", payload: StringFilter.Payload(entries: ["Левый", "Правый"].map(StringFilterEntry.init), multiselect: false)),
+            ManualInputFilter(title: "Цена", payload: .init(fields: [.init(key: "от", initialValue: nil), .init(key: "до", initialValue: nil)]))
         ]
         
         s2 += filters.map { filter in
@@ -44,8 +55,22 @@ final class FilterViewController: CollectionViewController {
                     _vc.content.onSelect = { [unowned vm] entries in
                         vm.updateSelection(entries)
                     }
-                case .dateRange:
-                    vc = UITableViewController()
+                case .numRange:
+                    let _vc = PopupController<NumberPickerPopup>()
+                    vc = _vc
+//                    _vc.content.selectedEntries = vm.currentValue()
+                    _vc.content.filter = filter as! NumberFilter
+//                    _vc.content.onSelect = { [unowned vm] entries in
+//                        vm.updateSelection(entries)
+//                    }
+                case .fromToInput:
+                    let _vc = PopupController<ManualInputFilterPopup>()
+                    vc = _vc
+//                    _vc.content.selectedEntries = vm.currentValue()
+                    _vc.content.filter = filter as! ManualInputFilter
+//                    _vc.content.onSelect = { [unowned vm] entries in
+//                        vm.updateSelection(entries)
+//                    }
                 default:
                     vc = UITableViewController()
                 }
@@ -63,12 +88,12 @@ final class FilterViewController: CollectionViewController {
         
         
         let boolFilters = [
-            BoolFilter(title: "На гарантии", initialySelected: false),
-            BoolFilter(title: "Только с фото", initialySelected: true)
+            BoolFilter(title: "На гарантии", payload: .init(initialySelected: false)),
+            BoolFilter(title: "Только с фото", payload: .init(initialySelected: true))
         ]
         
         s3 += boolFilters.map { filter in
-            let vm = RadioButtonViewModel(filter: filter, initiallySelected: filter.initialySelected, selectionStyle: .multi)
+            let vm = RadioButtonViewModel(filter: filter, initiallySelected: filter.payload.initialySelected, selectionStyle: .multi)
             return CollectionItem<RadioButtonCell>(item: vm)
                 .onSelect { _ in
                     vm.toggle()

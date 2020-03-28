@@ -9,10 +9,11 @@
 import UIKit
 import IVCollectionKit
 
-final class StringFilterPopup: CollectionViewController, PopupContentView {
+final class StringFilterPopup: CollectionViewController, PopupContentView, FilterPopup {
+    
     var frameInPopup: CGRect {
         let safeArea: CGFloat = 34
-        let height: CGFloat = max(CGFloat(filter.entries.count * 51) + safeArea + 30.0, 300)
+        let height: CGFloat = max(CGFloat(filter.payload.entries.count * 51) + safeArea + 30.0, 250)
         return CGRect(x: 0, y: view.bounds.height - height, width: view.bounds.width, height: height)
     }
     
@@ -34,30 +35,28 @@ final class StringFilterPopup: CollectionViewController, PopupContentView {
         topConstraint.constant = 44
         bottomConstraint.constant = -44
         
-        setupHeaderView()
+        setupHeaderView(title: filter.title)
         roundCorners()
         setupToolbar()
         
         let section = CollectionSection()
         
-        let selectionStyle: SelectionStyle = filter.multiselect ? .multi : .single
-        let viewModels = filter.entries.map { [unowned self] entry -> RadioButtonViewModel in
+        let selectionStyle: SelectionStyle = filter.payload.multiselect ? .multi : .single
+        let viewModels = filter.payload.entries.map { [unowned self] entry -> RadioButtonViewModel in
             let isSelected = self.selectedEntries.contains { $0.id == entry.id }
             return RadioButtonViewModel(filter: entry, initiallySelected: isSelected, selectionStyle: selectionStyle)
         }
         section += viewModels.map { [unowned self] vm in
             return CollectionItem<RadioButtonCell>(item: vm)
                 .onSelect { [unowned self] _ in
-                    guard let entry = self.filter.entries.first(where: { $0.id == vm.id }) else { return }
-                    if self.filter.multiselect {
+                    guard let entry = self.filter.payload.entries.first(where: { $0.id == vm.id }) else { return }
+                    if self.filter.payload.multiselect {
                         vm.toggle()
                         if let idx = self.selectedEntries.firstIndex(where: { $0.id == vm.id }) {
                             self.selectedEntries.remove(at: idx)
                         } else {
                             self.selectedEntries.append(entry)
                         }
-                        
-                       
                     } else {
                         vm.toggle()
                         if let id = self.selectedEntries.first?.id {
@@ -80,57 +79,11 @@ final class StringFilterPopup: CollectionViewController, PopupContentView {
         onSelect?(selectedEntries)
     }
     
-    private func setupHeaderView() {
-        let headerView = UIView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.backgroundColor = .systemBackground
-        view.addSubview(headerView)
-        
-        headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        headerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        
-        let titleLabel = UILabel()
-        let cancelButton = UIButton()
-        
-        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        titleLabel.text = filter.title
-        
-        headerView.addSubview(titleLabel)
-        headerView.addSubview(cancelButton)
-        
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -16).isActive = true
-        cancelButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 18).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: cancelButton.leftAnchor, constant: -10).isActive = true
-    }
-    
-    private func setupToolbar() {
-        let toolbar = UIToolbar()
-        toolbar.tintColor = .systemPurple
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
-        toolbar.isTranslucent = false
-        view.addSubview(toolbar)
-        
-        toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -34).isActive = true
-        
-        toolbar.setItems([
-            UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil),
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
-            UIBarButtonItem(barButtonSystemItem: .done, target: self, action: nil),
-        ], animated: false)
-    }
-    
-    @objc func dismiss() {
+    @objc func cancel() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func reset() {
+        print("reset")
     }
 }

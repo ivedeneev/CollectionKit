@@ -48,18 +48,35 @@ extension FilterTextValueCell: ConfigurableCollectionItem {
     }
 }
 
-protocol FilterEntryProtocol {
-//    func transform(newValue: Input) -> Output
-    var title: String { get }
-//    var input: CurrentValueSubject<Input, Never> { get }
-    var output: AnyPublisher<String?, Never> { get }
-//    var filterType: FilterType { get }
-//    var filterId: String { get }
-}
-
-
 
 final class TextSelectViewModel {
+    let title: String
+    let id: String
+    lazy var output: AnyPublisher<String?, Never> = _output
+        .map { entries -> String in
+            return entries.reduce(into: "", {
+                if !$0.isEmpty {
+                    $0.append(", ")
+                }
+                $0.append($1.title) })
+    }.eraseToAnyPublisher()
+    private let _output = CurrentValueSubject<[SelectableFilterProtocol], Never>([])
+    
+    init(filter: FilterProtocol) {
+        self.title = filter.title
+        self.id = filter.id
+    }
+    
+    func updateSelection(_ entries: [SelectableFilterProtocol]) {
+        _output.send(entries)
+    }
+    
+    func currentValue() -> [SelectableFilterProtocol] {
+        return _output.value
+    }
+}
+
+final class NumberSelectViewModel {
     let title: String
     let id: String
     lazy var output: AnyPublisher<String?, Never> = _output

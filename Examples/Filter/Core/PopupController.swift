@@ -202,15 +202,22 @@ extension PopupController: PopupControllerProtocol {
 
 extension PopupContentView {
     func setupKeyboardObserving() {
-//        NotificationCenter.default.reactive.keyboardChange.take(duringLifetimeOf: self).observeValues { [weak self] context in
-//            guard let `self` = self else { return }
-//            UIView.animate(withDuration: context.animationDuration,
-//                           delay: 0,
-//                           options: [UIView.AnimationOptions(rawValue: UInt(context.animationCurve.rawValue))],
-//                           animations: {
-//                            self.view.frame.origin.y = context.endFrame.minY - self.view.bounds.height
-//            }, completion: nil)
-//        }
+        let o1 = NotificationCenter.default
+            .addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main) { [weak self] (note) in
+                guard
+                    let `self` = self,
+                    let duration: TimeInterval = note.userInfo?["UIKeyboardAnimationDurationUserInfoKey"] as? TimeInterval,
+                    let curve: UInt = note.userInfo?["UIKeyboardAnimationCurveUserInfoKey"] as? UInt,
+                    let endFrame: CGRect = note.userInfo?["UIKeyboardFrameEndUserInfoKey"] as? CGRect
+                else { return }
+                
+                UIView.animate(withDuration: duration,
+                   delay: 0,
+                   options: [UIView.AnimationOptions(rawValue: curve)],
+                   animations: {
+                    self.view.frame.origin.y = endFrame.minY - self.view.bounds.height
+                   }, completion: nil)
+            }
     }
     
     func roundCorners() {

@@ -47,26 +47,22 @@ enum SelectionStyle {
 enum FilterType {
     case singleSelect
     case multiSelect
-    case dateRange//(Date, Date)
-    case numRange//(Float, Float)
+    case numRange
     case bool
+    case singleInput
+    case fromToInput
 }
 
 struct StringFilter: Hashable, FilterProtocol {
     let type: FilterType
     let title: String
     let id = UUID().uuidString
-    let entries: [StringFilterEntry]
-    let multiselect: Bool
-}
-
-struct BoolFilter: Hashable, FilterProtocol, SelectableFilterProtocol {
-//    var selectionType: SelectionStyle = .single
+    let payload: Payload
     
-    let type: FilterType = .bool
-    let title: String
-    let id: String = UUID().uuidString
-    let initialySelected: Bool
+    struct Payload: Hashable {
+        let entries: [StringFilterEntry]
+        let multiselect: Bool
+    }
 }
 
 struct StringFilterEntry: Hashable, SelectableFilterProtocol {
@@ -74,4 +70,46 @@ struct StringFilterEntry: Hashable, SelectableFilterProtocol {
     
     let id = UUID().uuidString
     let displayName: String
+}
+
+struct BoolFilter: Hashable, FilterProtocol, SelectableFilterProtocol {
+    let type: FilterType = .bool
+    let title: String
+    let id: String = UUID().uuidString
+    let payload: Payload
+    
+    struct Payload: Hashable {
+        let initialySelected: Bool
+    }
+}
+
+struct NumberFilter: Hashable, FilterProtocol {
+    let type: FilterType = .numRange
+    let title: String
+    let id: String = UUID().uuidString
+    let payload: Payload
+
+    struct Payload: Hashable {
+        let min: Double
+        let max: Double
+        let step: Double
+        let selectedMin: Double?
+        let selectedMax: Double?
+    }
+}
+
+struct ManualInputFilter: Hashable, FilterProtocol {
+    let type: FilterType = .fromToInput
+    let title: String
+    let id: String = UUID().uuidString
+    let payload: Payload
+    
+    struct Payload: Hashable {
+        let fields: [ManualInputField]
+    }
+}
+
+struct ManualInputField: Hashable {
+    let key: String
+    let initialValue: String?
 }
