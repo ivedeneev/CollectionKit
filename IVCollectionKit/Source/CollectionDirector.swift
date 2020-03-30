@@ -17,13 +17,12 @@ open class CollectionDirector: NSObject {
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
-    open weak var sectionProvider: SectionProvider?
     
     private weak var collectionView: UICollectionView!
     private lazy var updater = CollectionUpdater(collectionView: collectionView)
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
-    private var sectionIds: [String] = []
     
+    private var sectionIds: [String] = []
     private var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
     
     var isEmpty: Bool {
@@ -48,6 +47,29 @@ open class CollectionDirector: NSObject {
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
     }
     
+    private func section(for index: Int) -> AbstractCollectionSection {
+        return sections[index]
+    }
+    
+    /// Save all section and items and sections identifiers "snapshot". It will be used to compare current state during next update
+    private func createSnapshot() {
+        sectionIds = sections.map { $0.identifier }
+        
+        lastCommitedSectionAndItemsIdentifiers = [:]
+
+        for s in sections {
+            lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
+        }
+    }
+}
+
+//MARK:- Public
+extension CollectionDirector {
+    /// Invokes empty batch update block. Typical use case: re-calculate cell size or toggle state of expandable section
+    public func setNeedsUpdate() {
+        collectionView.performBatchUpdates({}, completion: nil)
+    }
+    
     public func remove(section: AbstractCollectionSection) {
         guard let index = sections.firstIndex(where: { $0.identifier == section.identifier }) else { return }
         
@@ -61,9 +83,7 @@ open class CollectionDirector: NSObject {
     /// Reloads collectionview and saves director state
     public func reload() {
         collectionView.reloadData()
-        //TODO: refactor
-        updateSectionIds()
-        commitUpdates()
+        createSnapshot()
     }
     
     public func contains(section: AbstractCollectionSection) -> Bool {
@@ -85,10 +105,12 @@ open class CollectionDirector: NSObject {
     /// Calculates and performs managed UICollectionView updates based on diff between sections array state
     /// afert last update or reload and current state
     /// if `UICollectionView` is empty performs `reloadData` instead of batch updates to prevent crash
-    /// - parameter forceReloadDataForLargeAmountOfChanges: if there is > 50 section changes perform reload data instead of animated updates
+    /// - parameter forceReloadDataForLargeAmountOfChanges: if there is > 50 section changes perform reload data instead of animated updates. `false` by default
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
-    public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false, completion: (() -> Void)? = nil) {
+    public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false,
+                               completion: (() -> Void)? = nil)
+    {
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = sectionIds
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
@@ -102,25 +124,24 @@ open class CollectionDirector: NSObject {
         let converter = IndexPathConverter()
         var itemChanges = Array<ChangeWithIndexPath>()
 
-        self.sections.enumerated().forEach { [unowned self] (idx, section) in
-            let oldSectionIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
-            let diff_ = diff(old: oldSectionIds, new: section.currentItemIds())
-            guard !diff_.isEmpty else { return }
-            itemChanges.append(converter.convert(changes: diff_, section: idx))
-        }
-
         if sectionChanges.isEmpty && itemChanges.isEmpty {
              completion?()
              return
         }
 
-        updateSectionIds()
-        commitUpdates()
+        createSnapshot()
         
         if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
             collectionView.reloadData()
             completion?()
             return
+        }
+        
+        self.sections.enumerated().forEach { [unowned self] (idx, section) in
+            let oldSectionIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
+            let diff_ = diff(old: oldSectionIds, new: section.currentItemIds())
+            guard !diff_.isEmpty else { return }
+            itemChanges.append(converter.convert(changes: diff_, section: idx))
         }
         
         collectionView.performBatchUpdates({ [weak self] in
@@ -132,7 +153,10 @@ open class CollectionDirector: NSObject {
                     let indexPaths: [IndexPath]
                     
                     if !sectionChanges.isEmpty {
-                        let oldSections = deletes.map { newSectionIds[$0.section] }.compactMap { oldSectionIds.firstIndex(of: $0) }
+                        let oldSections = deletes
+                            .map { newSectionIds[$0.section] }
+                            .compactMap { oldSectionIds.firstIndex(of: $0) }
+                        
                         indexPaths = zip(deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
                     } else {
                         indexPaths = deletes
@@ -189,60 +213,50 @@ open class CollectionDirector: NSObject {
             self?.collectionView.reloadSections(IndexSet($0))
         }
     }
-    
-    public func setNeedsUpdate() {
-        collectionView.performBatchUpdates({}, completion: nil)
-    }
-    
-    /// Save all section and items identifiers "snapshot". It will be used to compare current state during next update
-    private func commitUpdates() {
-        lastCommitedSectionAndItemsIdentifiers = [:]
-
-        for s in sections {
-            lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
-        }
-    }
-    
-    private func updateSectionIds() {
-        sectionIds = sections.map { $0.identifier }
-    }
-    
-    private func section(for index: Int) -> AbstractCollectionSection {
-        return sectionProvider?.section(for: index) ?? sections[index]
-    }
-    
-    open override func responds(to selector: Selector) -> Bool {
-        return super.responds(to: selector) || scrollDelegate?.responds(to: selector) == true
-    }
-    
-    open override func forwardingTarget(for selector: Selector) -> Any? {
-        return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
-    }
-}
-
-//MARK:- Public
-extension CollectionDirector {
-    /// If sections are provided by `sectionProvider` this method does nothing
+    /// Removes all sections from director
+    /// - parameter clearSections: if `true` removes all items from sections. Remember, that you should override `removeAll()` method in your custom section. This method removes all items from array in `CollectionSection` implementation and does nothing by default
     public func removeAll(clearSections: Bool = false) {
         if clearSections {
             sections.forEach { $0.removeAll() }
         }
         
         sections.removeAll()
+        createSnapshot()
+    }
+    
+    public func append(section: AbstractCollectionSection) {
+        sections.append(section)
+    }
+    
+    public func insert(section: AbstractCollectionSection,
+                       after afterSection: AbstractCollectionSection)
+    {
+        guard let afterIndex = sections.firstIndex(where: { section == $0 }) else { return }
+        sections.insert(section, at: afterIndex + 1)
+    }
+    
+    public func insert(section: AbstractCollectionSection, at index: Int) {
+        sections.insert(section, at: index)
+    }
+    
+    public func append(sections: [AbstractCollectionSection]) {
+        self.sections.append(contentsOf: sections)
     }
 }
 
 //MARK:- UICollectionViewDataSource
 extension CollectionDirector: UICollectionViewDataSource {
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sectionProvider?.numberOfSections() ?? sections.count
+        return sections.count
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.section(for: section).numberOfItems()
     }
     
-    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView,
+                             cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    {
         let item = section(for: indexPath.section).item(for: indexPath.row)
         if shouldUseAutomaticViewRegistration {
             viewsRegisterer.registerCellIfNeeded(reuseIdentifier: item.reuseIdentifier, cellClass: item.cellType)
@@ -280,7 +294,7 @@ extension CollectionDirector: UICollectionViewDataSource {
     }
 }
 
-//MARK:- UICollectionViewDataSource
+//MARK:- UICollectionViewDelegateFlowLayout
 extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         section(for: indexPath.section).didSelectItem(at: indexPath)
@@ -373,7 +387,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
                              forElementKind elementKind: String,
                              at indexPath: IndexPath)
     {
-        guard (sectionProvider?.numberOfSections() ?? sections.count) > indexPath.section else { return }
+        guard sections.count > indexPath.section else { return }
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
@@ -395,8 +409,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
                              forElementOfKind elementKind: String,
                              at indexPath: IndexPath)
     {
-        guard indexPath.count > 0 else { return }
-        guard (sectionProvider?.numberOfSections() ?? sections.count) > indexPath.section else { return }
+        guard sections.count > indexPath.section else { return }
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
@@ -411,35 +424,20 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
 }
 
-//MARK:- Insertions
-extension CollectionDirector {
-    /// If sections are provided by `sectionProvider` this method does nothing
-    public func append(section: AbstractCollectionSection) {
-        sections.append(section)
-    }
-    
-    /// If sections are provided by `sectionProvider` this method does nothing
-    public func insert(section: AbstractCollectionSection,
-                       after afterSection: AbstractCollectionSection)
-    {
-        guard let afterIndex = sections.firstIndex(where: { section == $0 }) else { return }
-        sections.insert(section, at: afterIndex + 1)
-    }
-    
-    /// If sections are provided by `sectionProvider` this method does nothing
-    public func insert(section: AbstractCollectionSection, at index: Int) {
-        sections.insert(section, at: index)
-    }
-    
-    /// If sections are provided by `sectionProvider` this method does nothing
-    public func append(sections: [AbstractCollectionSection]) {
-        self.sections.append(contentsOf: sections)
-    }
-}
-
 //MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollDelegate?.scrollViewDidScroll?(scrollView)
+    }
+}
+
+//MARK:- Responder chain
+extension CollectionDirector {
+    open override func responds(to selector: Selector) -> Bool {
+        return super.responds(to: selector) || scrollDelegate?.responds(to: selector) == true
+    }
+    
+    open override func forwardingTarget(for selector: Selector) -> Any? {
+        return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
     }
 }

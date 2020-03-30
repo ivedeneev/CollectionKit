@@ -27,14 +27,17 @@ public extension Reusable {
 
 public extension UICollectionView {
     func dequeue<T: Reusable>(indexPath: IndexPath) -> T {
-        return dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
+        guard let cell = dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
+            fatalError("cell type \(T.self) is not registered")
+        }
+        return cell
     }
     
     func registerNib<T: Reusable>(_ type: T.Type) {
         register(T.nib, forCellWithReuseIdentifier: T.reuseIdentifier)
     }
     
-    func registerClass<T: Reusable>(_ type: T.Type) where T:UICollectionViewCell {
+    func registerClass<T: Reusable>(_ type: T.Type) where T: UICollectionViewCell {
         register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
     }
 }
