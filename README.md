@@ -2,23 +2,41 @@
 
 
 Framework to manage complex `UICollectionView` in declarative way and very few lines of code.
- Heavily inspired by https://github.com/maxsokolov/TableKit
+Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.com/Instagram/IGListKit
+
+
+# WARNING
+
+Development still in progress. Some changes may affect backward compatibility
+
 
 # Features
- - [x] Type-safe generic cells
+ - [x] Declarative `UICollectionView` management
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
  - [x] Easy way to map your models into cells
- - [x] Convinient updations
+ - [x] Auto diffing
  - [x] Supports cells & reusable views from code and xibs and storyboard
- - [x] Supports custom section implementation
+ - [x] Flexible
  - [x] Register cells and reusable views automatically
  - [x] Fix scroll indicator clipping at iOS11 (http://www.openradar.me/34308893)
 
 # Getting Started
 
-See example
+Key concepts of `CollectionKit` are `Section`, `Item` and `Director`. 
+`Item` is responsible for `UICollectionViewCell` configuration, size and actions
+`Section` is responsible for group of items and provides information for each item, header/footer and all kind of insets/margins: section insets, minimum inter item spacing and line spacing
+`Director` is responsible for providing all information, needed for `UICollectionView` and its updations
 
 ## Basic usage
+
+Setup UICollectionView and director: 
+
+ Setup collection view
+ ```swift
+collectionView = UICollectionView(frame: view.bounds, colletionViewLayout: UICollectionViewFlowLayout())
+collectionDirector = CollectionDirector(colletionView: collectionView)
+ ```
+
  Create items
  ```swift
  let item1 = CollectionItem<CollectionCell>(item: "hello!")
@@ -30,21 +48,22 @@ See example
  Create section and put items in section
  ```swift
  let section = CollectionSection()
- ```
-
- Setup collection view
- ```swift
-let collectionDirector = CollectionDirector(colletionView: self.collectionView)
-let items = [item1, item2, item3, item4]
+ let items = [item1, item2, item3, item4]
 section += items
 director += section
  ```
+
+ Put section in director and reload director
+ ```swift
+director += section
+director.reload()
+ ``` 
 
 ## Cell configuration
 Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?, collectionViewSize: CGSize) -> CGSize {
+    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
         return CGSize(width: collectionViewSize.width, height: 50)
     }
 
