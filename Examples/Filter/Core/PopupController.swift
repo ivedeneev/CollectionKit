@@ -69,18 +69,21 @@ final class PopupController<T: PopupContentView>: PortraitOrientationViewControl
     }
     
     @objc func handlePan(_ sender: UIPanGestureRecognizer) {
-        let percentThreshold: CGFloat = 0.3
+        let percentThreshold: CGFloat = 0.4
         let translation = sender.translation(in: contentView)
         let verticalMovement = translation.y / contentFrame.height
         let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
         let downwardMovementPercent = fminf(downwardMovement, 1.0)
-        let progress = CGFloat(downwardMovementPercent)
+        var progress = CGFloat(downwardMovementPercent)
+        progress = progress * 0.7
+        print(progress)
         switch sender.state {
         case .began:
             interactor.hasStarted = true
             dismiss(animated: true, completion: nil)
         case .changed:
             interactor.shouldFinish = progress > percentThreshold
+            print(interactor.shouldFinish)
             interactor.update(progress)
         case .cancelled:
             interactor.hasStarted = false
@@ -152,7 +155,7 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         let duration: TimeInterval = self.transitionDuration(using: transitionContext)
         UIView.animate(withDuration: duration, animations: {
-         UIView.setAnimationCurve(.linear)
+            UIView.setAnimationCurve(.linear)
             if self.type == .present {
                 toVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
                 transVC.contentView.transform = .identity

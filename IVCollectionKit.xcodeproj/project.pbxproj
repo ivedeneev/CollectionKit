@@ -85,7 +85,6 @@
 		D6668EA324269B8C00EEB524 /* NumberPickerPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */; };
 		D6668EA5242757D200EEB524 /* FilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA4242757D200EEB524 /* FilterPopup.swift */; };
 		D6668EA72427717600EEB524 /* ManualInputFilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */; };
-		D6AC8E4D242FC86400D6C3F4 /* SectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AC8E4C242FC86400D6C3F4 /* SectionProvider.swift */; };
 		D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A67240D775D00F0A110 /* FilterViewController.swift */; };
 		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
 		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
@@ -184,7 +183,6 @@
 		D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPickerPopup.swift; sourceTree = "<group>"; };
 		D6668EA4242757D200EEB524 /* FilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPopup.swift; sourceTree = "<group>"; };
 		D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualInputFilterPopup.swift; sourceTree = "<group>"; };
-		D6AC8E4C242FC86400D6C3F4 /* SectionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionProvider.swift; sourceTree = "<group>"; };
 		D6C74A67240D775D00F0A110 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
 		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
@@ -383,7 +381,6 @@
 				D655C1C123E2180F00405D88 /* Operators.swift */,
 				D655C1C923E2180F00405D88 /* Protocols.swift */,
 				D655C1CA23E2180F00405D88 /* Reusable.swift */,
-				D6AC8E4C242FC86400D6C3F4 /* SectionProvider.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -592,7 +589,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6AC8E4D242FC86400D6C3F4 /* SectionProvider.swift in Sources */,
 				D655C1D323E2181000405D88 /* CollectionHeaderFooterView.swift in Sources */,
 				D655C1D523E2181000405D88 /* AbstractCollectionSection.swift in Sources */,
 				D655C1E323E2181000405D88 /* CollectionItem.swift in Sources */,
@@ -857,6 +853,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.9.9;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -883,6 +880,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.9.9;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

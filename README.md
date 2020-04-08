@@ -2,7 +2,13 @@
 
 
 Framework to manage complex `UICollectionView` in declarative way and very few lines of code.
- Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.com/Instagram/IGListKit
+Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.com/Instagram/IGListKit
+
+
+# WARNING
+
+Development still in progress. Some changes may affect backward compatibility
+
 
 # Features
  - [x] Declarative `UICollectionView` management

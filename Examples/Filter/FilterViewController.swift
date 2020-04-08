@@ -103,3 +103,18 @@ final class FilterViewController: CollectionViewController {
         director.reload()
     }
 }
+
+
+final class TestPopup: UIViewController, PopupContentView {
+    var frameInPopup: CGRect {
+        return .init(x: 0, y: 150, width: view.bounds.width, height: view.bounds.height - 150)
+    }
+    
+    var scrollView: UIScrollView? { return nil }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        roundCorners()
+        view.backgroundColor = .systemBlue
+    }
+}
