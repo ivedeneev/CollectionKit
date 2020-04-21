@@ -123,26 +123,21 @@ extension CollectionDirector {
 
         let converter = IndexPathConverter()
         var itemChanges = Array<ChangeWithIndexPath>()
-
-        if sectionChanges.isEmpty && itemChanges.isEmpty {
-             completion?()
-             return
-        }
-
-        createSnapshot()
         
         if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
-            collectionView.reloadData()
+            reload()
             completion?()
             return
         }
         
         self.sections.enumerated().forEach { [unowned self] (idx, section) in
-            let oldSectionIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
-            let diff_ = diff(old: oldSectionIds, new: section.currentItemIds())
+            let oldItemIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
+            let diff_ = diff(old: oldItemIds, new: section.currentItemIds())
             guard !diff_.isEmpty else { return }
             itemChanges.append(converter.convert(changes: diff_, section: idx))
         }
+        
+        createSnapshot()
         
         collectionView.performBatchUpdates({ [weak self] in
             guard let `self` = self else { return }

@@ -23,8 +23,8 @@ class ViewController: CollectionViewController {
         super.viewDidLoad()
 
         collectionView.alwaysBounceVertical = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fastForward, target: self, action: #selector(shuffle))
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(crazyUpdate))
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .fastForward, target: self, action: #selector(shuffle)), UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(crazyUpdate))
+        ]
         
         let itemsForSection1 = pokerCombos.prefix(5).map { CollectionItem<TextCell>(item: $0).adjustsWidth(true) }
         section1 = CollectionSection(items: itemsForSection1)
@@ -47,14 +47,13 @@ class ViewController: CollectionViewController {
     }
     
     @objc func shuffle() {
-        section1.items.shuffle()
         imageSection.items.shuffle()
         
         section1.items.removeLast()
-        section1 += CollectionItem<TextCell>(item: "reload?")
+        section1 += CollectionItem<TextCell>(item: Date().description)
         
-//        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "insert")])
-//        director.insert(section: sectionToInsert, at: 0)
+        let sectionToInsert = CollectionSection(items: [CollectionItem<TextCell>(item: "INS  \(Date().description)")])
+        director.insert(section: sectionToInsert, at: 0)
         director.performUpdates()
     }
     
