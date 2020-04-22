@@ -63,12 +63,12 @@ final class AvatarCell: UICollectionViewCell {
 }
 
 extension AvatarCell: ConfigurableCollectionItem {
+    static func estimatedSize(item: User, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+         return CGSize.init(width: boundingSize.width, height: 76)
+    }
+    
     func configure(item: User) {
         nameLabel.text = "\(item.firstName) \(item.lastName)"
         ageAndCityLabel.text = "26 y. \(item.city)"
-    }
-    
-    static func estimatedSize(item: User?, boundingSize: CGSize) -> CGSize {
-        return CGSize.init(width: boundingSize.width, height: 76)
     }
 }

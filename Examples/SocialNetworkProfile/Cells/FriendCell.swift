@@ -51,8 +51,8 @@ final class FriendCell: UICollectionViewCell {
 }
 
 extension FriendCell: ConfigurableCollectionItem {
-    static func estimatedSize(item: User?, boundingSize: CGSize) -> CGSize {
-        let w = (boundingSize.width - 2 * 16 - 2 * 8) / 3
+    static func estimatedSize(item: User, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        let w = (boundingSize.width - 2 * section.insetForSection.left - 2 * section.minimumInterItemSpacing) / 3
         return CGSize(width: w, height: w * 1.3)
     }
     

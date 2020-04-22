@@ -30,11 +30,11 @@ final class CollectionHeader: UICollectionReusableView {
 }
 
 extension CollectionHeader: ConfigurableCollectionItem {
-    func configure(item: String) {
-        label.text = item.uppercased()
+    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width, height: 48)
     }
     
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: boundingSize.width, height: 48)
+    func configure(item: String) {
+        label.text = item.uppercased()
     }
 }

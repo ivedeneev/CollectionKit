@@ -35,11 +35,11 @@ final class TextCell: UICollectionViewCell {
 }
 
 extension TextCell: ConfigurableCollectionItem {
-    func configure(item: String) {
-        label.text = item
+    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width - 40, height: 44)
     }
     
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: boundingSize.width - 40, height: 44)
+    func configure(item: String) {
+        label.text = item
     }
 }

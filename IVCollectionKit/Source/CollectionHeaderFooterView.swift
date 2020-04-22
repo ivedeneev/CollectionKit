@@ -9,6 +9,7 @@
 import UIKit
 
 open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: AbstractCollectionHeaderFooterItem where ViewType: UICollectionReusableView {
+
     public let kind: String
     public var viewType: AnyClass { return ViewType.self }
     public var indexPath: String?
@@ -27,8 +28,8 @@ open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: Abs
         (view as? ViewType)?.configure(item: item)
     }
     
-    public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return ViewType.estimatedSize(item: self.item, boundingSize: boundingSize)
+    public func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return ViewType.estimatedSize(item: item, boundingSize: boundingSize, in: section)
     }
     
     @discardableResult

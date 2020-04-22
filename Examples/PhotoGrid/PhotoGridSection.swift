@@ -44,7 +44,7 @@ final class PhotoGridSection: AbstractCollectionSection {
     }
     
     func sizeForItem(at indexPath: IndexPath, boundingSize: CGSize) -> CGSize {
-        return PhotoCell.estimatedSize(item: nil, boundingSize: boundingSize)
+        return PhotoCell.estimatedSize(item: results[indexPath.row], boundingSize: boundingSize, in: self)
     }
     
     func append(item: AbstractCollectionItem) { }

@@ -30,12 +30,12 @@ final class ImageCell: UICollectionViewCell {
 }
 
 extension ImageCell: ConfigurableCollectionItem {
-    func configure(item: UIImage) {
-        imageView.image = item
+    static func estimatedSize(item: UIImage, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+         let width: CGFloat = ((boundingSize.width - 6) / 2).rounded(.down)
+               return CGSize(width: width, height: width * 0.8)
     }
     
-    static func estimatedSize(item: UIImage?, boundingSize: CGSize) -> CGSize {
-        let width: CGFloat = ((boundingSize.width - 6) / 2).rounded(.down)
-        return CGSize(width: width, height: width * 0.8)
+    func configure(item: UIImage) {
+        imageView.image = item
     }
 }

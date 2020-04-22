@@ -11,7 +11,7 @@ import UIKit
 //MARK:- ConfigurableCollectionItem
 public protocol ConfigurableCollectionItem : Reusable {
     associatedtype T
-    static func estimatedSize(item: T?, boundingSize: CGSize) -> CGSize
+    static func estimatedSize(item: T, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
     func configure(item: T)
 }
 
@@ -37,8 +37,7 @@ public protocol AbstractCollectionItem : AbstractCollectionReusableView, Actiona
     var adjustsWidth: Bool { get set }
     var adjustsHeight: Bool { get set }
     func configure(_: UICollectionReusableView)
-    //TODO: consider section as parameter
-    func estimatedSize(boundingSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
 }
 
 
@@ -47,7 +46,7 @@ public protocol AbstractCollectionReusableView {
     var reuseIdentifier: String { get }
     var identifier: String { get }
     func configure(_: UICollectionReusableView)
-    func estimatedSize(boundingSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
 }
 
 
@@ -60,5 +59,5 @@ public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableV
     var onDisplay: (() -> Void)? { get set }
     var onEndDisplay: (() -> Void)? { get set }
     func configure(_: UICollectionReusableView)
-    func estimatedSize(boundingSize: CGSize) -> CGSize
+    func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
 }

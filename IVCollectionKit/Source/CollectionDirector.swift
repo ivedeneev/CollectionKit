@@ -356,13 +356,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = self.section(for: section)
         
-        let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
+        let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size, in: section_) ?? .zero
         return value
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         let section_ = sections[section]
-        let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
+        let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size, in: section_) ?? .zero
         return value
     }
     

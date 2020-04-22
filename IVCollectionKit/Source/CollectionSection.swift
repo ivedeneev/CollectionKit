@@ -81,7 +81,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     open func sizeForItem(at indexPath: IndexPath, boundingSize: CGSize) -> CGSize {
-        return items[indexPath.item].estimatedSize(boundingSize: boundingSize)
+        return items[indexPath.item].estimatedSize(boundingSize: boundingSize, in: self)
     }
     
     open func itemAdjustsWidth(at index: Int) -> Bool {

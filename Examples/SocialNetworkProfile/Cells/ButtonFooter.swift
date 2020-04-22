@@ -40,12 +40,12 @@ final class ButtonFooter: UICollectionReusableView {
 }
 
 extension ButtonFooter: ConfigurableCollectionItem {
-    func configure(item: ButtonViewModel) {
-        button.setTitle(item.title, for: .normal)
+    static func estimatedSize(item: ButtonViewModel, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width, height: 40)
     }
     
-    static func estimatedSize(item: ButtonViewModel?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: boundingSize.width, height: 40)
+    func configure(item: ButtonViewModel) {
+        button.setTitle(item.title, for: .normal)
     }
 }
 

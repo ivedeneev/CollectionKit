@@ -48,11 +48,11 @@ final class ProfileInfoCell: UICollectionViewCell {
 }
 
 extension ProfileInfoCell: ConfigurableCollectionItem {
-    func configure(item: User.Info) {
-        titleLabel.text = item.value
+    static func estimatedSize(item: User.Info, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width, height: 30)
     }
     
-    static func estimatedSize(item: User.Info?, boundingSize: CGSize) -> CGSize {
-        return CGSize.init(width: boundingSize.width, height: 30)
+    func configure(item: User.Info) {
+        titleLabel.text = item.value
     }
 }
