@@ -41,7 +41,7 @@ final class AdjustWidthHeightTests: IVTestCase {
         let section1 = CollectionSection()
         let inset: CGFloat = 15
         collectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-        section1.insetForSection = UIEdgeInsets.init(top: 0, left: inset, bottom: inset, right: inset)
+        section1.insetForSection = UIEdgeInsets(top: 0, left: inset, bottom: inset, right: inset)
         section1 += CollectionItem<TestCell>(item: ()).adjustsWidth(true)
         director += section1
         director.reload()

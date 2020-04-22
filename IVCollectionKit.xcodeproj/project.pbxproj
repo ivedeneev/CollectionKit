@@ -89,6 +89,7 @@
 		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
 		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
 		D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */; };
+		D6CE2EF124505B7F004C8B47 /* SizeCalculationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,6 +188,7 @@
 		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
 		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonCell.swift; sourceTree = "<group>"; };
+		D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeCalculationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +343,7 @@
 				D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */,
 				D631D82B23F87F0D0024C23F /* DataSourceTests.swift */,
 				D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */,
+				D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */,
 			);
 			path = IVCollectionKitTests;
 			sourceTree = "<group>";
@@ -625,6 +628,7 @@
 				D655C1CE23E2181000405D88 /* Operators.swift in Sources */,
 				D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */,
 				D655C1DA23E2181000405D88 /* CollectionUpdater.swift in Sources */,
+				D6CE2EF124505B7F004C8B47 /* SizeCalculationTests.swift in Sources */,
 				D655C20423E2195700405D88 /* UITableView+Extensions.swift in Sources */,
 				D655C1F823E2195700405D88 /* WagnerFischer.swift in Sources */,
 				D655C1DC23E2181000405D88 /* Helpers.swift in Sources */,

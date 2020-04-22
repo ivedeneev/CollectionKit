@@ -66,9 +66,8 @@ final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
     func configure(item: Void) {
         
     }
-    
-    static func estimatedSize(item: ()?, boundingSize collectionViewSize: CGSize) -> CGSize {
-        return CGSize(width: 50, height: 50)
+    static func estimatedSize(item: (), boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        CGSize(width: 50, height: 50)
     }
 }
 
