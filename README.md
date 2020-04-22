@@ -100,13 +100,17 @@ section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
 section.lineSpacing = 2
 ```
 
-## Updating
-You can update collection view only by operating with section and item objects without any `IndexPath` mess: put usual operations in `performUpdates` block
+## Updating & reloading
+
+`IVCollectionKit` provides 2 ways for updatung `UICollectionView` content:
+- reload (using `reloadData`)
+- animated updates(using `performBatchUpdates`)
+
+Note, that all models, that you use in `CollectionItem` initializations should conform `Hashable` protocol. Framework provides fallback for non-hashable models, but it may cause unexpected behaviour during animated updates.
 ```swift
-self.director.performUpdates { [unowned self] in
-    self.section.append(item: row)
-    self.section.insert(item: row, at: 0)
-    self.section.remove(item: item)
+director.performUpdates()
+director.performUpdates { finished: Bool in
+    print()
 }
 ```
 
