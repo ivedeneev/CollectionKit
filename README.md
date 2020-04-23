@@ -72,8 +72,18 @@ extension CollectionCell : ConfigurableCollectionItem {
     }
 }
 ```
+### "Auto sizing cells"
 
-## Actions
+Framework doesnt support auto-sizing cells, but you can adjust cell width and height to collection view dimensions
+
+```swift
+let item = CollectionItem<CollectionCell>(item: "text").adjustsWidth(true)
+```
+
+It means that width of this cell will be `collectionView.bounds.width` minus collectionView content insets and section insets. width from `estimatedSize` method is ignored for this case. `adjustsHeight(Bool)` method has same logic, but for vertical insets.
+
+
+### Cell actions
 Implement such actions like `didSelectItem` or `shouldHighlightItem` using functional syntax
 ```swift
 let row = CollectionItem<CollectionCell>(item: "text")
@@ -99,6 +109,11 @@ section.minimumInterItemSpacing = 2
 section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
 section.lineSpacing = 2
 ```
+Also you can set section header and footer:
+```swift
+section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
+section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
+```
 
 ## Updating & reloading
 
@@ -115,4 +130,18 @@ director.performUpdates { finished: Bool in
 ```
 
 ## Custom sections
-You can provide your own section implementations using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections
+You can provide your own section implementation using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections (see exapmles). Also you can create subclass of `CollectionSection` if you dont need radically different behaviour 
+
+## UIScrollViewDelegate
+If you need to implement `UISrollViewDelegate` methods for your collection view (e.g pagination support) you can use `scrollDelegate` property
+
+```swift
+final class ViewController: UIViewController, UIScrollViewDelegate {
+    var director: CollectionDirector!
+    ...
+    
+    private func setupDirector() {
+        director.scrollDelegate = self
+    }
+}
+```
