@@ -63,8 +63,8 @@ director.reload()
 Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: collectionViewSize.width, height: 50)
+    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width - 40, height: 44)
     }
 
     func configure(item: String) {
@@ -80,7 +80,7 @@ Framework doesnt support auto-sizing cells, but you can adjust cell width and he
 let item = CollectionItem<CollectionCell>(item: "text").adjustsWidth(true)
 ```
 
-It means that width of this cell will be `collectionView.bounds.width` minus collectionView content insets and section insets. width from `estimatedSize` method is ignored for this case. `adjustsHeight(Bool)` method has same logic, but for vertical insets.
+It means that width of this cell will be equal to `collectionView.bounds.width` minus collectionView content insets and section insets. width from `estimatedSize` method is ignored for this case. `adjustsHeight(Bool)` method has same logic, but for vertical insets.
 
 
 ### Cell actions
