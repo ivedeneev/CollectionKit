@@ -60,7 +60,7 @@ director.reload()
  ``` 
 
 ## Cell configuration
-Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
+Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configuration methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
     static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
@@ -71,6 +71,8 @@ extension CollectionCell : ConfigurableCollectionItem {
         textLabel.text = item
     }
 }
+
+Note, that `contentInsets` value of collection view is respected in `boundingSize` parameter
 ```
 ### "Auto sizing cells"
 

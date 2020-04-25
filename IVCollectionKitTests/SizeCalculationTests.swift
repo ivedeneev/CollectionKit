@@ -9,6 +9,6 @@
 import XCTest
 @testable import IVCollectionKit
 
-class DataSourceTests: IVTestCase {
-    //TODO: tests
+class SizeCalculationTests: IVTestCase {
+    
 }

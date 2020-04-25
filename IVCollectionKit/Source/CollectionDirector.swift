@@ -113,9 +113,15 @@ extension CollectionDirector {
     {
         let newSectionIds = self.sections.map { $0.identifier }
         let oldSectionIds = sectionIds
+        
+        updater.calculateUpdates(oldSectionIds: oldSectionIds,
+                                 newSectionIds: newSectionIds,
+                                 itemMap: lastCommitedSectionAndItemsIdentifiers,
+                                 forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
+        
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
 
-        // if there is no sections in cv, it crashes :(
+        // if there is no sections in collectionView, it crashes :(
         if oldSectionIds.isEmpty {
             reload()
             return

@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum Update {
+    case reload
+    case update(sections: [Change<String>], items: Array<ChangeWithIndexPath>)
+}
+
 final class CollectionUpdater {
     weak var collectionView: UICollectionView?
     
@@ -15,81 +20,73 @@ final class CollectionUpdater {
         self.collectionView = collectionView
     }
     
-//    func performUpdates(itemChanges: [ChangeWithIndexPath],
-//                        sectionChanges: [Change<String>],
-//                        forceReloadDataForLargeAmountOfChanges: Bool,
-//                        completion: (() -> Void)?)
-//    {
-//        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
-//            collectionView?.reloadData()
-//            completion?()
-//            return
-//        }
-//        
-//        collectionView?.performBatchUpdates({ [weak self] in
-//            guard let `self` = self, let collectionView = self.collectionView else { return }
-//
-//            itemChanges.forEach { (changesWithIndexPath) in
-//                
-//                changesWithIndexPath.deletes.executeIfPresent { deletes in
-//                    let indexPaths: [IndexPath]
-//                    
-//                    if !sectionChanges.isEmpty {
-//                        let oldSections = deletes.map { newSectionIds[$0.section] }.compactMap { oldSectionIds.firstIndex(of: $0) }
-//                        indexPaths = zip(deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
-//                    } else {
-//                        indexPaths = deletes
-//                    }
-//                    
-//                    self.collectionView.deleteItems(at: indexPaths)
-//                }
-//
-//                changesWithIndexPath.inserts.executeIfPresent {
-//                  self.collectionView.insertItems(at: $0)
-//                }
-//
-//                changesWithIndexPath.moves.executeIfPresent {
-//                  $0.forEach { move in
-//                    let from: IndexPath
-//                    let to: IndexPath = move.to
-//                    if !sectionChanges.isEmpty {
-//                        let sectionId = newSectionIds[move.to.section]
-//                        guard let oldSectionIdx = oldSectionIds.firstIndex(of: sectionId) else {
-//                            fatalError("Attemt to move from section which doesnt belong to director before update.")
-//                        }
-//                        from = IndexPath(item: move.from.item, section: oldSectionIdx)
-//                    } else {
-//                        from = move.from
-//                    }
-//
-//                    self.collectionView.moveItem(at: from, to: to)
-//                  }
-//                }
-//            }
-//            
-//            let sectionDeletes = sectionChanges.compactMap { $0.delete?.index }
-//            sectionDeletes.executeIfPresent { deletes in
-//                self.collectionView.deleteSections(IndexSet(deletes))
-//            }
-//
-//            let sectionInserts = sectionChanges.compactMap { $0.insert?.index }
-//            sectionInserts.executeIfPresent { inserts in
-//                self.collectionView.insertSections(IndexSet(inserts))
-//            }
-//
-//            sectionChanges.compactMap { $0.move }.executeIfPresent { moves in
-//                moves.forEach { self.collectionView.moveSection($0.fromIndex, toSection: $0.toIndex) }
-//            }
-//        }) { _ in
-//            completion?()
-//        }
-//
-//        itemChanges.flatMap { $0.replaces }.executeIfPresent { [weak self] in
-//            self?.collectionView.reloadItems(at: $0)
-//        }
-//        
-//        sectionChanges.compactMap { $0.replace?.index }.executeIfPresent { [weak self] in
-//            self?.collectionView.reloadSections(IndexSet($0))
-//        }
-//    }
+    func calculateUpdates(oldSectionIds: [String],
+                          currentSections: [AbstractCollectionSection],
+                          itemMap: [String: [String]],
+                          forceReloadDataForLargeAmountOfChanges: Bool) -> Update
+    {
+        // if there is no sections in collectionView, it crashes :(
+        if oldSectionIds.isEmpty {
+            return .reload
+        }
+        
+        let newSectionIds = currentSections.map { $0.identifier }
+        let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
+        let converter = IndexPathConverter()
+               
+        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
+            return .reload
+        }
+        
+        var itemChanges = Array<ChangeWithIndexPath>()
+        currentSections.enumerated().forEach { (idx, section) in
+            let oldItemIds = itemMap[section.identifier] ?? section.currentItemIds()
+            let diff_ = diff(old: oldItemIds, new: section.currentItemIds())
+            guard !diff_.isEmpty else { return }
+            itemChanges.append(converter.convert(changes: diff_, section: idx))
+        }
+        
+        var deletes = Array<IndexPath>()
+        deletes.reserveCapacity(itemChanges.flatMap { $0.deletes }.count)
+        let inserts = itemChanges.flatMap { $0.inserts }
+        var moves = itemChanges.flatMap { $0.moves }
+        let reloads = itemChanges.flatMap { $0.replaces }
+        
+        itemChanges.forEach { (changesWithIndexPath) in
+            changesWithIndexPath.deletes.executeIfPresent { _deletes in
+                let indexPaths: [IndexPath]
+                
+                if !sectionChanges.isEmpty {
+                    let oldSections = _deletes
+                        .compactMap { oldSectionIds.firstIndex(of: newSectionIds[$0.section] ) }
+                    
+                    indexPaths = zip(_deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
+                } else {
+                    indexPaths = _deletes
+                }
+                
+                deletes = indexPaths
+            }
+            
+            changesWithIndexPath.moves.executeIfPresent {
+              $0.forEach { move in
+                let from: IndexPath
+                let to: IndexPath = move.to
+                if !sectionChanges.isEmpty {
+                    let sectionId = newSectionIds[move.to.section]
+                    guard let oldSectionIdx = oldSectionIds.firstIndex(of: sectionId) else {
+                        fatalError("Attemt to move from section which doesnt belong to director before update.")
+                    }
+                    from = IndexPath(item: move.from.item, section: oldSectionIdx)
+                } else {
+                    from = move.from
+                }
+
+                moves.append((from, to))
+              }
+            }
+        }
+        
+        return .update(sections: sectionChanges, items: [])
+    }
 }

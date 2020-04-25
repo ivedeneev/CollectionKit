@@ -67,6 +67,10 @@ class AnimatedUpdatesTests: IVTestCase {
             XCTAssert(textsAreEqual)
         }
     }
+    
+    func test_onlyItemsUpdate() {
+        
+    }
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
