@@ -14,14 +14,18 @@ class IVTestCase: XCTestCase {
     lazy var director = CollectionDirector(colletionView: collectionView)
     
     override func tearDown() {
-        director.removeAll()
-        director.reload()
-        collectionView.layoutIfNeeded()
+        director.removeAll(clearSections: true)
+        reload()
         super.tearDown()
     }
     
     override func setUp() {
         super.setUp()
+    }
+    
+    func reload() {
+        director.reload()
+        collectionView.layoutIfNeeded()
     }
 }
 

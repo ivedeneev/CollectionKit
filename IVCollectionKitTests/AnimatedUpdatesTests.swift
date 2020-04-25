@@ -79,15 +79,3 @@ class AnimatedUpdatesTests: IVTestCase {
         }
     }
 }
-
-private class StringCell: UICollectionViewCell, ConfigurableCollectionItem {
-    let titleLabel = UILabel()
-    
-    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
-        return CGSize(width: 5, height: 5)
-    }
-    
-    func configure(item: String) {
-        titleLabel.text = item
-    }
-}

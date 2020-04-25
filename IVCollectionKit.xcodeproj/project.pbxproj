@@ -85,11 +85,12 @@
 		D6668EA324269B8C00EEB524 /* NumberPickerPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */; };
 		D6668EA5242757D200EEB524 /* FilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA4242757D200EEB524 /* FilterPopup.swift */; };
 		D6668EA72427717600EEB524 /* ManualInputFilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */; };
+		D68C85E8245496CD0011C186 /* CollectionUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */; };
+		D68C85EB24549B3B0011C186 /* StringCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68C85EA24549B3B0011C186 /* StringCell.swift */; };
 		D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A67240D775D00F0A110 /* FilterViewController.swift */; };
 		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
 		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
 		D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */; };
-		D6CE2EF124505B7F004C8B47 /* SizeCalculationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,11 +185,12 @@
 		D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPickerPopup.swift; sourceTree = "<group>"; };
 		D6668EA4242757D200EEB524 /* FilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPopup.swift; sourceTree = "<group>"; };
 		D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualInputFilterPopup.swift; sourceTree = "<group>"; };
+		D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionUpdaterTests.swift; sourceTree = "<group>"; };
+		D68C85EA24549B3B0011C186 /* StringCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCell.swift; sourceTree = "<group>"; };
 		D6C74A67240D775D00F0A110 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
 		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonCell.swift; sourceTree = "<group>"; };
-		D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeCalculationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -338,12 +340,13 @@
 		D655C19B23E2178F00405D88 /* IVCollectionKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				D68C85E924549B2D0011C186 /* Helpers */,
 				D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */,
 				D655C19E23E2178F00405D88 /* Info.plist */,
 				D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */,
 				D631D82B23F87F0D0024C23F /* DataSourceTests.swift */,
 				D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */,
-				D6CE2EF024505B7F004C8B47 /* SizeCalculationTests.swift */,
+				D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */,
 			);
 			path = IVCollectionKitTests;
 			sourceTree = "<group>";
@@ -434,6 +437,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D68C85E924549B2D0011C186 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D68C85EA24549B3B0011C186 /* StringCell.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		D6C74A66240D774700F0A110 /* Filter */ = {
@@ -623,17 +634,18 @@
 				D655C1D423E2181000405D88 /* CollectionHeaderFooterView.swift in Sources */,
 				D655C20023E2195700405D88 /* Change.swift in Sources */,
 				D655C1E023E2181000405D88 /* Reusable.swift in Sources */,
+				D68C85E8245496CD0011C186 /* CollectionUpdaterTests.swift in Sources */,
 				D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */,
 				D655C1F423E2195700405D88 /* Array+Extensions.swift in Sources */,
 				D655C1CE23E2181000405D88 /* Operators.swift in Sources */,
 				D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */,
 				D655C1DA23E2181000405D88 /* CollectionUpdater.swift in Sources */,
-				D6CE2EF124505B7F004C8B47 /* SizeCalculationTests.swift in Sources */,
 				D655C20423E2195700405D88 /* UITableView+Extensions.swift in Sources */,
 				D655C1F823E2195700405D88 /* WagnerFischer.swift in Sources */,
 				D655C1DC23E2181000405D88 /* Helpers.swift in Sources */,
 				D631D84D24041D4A0024C23F /* AnimatedUpdatesTests.swift in Sources */,
 				D655C1FA23E2195700405D88 /* Heckel.swift in Sources */,
+				D68C85EB24549B3B0011C186 /* StringCell.swift in Sources */,
 				D655C20623E2195700405D88 /* UICollectionView+Extensions.swift in Sources */,
 				D655C20223E2195700405D88 /* IndexPathConverter.swift in Sources */,
 				D655C1FE23E2195700405D88 /* DiffAware.swift in Sources */,

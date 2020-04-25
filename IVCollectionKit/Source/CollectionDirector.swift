@@ -19,11 +19,11 @@ open class CollectionDirector: NSObject {
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
-    private lazy var updater = CollectionUpdater(collectionView: collectionView)
+    private let updater = CollectionUpdater()
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     
-    private var sectionIds: [String] = []
-    private var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
+    internal var sectionIds: [String] = []
+    internal var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
     
     var isEmpty: Bool {
         if sections.isEmpty {
@@ -33,13 +33,13 @@ open class CollectionDirector: NSObject {
         return sections.reduce(true, { $0 && $1.numberOfItems() == 0 })
     }
     
-    public init(colletionView: UICollectionView,
+    public init(collectionView: UICollectionView,
                 sections: [AbstractCollectionSection] = [],
                 shouldUseAutomaticViewRegistration: Bool = true,
                 shouldAdjustSupplementaryViewLayerZPosition: Bool = true)
     {
         
-        self.collectionView = colletionView
+        self.collectionView = collectionView
         super.init()
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
@@ -109,111 +109,70 @@ extension CollectionDirector {
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
     public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false,
-                               completion: (() -> Void)? = nil)
+                               completion: (() -> Void)? = nil) {
+        
+        let updates = updater.calculateUpdates(oldSectionIds: sectionIds,
+                                               currentSections: sections,
+                                               itemMap: lastCommitedSectionAndItemsIdentifiers,
+                                               forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
+        
+        switch updates {
+        case .reload:
+            reload()
+            return
+        case .update(let sections, let items):
+            createSnapshot()
+            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
+        }
+    }
+    
+    private func _performUpdates(sectionChanges: [Change<String>],
+                                 itemChanges: ChangeWithIndexPath,
+                                 completion: (() -> Void)?)
     {
-        let newSectionIds = self.sections.map { $0.identifier }
-        let oldSectionIds = sectionIds
-        
-        updater.calculateUpdates(oldSectionIds: oldSectionIds,
-                                 newSectionIds: newSectionIds,
-                                 itemMap: lastCommitedSectionAndItemsIdentifiers,
-                                 forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
-        
-        let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
-
-        // if there is no sections in collectionView, it crashes :(
-        if oldSectionIds.isEmpty {
-            reload()
-            return
-        }
-
-        let converter = IndexPathConverter()
-        var itemChanges = Array<ChangeWithIndexPath>()
-        
-        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
-            reload()
-            completion?()
-            return
-        }
-        
-        self.sections.enumerated().forEach { [unowned self] (idx, section) in
-            let oldItemIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
-            let diff_ = diff(old: oldItemIds, new: section.currentItemIds())
-            guard !diff_.isEmpty else { return }
-            itemChanges.append(converter.convert(changes: diff_, section: idx))
-        }
-        
-        createSnapshot()
-        
         collectionView.performBatchUpdates({ [weak self] in
-            guard let `self` = self else { return }
-
-            itemChanges.forEach { (changesWithIndexPath) in
-                
-                changesWithIndexPath.deletes.executeIfPresent { deletes in
-                    let indexPaths: [IndexPath]
-                    
-                    if !sectionChanges.isEmpty {
-                        let oldSections = deletes
-                            .map { newSectionIds[$0.section] }
-                            .compactMap { oldSectionIds.firstIndex(of: $0) }
-                        
-                        indexPaths = zip(deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
-                    } else {
-                        indexPaths = deletes
-                    }
-                    
-                    self.collectionView.deleteItems(at: indexPaths)
-                }
-
-                changesWithIndexPath.inserts.executeIfPresent {
-                  self.collectionView.insertItems(at: $0)
-                }
-
-                changesWithIndexPath.moves.executeIfPresent {
-                  $0.forEach { move in
-                    let from: IndexPath
-                    let to: IndexPath = move.to
-                    if !sectionChanges.isEmpty {
-                        let sectionId = newSectionIds[move.to.section]
-                        guard let oldSectionIdx = oldSectionIds.firstIndex(of: sectionId) else {
-                            fatalError("Attemt to move from section which doesnt belong to director before update.")
-                        }
-                        from = IndexPath(item: move.from.item, section: oldSectionIdx)
-                    } else {
-                        from = move.from
-                    }
-
-                    self.collectionView.moveItem(at: from, to: to)
-                  }
+            guard let collectionView = self?.collectionView else { return }
+            
+            itemChanges.deletes.executeIfPresent { (deletes) in
+                collectionView.deleteItems(at: deletes)
+            }
+            
+            itemChanges.inserts.executeIfPresent { (inserts) in
+                collectionView.insertItems(at: inserts)
+            }
+            
+            itemChanges.moves.executeIfPresent { (moves) in
+                moves.forEach { move in
+                    collectionView.moveItem(at: move.from, to: move.to)
                 }
             }
             
             let sectionDeletes = sectionChanges.compactMap { $0.delete?.index }
             sectionDeletes.executeIfPresent { deletes in
-                self.collectionView.deleteSections(IndexSet(deletes))
+                self?.collectionView.deleteSections(IndexSet(deletes))
             }
 
             let sectionInserts = sectionChanges.compactMap { $0.insert?.index }
             sectionInserts.executeIfPresent { inserts in
-                self.collectionView.insertSections(IndexSet(inserts))
+                self?.collectionView.insertSections(IndexSet(inserts))
             }
 
             sectionChanges.compactMap { $0.move }.executeIfPresent { moves in
-                moves.forEach { self.collectionView.moveSection($0.fromIndex, toSection: $0.toIndex) }
+                moves.forEach { self?.collectionView.moveSection($0.fromIndex, toSection: $0.toIndex) }
             }
-        }) { _ in
+        }) { (_) in
             completion?()
         }
-
-        itemChanges.flatMap { $0.replaces }.executeIfPresent { [weak self] in
+        
+        itemChanges.replaces.executeIfPresent { [weak self] in
             self?.collectionView.reloadItems(at: $0)
         }
-        
+
         sectionChanges.compactMap { $0.replace?.index }.executeIfPresent { [weak self] in
             self?.collectionView.reloadSections(IndexSet($0))
         }
     }
+    
     /// Removes all sections from director
     /// - parameter clearSections: if `true` removes all items from sections. Remember, that you should override `removeAll()` method in your custom section. This method removes all items from array in `CollectionSection` implementation and does nothing by default
     public func removeAll(clearSections: Bool = false) {
