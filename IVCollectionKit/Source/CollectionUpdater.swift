@@ -62,11 +62,12 @@ final class CollectionUpdater {
         moves.reserveCapacity(itemChanges.flatMap { $0.moves }.count)
         
         
-        var sectionMap = Dictionary<Int, Int>()
+        var sectionMap = Dictionary<Int, Int>() // map between old and new section indicies
         for i in 0..<newSectionIds.count {
             sectionMap[i] = oldSectionIds.firstIndex(of: newSectionIds[i])
         }
         
+        // we MUST use section index before updates in deletes and moves(from) operations
         itemChanges.forEach { (changesWithIndexPath) in
             changesWithIndexPath.deletes.executeIfPresent { _deletes in
                 
