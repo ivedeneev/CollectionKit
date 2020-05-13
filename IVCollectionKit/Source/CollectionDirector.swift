@@ -1,9 +1,9 @@
 //
-//  ProductDetailDirector.swift
-//  Marketplace
+//  CollectionDirector.swift
+//  CollectionKit
 //
 //  Created by Igor Vedeneev on 13.08.17.
-//  Copyright © 2017 WeAreLT. All rights reserved.
+//  Copyright © 2017 Igor Vedeneev. All rights reserved.
 //
 
 import UIKit
@@ -124,6 +124,17 @@ extension CollectionDirector {
             createSnapshot()
             _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
         }
+    }
+    
+    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
+        fatalError("not implemented")
+        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
+        
+        let updates = updater.calculateUpdates(oldSectionIds: [],
+                                               currentSections: [],
+                                               itemMap: lastCommitedSectionAndItemsIdentifiers
+                                                            .filter { $0.key == section.identifier },
+                                               forceReloadDataForLargeAmountOfChanges: false)
     }
     
     private func _performUpdates(sectionChanges: [Change<String>],
