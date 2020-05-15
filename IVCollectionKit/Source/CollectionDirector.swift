@@ -55,7 +55,7 @@ open class CollectionDirector: NSObject {
     private func createSnapshot() {
         sectionIds = sections.map { $0.identifier }
         
-        lastCommitedSectionAndItemsIdentifiers = [:]
+        lastCommitedSectionAndItemsIdentifiers.removeAll()
 
         for s in sections {
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
@@ -216,7 +216,6 @@ extension CollectionDirector {
         }
         
         sections.removeAll()
-        createSnapshot()
     }
     
     public func append(section: AbstractCollectionSection) {
