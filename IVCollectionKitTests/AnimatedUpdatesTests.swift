@@ -61,7 +61,7 @@ class AnimatedUpdatesTests: IVTestCase {
             
             let indexPaths = Array(0..<4).map { IndexPath(item: $0, section: 0) }
             let cells = indexPaths.compactMap { self.collectionView.cellForItem(at: $0) as? StringCell }
-            XCTAssert(cells.count == 4)
+            XCTAssert(cells.count == 4, "Expected 4 cells, got \(cells.count)")
             let texts = zip(insertSectionsStrings, cells.compactMap { $0.titleLabel.text })
             let textsAreEqual = texts.reduce(true, { $0 && $1.0 == $1.1 })
             XCTAssert(textsAreEqual)

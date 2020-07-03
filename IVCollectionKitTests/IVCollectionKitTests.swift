@@ -11,7 +11,7 @@ import XCTest
 
 class IVTestCase: XCTestCase {
     let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
-    lazy var director = CollectionDirector(colletionView: collectionView)
+    lazy var director = CollectionDirector(collectionView: collectionView)
     
     override func tearDown() {
         director.removeAll(clearSections: true)

@@ -63,12 +63,13 @@ class ViewController: CollectionViewController {
 //        director.sections.remove(at: 0)
         
 //        director.remove(section: section1)
-        imageSection += images.map(CollectionItem<ImageCell>.init)
+        imageSection.items.shuffle()
+//        imageSection += images.map(CollectionItem<ImageCell>.init)
 //        director += imageSection
         
 //        imageSection +=
         
-        director.performUpdates()
+        director.performUpdates(in: imageSection)
     }
 }
 

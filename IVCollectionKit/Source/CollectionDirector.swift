@@ -10,7 +10,7 @@ import UIKit
 
 open class CollectionDirector: NSObject {
     /// Array of sections models
-    public var sections = [AbstractCollectionSection]()
+    internal var sections = [AbstractCollectionSection]()
     ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
@@ -19,7 +19,7 @@ open class CollectionDirector: NSObject {
     open weak var scrollDelegate: UIScrollViewDelegate?
     
     private weak var collectionView: UICollectionView!
-    private let updater = CollectionUpdater()
+    private lazy var updater = CollectionUpdater(collectionView)
     private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     
     internal var sectionIds: [String] = []
@@ -47,17 +47,17 @@ open class CollectionDirector: NSObject {
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
     }
     
-    private func section(for index: Int) -> AbstractCollectionSection {
+    open func section(for index: Int) -> AbstractCollectionSection {
         return sections[index]
     }
     
     /// Save all section and items and sections identifiers "snapshot". It will be used to compare current state during next update
     private func createSnapshot() {
-        sectionIds = sections.map { $0.identifier }
-        
-        lastCommitedSectionAndItemsIdentifiers = [:]
+        sectionIds.removeAll()
+        lastCommitedSectionAndItemsIdentifiers.removeAll()
 
         for s in sections {
+            sectionIds.append(s.identifier)
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
         }
     }
@@ -111,10 +111,32 @@ extension CollectionDirector {
     public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false,
                                completion: (() -> Void)? = nil) {
         
-        let updates = updater.calculateUpdates(oldSectionIds: sectionIds,
-                                               currentSections: sections,
-                                               itemMap: lastCommitedSectionAndItemsIdentifiers,
-                                               forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
+        let updates = updater.calculateUpdates(
+            oldSectionIds: sectionIds,
+            currentSections: sections,
+            itemMap: lastCommitedSectionAndItemsIdentifiers,
+            forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
+        
+        switch updates {
+        case .reload:
+            reload()
+            completion?()
+            return
+        case .update(let sections, let items):
+            createSnapshot()
+            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
+        }
+    }
+    
+    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
+//        fatalError("not implemented")
+        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
+        
+        let updates = updater.calculateUpdates(
+            oldSectionIds: [s.identifier],
+            currentSections: [s],
+            itemMap: lastCommitedSectionAndItemsIdentifiers.filter { $0.key == section.identifier },
+            forceReloadDataForLargeAmountOfChanges: false)
         
         switch updates {
         case .reload:
@@ -124,17 +146,6 @@ extension CollectionDirector {
             createSnapshot()
             _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
         }
-    }
-    
-    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
-        fatalError("not implemented")
-        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
-        
-        let updates = updater.calculateUpdates(oldSectionIds: [],
-                                               currentSections: [],
-                                               itemMap: lastCommitedSectionAndItemsIdentifiers
-                                                            .filter { $0.key == section.identifier },
-                                               forceReloadDataForLargeAmountOfChanges: false)
     }
     
     private func _performUpdates(sectionChanges: [Change<String>],

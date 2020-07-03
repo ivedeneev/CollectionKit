@@ -10,7 +10,7 @@ import XCTest
 @testable import IVCollectionKit
 
 class CollectionUpdaterTests: IVTestCase {
-    private let updater = CollectionUpdater()
+    private lazy var updater = CollectionUpdater(collectionView)
     var section1 = CollectionSection()
     var section2 = CollectionSection()
     

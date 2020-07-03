@@ -18,16 +18,31 @@ enum Update {
 
 /// Responsible for update calculation
 final class CollectionUpdater {
+    
+    init(_ cv: UICollectionView?) {
+        self.collectionView = cv
+    }
+    
+    weak var collectionView: UICollectionView?
 
     func calculateUpdates(oldSectionIds: [String],
                           currentSections: [AbstractCollectionSection],
                           itemMap: [String: [String]],
                           forceReloadDataForLargeAmountOfChanges: Bool) -> Update
     {
+        
         // if there is no sections in collectionView, it crashes :(
         if oldSectionIds.isEmpty {
             return .reload
         }
+        
+        #if !TEST
+        // if collectionview is not displayed force to use reload since animated updates makes no sense
+        // should ignore this in tests since window is always nil
+        if collectionView?.window == nil && ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            return .reload
+        }
+        #endif
         
         let newSectionIds = currentSections.map { $0.identifier }
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
