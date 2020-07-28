@@ -22,7 +22,7 @@ public protocol AbstractCollectionSection {
     
     //datasource methods
     func numberOfItems() -> Int
-    func item(for index: Int) -> AbstractCollectionItem
+    func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell
     
     //delegate methods
     func willDisplayItem(at indexPath: IndexPath, cell: UICollectionViewCell)

@@ -18,9 +18,9 @@ open class CollectionDirector: NSObject {
     ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
     
-    private weak var collectionView: UICollectionView!
-    private lazy var updater = CollectionUpdater(collectionView)
-    private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
+    public weak var collectionView: UICollectionView!
+    internal lazy var updater = CollectionUpdater(collectionView)
+    internal lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     
     internal var sectionIds: [String] = []
     internal var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
@@ -61,10 +61,30 @@ open class CollectionDirector: NSObject {
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
         }
     }
+    
+    /// dequeue cell for `CollectionSection` implementation & support automatic cell registration
+    internal func private_dequeueReusableCell(of type: AnyClass, reuseIdentifier: String, for indexPath: IndexPath) -> UICollectionViewCell {
+        if shouldUseAutomaticViewRegistration {
+            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: reuseIdentifier, cellClass: type)
+        }
+        
+        return collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+    }
 }
 
 //MARK:- Public
 extension CollectionDirector {
+    
+    /// Dequeue cell and register cell identidifer
+    public func dequeueReusableCell<T: UICollectionViewCell & Reusable>(indexPath: IndexPath) -> T {
+        
+        if shouldUseAutomaticViewRegistration {
+            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: T.reuseIdentifier, cellClass: T.self)
+        }
+        
+        return collectionView.dequeue(indexPath: indexPath)
+    }
+    
     /// Invokes empty batch update block. Typical use case: re-calculate cell size or toggle state of expandable section
     public func setNeedsUpdate() {
         collectionView.performBatchUpdates({}, completion: nil)
@@ -129,7 +149,6 @@ extension CollectionDirector {
     }
     
     public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
-//        fatalError("not implemented")
         guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
         
         let updates = updater.calculateUpdates(
@@ -203,7 +222,6 @@ extension CollectionDirector {
         }
         
         sections.removeAll()
-        createSnapshot()
     }
     
     public func append(section: AbstractCollectionSection) {
@@ -239,14 +257,7 @@ extension CollectionDirector: UICollectionViewDataSource {
     open func collectionView(_ collectionView: UICollectionView,
                              cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let item = section(for: indexPath.section).item(for: indexPath.row)
-        if shouldUseAutomaticViewRegistration {
-            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: item.reuseIdentifier, cellClass: item.cellType)
-        }
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
-        item.configure(cell)
-        return cell
+        return section(for: indexPath.section).cell(for: self, indexPath: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -348,7 +359,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        let section_ = sections[section]
+        let section_ = self.section(for: section)
         let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size, in: section_) ?? .zero
         return value
     }
@@ -373,10 +384,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
-            sections[indexPath.section].headerItem?.onDisplay?()
+            section(for: indexPath.section).headerItem?.onDisplay?()
             break
         case UICollectionView.elementKindSectionFooter:
-            sections[indexPath.section].footerItem?.onDisplay?()
+            section(for: indexPath.section).footerItem?.onDisplay?()
             break
         default:
             break
@@ -395,10 +406,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
-            sections[indexPath.section].headerItem?.onEndDisplay?()
+            section(for: indexPath.section).headerItem?.onEndDisplay?()
             break
         case UICollectionView.elementKindSectionFooter:
-            sections[indexPath.section].footerItem?.onEndDisplay?()
+            section(for: indexPath.section).footerItem?.onEndDisplay?()
             break
         default:
             break
@@ -409,7 +420,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
 //MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.scrollDelegate?.scrollViewDidScroll?(scrollView)
+        scrollDelegate?.scrollViewDidScroll?(scrollView)
     }
 }
 

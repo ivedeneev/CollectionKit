@@ -26,13 +26,13 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     /// Height from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsHeight: Bool = false
     /// ViewModel for
-    open private(set) var item: CellType.T {
-        didSet { configureId() }
-    }
+    open private(set) var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     /// identifier used for diff calculating
     public var identifier: String {
-        return reuseIdentifier + "_" + internalIdentifier
+        let hashableId: AnyHashable = (item as? AnyHashable) ?? UUID().uuidString as AnyHashable
+        let hashValue = hashableId.hashValue
+        return reuseIdentifier + "_" + String(hashValue)
     }
     
     private var internalIdentifier: String!
@@ -47,13 +47,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public init(item: CellType.T) {
         self.item = item
-        configureId()
-    }
-    
-    private func configureId() {
-        let hashableId: AnyHashable = (item as? AnyHashable) ?? UUID().uuidString as AnyHashable
-        let hashValue = hashableId.hashValue
-        self.internalIdentifier = String(hashValue)
     }
     
     public func configure(_ cell: UICollectionReusableView) {
@@ -119,8 +112,8 @@ extension CollectionItem where CellType.T: SelectableCellViewModel {
     /// Если viewModel для ячейки реализует протокол `SelectableCellViewModel`, то достаточно вызвать `onSelectFromViewModel()` у `CollectionItem`
     @discardableResult
     func onSelectFromViewModel() -> Self {
-        return onSelect { [weak self] (indexPath) in
-            self?.item.onSelect?(indexPath)
+        return onSelect { [unowned self] (indexPath) in
+            self.item.onSelect?(indexPath)
         }
     }
 }

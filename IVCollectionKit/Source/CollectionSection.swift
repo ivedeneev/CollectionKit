@@ -28,8 +28,12 @@ open class CollectionSection : AbstractCollectionSection {
         self.identifier = id
     }
     
-    open func item(for index: Int) -> AbstractCollectionItem {
-        return items[index]
+    open func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
+        let item = items[indexPath.row]
+        let cell = director.private_dequeueReusableCell(of: item.cellType, reuseIdentifier: item.reuseIdentifier, for: indexPath)
+        item.configure(cell)
+        
+        return cell
     }
     
     open func numberOfItems() -> Int {

@@ -11,6 +11,12 @@ import IVCollectionKit
 import Photos
 
 final class PhotoGridSection: AbstractCollectionSection {
+    func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
+        let cell:PhotoCell = director.dequeueReusableCell(indexPath: indexPath)
+        cell.configure(item: results[indexPath.row])
+        return cell
+    }
+    
     var identifier: String {
         return "PhotoGridSection"
     }
@@ -33,10 +39,6 @@ final class PhotoGridSection: AbstractCollectionSection {
     
     func numberOfItems() -> Int {
         return results.count
-    }
-    
-    func item(for index: Int) -> AbstractCollectionItem {
-        return CollectionItem<PhotoCell>(item: results[index])
     }
     
     func didSelectItem(at indexPath: IndexPath) {
