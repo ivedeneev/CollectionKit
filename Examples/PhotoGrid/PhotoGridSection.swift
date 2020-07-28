@@ -49,12 +49,6 @@ final class PhotoGridSection: AbstractCollectionSection {
         return PhotoCell.estimatedSize(item: results[indexPath.row], boundingSize: boundingSize, in: self)
     }
     
-    func append(item: AbstractCollectionItem) { }
-    
-    func append(items: [AbstractCollectionItem]) { }
-    
-    func removeAll() { }
-    
     func currentItemIds() -> [String] {
         return []
     }

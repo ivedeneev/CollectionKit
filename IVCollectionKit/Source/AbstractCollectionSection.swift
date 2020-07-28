@@ -56,4 +56,7 @@ public extension AbstractCollectionSection {
     func didUnhighlightItem(at indexPath: IndexPath) {}
     func itemAdjustsWidth(at index: Int) -> Bool { return false }
     func itemAdjustsHeight(at index: Int) -> Bool { return false }
+    func append(item: AbstractCollectionItem) { }
+    func append(items: [AbstractCollectionItem]) { }
+    func removeAll() { }
 }
