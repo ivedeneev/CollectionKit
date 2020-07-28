@@ -49,6 +49,23 @@ final class ProfileViewController: CollectionViewController {
         userSection += infoRows
         director += userSection
         
+        let descriptionSecion = CollectionSection()
+        descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(
+            item: "About me",
+            kind: UICollectionView.elementKindSectionHeader
+        )
+        
+        let descViewModel = MultilineTextViewModel(text: "Leaders of hard-hit states are considering new limits on businesses. Germany is dealing with a surge. President Trump shared a video with misleading coronavirus claims.\n\nRIGHT NOW: New York will now require travelers from Puerto Rico, Washington D.C. and 34 states to quarantine for 14 days, Gov. Andrew M. Cuomo said. The new states added to the list are Illinois, Kentucky and Minnesota.")
+        descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel).onSelect { [descViewModel, director] _ in
+            descViewModel.isExpanded = !descViewModel.isExpanded
+            director.performUpdates()
+//            director.setNeedsUpdate()
+        }
+        
+        descriptionSecion.insetForSection = UIEdgeInsets(top: 0, left: 8, bottom: 16, right: 8)
+        
+        director += descriptionSecion
+        
         if !friends.isEmpty {
             let friendSection = CollectionSection()
             friendSection.insetForSection = UIEdgeInsets(top: 32, left: 16, bottom: 20, right: 16)
@@ -61,19 +78,5 @@ final class ProfileViewController: CollectionViewController {
             friendSection.footerItem = CollectionHeaderFooterView<ButtonFooter>(item: buttonVm, kind: UICollectionView.elementKindSectionFooter)
             director += friendSection
         }
-        
-        let descriptionSecion = CollectionSection()
-        descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(
-            item: "About me",
-            kind: UICollectionView.elementKindSectionHeader
-        )
-        
-        let descViewModel = MultilineTextViewModel(text: "Leaders of hard-hit states are considering new limits on businesses. Germany is dealing with a surge. President Trump shared a video with misleading coronavirus claims.\n\nRIGHT NOW: New York will now require travelers from Puerto Rico, Washington D.C. and 34 states to quarantine for 14 days, Gov. Andrew M. Cuomo said. The new states added to the list are Illinois, Kentucky and Minnesota.")
-        descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel).onSelect { [descViewModel, director] _ in
-            descViewModel.isExpanded = !descViewModel.isExpanded
-            director.performUpdates()
-        }
-        
-        director += descriptionSecion
     }
 }

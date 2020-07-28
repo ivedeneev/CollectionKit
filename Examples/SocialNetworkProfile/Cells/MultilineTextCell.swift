@@ -45,14 +45,14 @@ extension MultilineTextCell: ConfigurableCollectionItem {
         
         let font = Self.font
         let maxHeight: CGFloat = item.isExpanded ? .greatestFiniteMagnitude : font.lineHeight.rounded(.up) * 3
-        let w = boundingSize.width - 16 - section.insetForSection.left - section.insetForSection.right
+        let w = boundingSize.width - section.insetForSection.left - section.insetForSection.right
         let height: CGFloat = (item.text as NSString).boundingRect(
-            with: CGSize(width: w, height: maxHeight),
+            with: CGSize(width: w - 16, height: maxHeight),
             options: [.usesFontLeading, .usesLineFragmentOrigin],
             attributes: [.font: font],
             context: nil).height
         
-        return CGSize(width: boundingSize.width, height: height.rounded(.up) + 16)
+        return CGSize(width: w, height: height.rounded(.up) + 16)
     }
     
     func configure(item: MultilineTextViewModel) {
