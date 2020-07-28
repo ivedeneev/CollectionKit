@@ -62,6 +62,18 @@ final class ProfileViewController: CollectionViewController {
             director += friendSection
         }
         
-        /// ... more sections
+        let descriptionSecion = CollectionSection()
+        descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(
+            item: "About me",
+            kind: UICollectionView.elementKindSectionHeader
+        )
+        
+        let descViewModel = MultilineTextViewModel(text: "Leaders of hard-hit states are considering new limits on businesses. Germany is dealing with a surge. President Trump shared a video with misleading coronavirus claims.\n\nRIGHT NOW: New York will now require travelers from Puerto Rico, Washington D.C. and 34 states to quarantine for 14 days, Gov. Andrew M. Cuomo said. The new states added to the list are Illinois, Kentucky and Minnesota.")
+        descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel).onSelect { [descViewModel, director] _ in
+            descViewModel.isExpanded = !descViewModel.isExpanded
+            director.performUpdates()
+        }
+        
+        director += descriptionSecion
     }
 }

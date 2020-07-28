@@ -91,6 +91,7 @@
 		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
 		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
 		D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */; };
+		D6D3919824D08416004C85E4 /* MultilineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D3919724D08416004C85E4 /* MultilineTextCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -191,6 +192,7 @@
 		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
 		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonCell.swift; sourceTree = "<group>"; };
+		D6D3919724D08416004C85E4 /* MultilineTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineTextCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +266,7 @@
 				D631D84523FBBD030024C23F /* ProfileInfoCell.swift */,
 				D631D84723FC69690024C23F /* FriendCell.swift */,
 				D631D84923FC85DB0024C23F /* ButtonFooter.swift */,
+				D6D3919724D08416004C85E4 /* MultilineTextCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -689,6 +692,7 @@
 				D655C21023E2203200405D88 /* ImageCell.swift in Sources */,
 				D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */,
 				D64FA9952425E33100624969 /* FilterRouter.swift in Sources */,
+				D6D3919824D08416004C85E4 /* MultilineTextCell.swift in Sources */,
 				D631D83523F9CA9D0024C23F /* PhotoGridViewController.swift in Sources */,
 				D64FA99C2425E71E00624969 /* SelectFilterCell.swift in Sources */,
 				D631D84623FBBD030024C23F /* ProfileInfoCell.swift in Sources */,
