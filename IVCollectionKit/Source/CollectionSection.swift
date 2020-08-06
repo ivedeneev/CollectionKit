@@ -73,7 +73,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     open func shouldHighlightItem(at indexPath: IndexPath) -> Bool {
-        return items[indexPath.item].shouldHighlight ?? true
+        return items[indexPath.item].shouldHighlight
     }
     
     open func didHighlightItem(at indexPath: IndexPath) {
@@ -96,5 +96,13 @@ open class CollectionSection : AbstractCollectionSection {
     open func itemAdjustsHeight(at index: Int) -> Bool {
         guard !isEmpty else { return false }
         return items[index].adjustsHeight
+    }
+    
+    open func shouldSelect(at indexPath: IndexPath) -> Bool {
+        return items[indexPath.row].shouldSelect
+    }
+    
+    open func shouldDeselect(at indexPath: IndexPath) -> Bool {
+        return items[indexPath.row].shouldDeselect
     }
 }

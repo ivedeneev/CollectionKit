@@ -110,9 +110,12 @@ final class CollectionUpdater {
         }
         
         return .update(sections: sectionChanges,
-                       items: ChangeWithIndexPath(inserts: itemChanges.flatMap { $0.inserts },
-                                                  deletes: deletes,
-                                                  replaces: itemChanges.flatMap { $0.replaces },
-                                                  moves: moves))
+                       items: ChangeWithIndexPath(
+                            inserts: itemChanges.flatMap { $0.inserts },
+                            deletes: deletes,
+                            replaces: itemChanges.flatMap { $0.replaces },
+                            moves: moves
+                       )
+        )
     }
 }

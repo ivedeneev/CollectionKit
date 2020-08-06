@@ -320,6 +320,15 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         section(for: indexPath.section).didUnhighlightItem(at: indexPath)
     }
     
+    open func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return section(for: indexPath.section).shouldSelect(at: indexPath)
+    }
+
+    // called when the user taps on an already-selected item in multi-select mode
+    open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return section(for: indexPath.section).shouldDeselect(at: indexPath)
+    }
+    
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let section = self.section(for: indexPath.section)
         

@@ -33,6 +33,8 @@ public protocol AbstractCollectionSection {
     func didHighlightItem(at indexPath: IndexPath)
     func didUnhighlightItem(at indexPath: IndexPath)
     func sizeForItem(at indexPath: IndexPath, boundingSize: CGSize) -> CGSize
+    func shouldSelect(at indexPath: IndexPath) -> Bool
+    func shouldDeselect(at indexPath: IndexPath) -> Bool
     
     func itemAdjustsWidth(at index: Int) -> Bool
     func itemAdjustsHeight(at index: Int) -> Bool
@@ -59,4 +61,6 @@ public extension AbstractCollectionSection {
     func append(item: AbstractCollectionItem) { }
     func append(items: [AbstractCollectionItem]) { }
     func removeAll() { }
+    func shouldSelect(at indexPath: IndexPath) -> Bool { return true }
+    func shouldDeselect(at indexPath: IndexPath) -> Bool { return true }
 }

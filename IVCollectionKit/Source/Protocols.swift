@@ -25,7 +25,9 @@ public protocol ActionableCollectionItem {
     var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
     var onHighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onUnighlight: ((_ indexPath: IndexPath) -> Void)? { get set }
-    var shouldHighlight: Bool? { get set }
+    var shouldHighlight: Bool { get set }
+    var shouldSelect: Bool { get set }
+    var shouldDeselect: Bool { get set }
 }
 
 

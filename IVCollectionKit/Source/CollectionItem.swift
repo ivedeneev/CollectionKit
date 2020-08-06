@@ -18,7 +18,9 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
     open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
-    open var shouldHighlight: Bool?
+    open var shouldSelect: Bool = true
+    open var shouldDeselect: Bool = true
+    open var shouldHighlight: Bool = true
     /// Width of cell = collectionView.width - horizontal section insets - horizontal collectionView insets.
     /// Width from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsWidth: Bool = false
@@ -100,6 +102,24 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     @discardableResult
     public func adjustsHeight(_ adjusts: Bool) -> Self {
         self.adjustsHeight = adjusts
+        return self
+    }
+    
+    @discardableResult
+    public func shouldHighlight(_ value: Bool) -> Self {
+        self.shouldHighlight = value
+        return self
+    }
+    
+    @discardableResult
+    public func shouldSelect(_ value: Bool) -> Self {
+        self.shouldSelect = value
+        return self
+    }
+    
+    @discardableResult
+    public func shouldDeselect(_ value: Bool) -> Self {
+        self.shouldDeselect = value
         return self
     }
 }
