@@ -9,7 +9,11 @@
 import UIKit
 import IVCollectionKit
 
-final class ProfileViewController: CollectionViewController {
+final class ProfileViewController: CollectionViewController, PopupContentView {
+    var frameInPopup: CGRect { return CGRect(x: 0, y: 80, width: view.bounds.width, height: view.bounds.height - 50) }
+    
+    var scrollView: UIScrollView? { return collectionView }
+    
     
     var user: User?
     var friends = [User]()
@@ -41,6 +45,8 @@ final class ProfileViewController: CollectionViewController {
         }
         
         guard let user = user else { return }
+        
+        title = user.firstName
         
         let userSection = CollectionSection()
         userSection += CollectionItem<AvatarCell>(item: user)

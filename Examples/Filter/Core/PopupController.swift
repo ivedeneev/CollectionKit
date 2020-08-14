@@ -9,7 +9,8 @@
 import UIKit
 
 /// Контейнер для поповеров (например, пикер фото или действия с файлами)
-final class PopupController<T: PopupContentView>: PortraitOrientationViewController, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+final class PopupController<T: PopupContentView>: UIViewController, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+    
     
     var interactor = PopupAnimationInteractor()
     
@@ -26,6 +27,8 @@ final class PopupController<T: PopupContentView>: PortraitOrientationViewControl
     
     let content = T()
     let pinView = UIView()
+    
+    var dimColor: UIColor = UIColor.black.withAlphaComponent(0.7)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,26 +72,34 @@ final class PopupController<T: PopupContentView>: PortraitOrientationViewControl
     }
     
     @objc func handlePan(_ sender: UIPanGestureRecognizer) {
-        let percentThreshold: CGFloat = 0.4
+        let percentThreshold: CGFloat = 0.2
         let translation = sender.translation(in: contentView)
         let verticalMovement = translation.y / contentFrame.height
         let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
         let downwardMovementPercent = fminf(downwardMovement, 1.0)
         var progress = CGFloat(downwardMovementPercent)
-        progress = progress * 0.7
-        print(progress)
+        progress = progress * (1-progress * 0.5) * 0.85
         switch sender.state {
         case .began:
             interactor.hasStarted = true
             dismiss(animated: true, completion: nil)
         case .changed:
             interactor.shouldFinish = progress > percentThreshold
-            print(interactor.shouldFinish)
             interactor.update(progress)
         case .cancelled:
             interactor.hasStarted = false
             interactor.cancel()
         case .ended:
+            let velocity = sender.velocity(in: content.view)
+            
+            if velocity.y > 100 {
+                interactor.shouldFinish = true
+            }
+            
+            if velocity.y < 0 {
+                interactor.shouldFinish = false
+            }
+
             interactor.hasStarted = false
             interactor.shouldFinish ? interactor.finish() : interactor.cancel()
         default:
@@ -106,12 +117,12 @@ final class PopupController<T: PopupContentView>: PortraitOrientationViewControl
                              presenting: UIViewController,
                              source: UIViewController) -> UIViewControllerAnimatedTransitioning?
     {
-        return FadeAnimator(type: .present, contentView: contentView)
+        return FadeAnimator(type: .present, contentView: contentView, dimColor: dimColor)
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning?
     {
-        return FadeAnimator(type: .dismiss, contentView: contentView)
+        return FadeAnimator(type: .dismiss, contentView: contentView, dimColor: dimColor)
     }
     
     func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
@@ -129,10 +140,13 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     let duration: TimeInterval
     var contentView: UIView
     
-    init(type: TransitionType, duration: TimeInterval = 0.3, contentView: UIView) {
+    private let dimColor: UIColor
+    
+    init(type: TransitionType, duration: TimeInterval = 0.3, contentView: UIView, dimColor: UIColor) {
         self.type = type
         self.duration = duration
         self.contentView = contentView
+        self.dimColor = dimColor
         
         super.init()
     }
@@ -154,19 +168,19 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         }
         
         let duration: TimeInterval = self.transitionDuration(using: transitionContext)
-        UIView.animate(withDuration: duration, animations: {
-            UIView.setAnimationCurve(.linear)
+        UIView.animate(withDuration: duration, delay: 0, options: [.curveLinear]) {
             if self.type == .present {
-                toVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+                toVC.view.backgroundColor = self.dimColor
                 transVC.contentView.transform = .identity
             } else {
                 fromVC.view.backgroundColor = .clear
                 transVC.contentView.transform = CGAffineTransform(translationX: 0, y: transVC.contentFrame.height)
             }
-            
-        }, completion: { _ in
+        } completion: { (_) in
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-        })
+        }
+        
+        UIView.animate(withDuration: <#T##TimeInterval#>, delay: <#T##TimeInterval#>, usingSpringWithDamping: <#T##CGFloat#>, initialSpringVelocity: <#T##CGFloat#>, options: <#T##UIView.AnimationOptions#>, animations: <#T##() -> Void#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
     }
 }
 
@@ -208,18 +222,19 @@ extension PopupContentView {
         let o1 = NotificationCenter.default
             .addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main) { [weak self] (note) in
                 guard
-                    let `self` = self,
+                    let self = self,
                     let duration: TimeInterval = note.userInfo?["UIKeyboardAnimationDurationUserInfoKey"] as? TimeInterval,
                     let curve: UInt = note.userInfo?["UIKeyboardAnimationCurveUserInfoKey"] as? UInt,
                     let endFrame: CGRect = note.userInfo?["UIKeyboardFrameEndUserInfoKey"] as? CGRect
                 else { return }
                 
-                UIView.animate(withDuration: duration,
-                   delay: 0,
-                   options: [UIView.AnimationOptions(rawValue: curve)],
-                   animations: {
-                    self.view.frame.origin.y = endFrame.minY - self.view.bounds.height
-                   }, completion: nil)
+                UIView.animate(
+                    withDuration: duration,
+                    delay: 0,
+                    options: [UIView.AnimationOptions(rawValue: curve)],
+                    animations: {
+                        self.view.frame.origin.y = endFrame.minY - self.view.bounds.height
+                    }, completion: nil)
             }
     }
     

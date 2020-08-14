@@ -9,6 +9,11 @@
 import UIKit
 import IVCollectionKit
 
+extension UINavigationController: PopupContentView {
+    var frameInPopup: CGRect { return CGRect(x: 0, y: 80, width: view.bounds.width, height: view.bounds.height - 50) }
+    var scrollView: UIScrollView? { return (viewControllers.last as? PopupContentView)?.scrollView }
+}
+
 final class MenuViewController: CollectionViewController {
     
     override func viewDidLoad() {
@@ -34,7 +39,11 @@ final class MenuViewController: CollectionViewController {
         
         
         let photos = CollectionItem<TextCell>(item: "Custom Section (photo grid)").adjustsWidth(true).onSelect { [weak self] (_) in
-            self?.navigationController?.pushViewController(PhotoGridViewController(), animated: true)
+//            self?.navigationController?.pushViewController(PhotoGridViewController(), animated: true)
+            let _vc = PopupController<UINavigationController>()
+            _vc.content.roundCorners()
+            _vc.content.setViewControllers([ProfileViewController()], animated: false)
+            self?.present(_vc, animated: true, completion: nil)
         }
         
         let s2 = CollectionSection(items: [photos])
