@@ -142,7 +142,7 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     private let dimColor: UIColor
     
-    init(type: TransitionType, duration: TimeInterval = 0.3, contentView: UIView, dimColor: UIColor) {
+    init(type: TransitionType, duration: TimeInterval = 0.25, contentView: UIView, dimColor: UIColor) {
         self.type = type
         self.duration = duration
         self.contentView = contentView
@@ -152,7 +152,7 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return self.duration
+        return duration
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -167,8 +167,8 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             transVC = fromVC as! PopupControllerProtocol
         }
         
-        let duration: TimeInterval = self.transitionDuration(using: transitionContext)
-        UIView.animate(withDuration: duration, delay: 0, options: [.curveLinear]) {
+        let duration: TimeInterval = transitionDuration(using: transitionContext)
+        UIView.animate(withDuration: duration, delay: 0, options: [.curveLinear], animations: {
             if self.type == .present {
                 toVC.view.backgroundColor = self.dimColor
                 transVC.contentView.transform = .identity
@@ -176,11 +176,9 @@ class FadeAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 fromVC.view.backgroundColor = .clear
                 transVC.contentView.transform = CGAffineTransform(translationX: 0, y: transVC.contentFrame.height)
             }
-        } completion: { (_) in
+        }) { _ in
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
-        
-        UIView.animate(withDuration: <#T##TimeInterval#>, delay: <#T##TimeInterval#>, usingSpringWithDamping: <#T##CGFloat#>, initialSpringVelocity: <#T##CGFloat#>, options: <#T##UIView.AnimationOptions#>, animations: <#T##() -> Void#>, completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
     }
 }
 
