@@ -65,3 +65,14 @@ extension PHImageManager {
         .eraseToAnyPublisher()
     }
 }
+
+extension PHAsset: ModernDiffable {
+    public var diffId: AnyHashable {
+        return localIdentifier
+    }
+    
+    public func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let a = other as? PHAsset else { return false }
+        return a.isEqual(self)
+    }
+}

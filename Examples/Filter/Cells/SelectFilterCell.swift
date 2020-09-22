@@ -58,7 +58,16 @@ extension SelectFilterCell: ConfigurableCollectionItem {
     }
 }
 
-final class SelectFilterCellViewModel {
+final class SelectFilterCellViewModel: ModernDiffable {
+    var diffId: AnyHashable {
+        return id
+    }
+    
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let selectFilter = other as? SelectFilterCellViewModel else { return false }
+        return selectFilter.id == id
+    }
+    
     let title: String
     let id: String
     lazy var output: AnyPublisher<Bool, Never> = _output.eraseToAnyPublisher()

@@ -77,6 +77,17 @@ final class TextSelectViewModel {
     }
 }
 
+extension TextSelectViewModel: ModernDiffable {
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let vm = other as? TextSelectViewModel else { return false }
+        return maybeUser == self
+    }
+    
+    var diffId: AnyHashable {
+        return self
+    }
+}
+
 final class NumberSelectViewModel {
     let title: String
     let id: String

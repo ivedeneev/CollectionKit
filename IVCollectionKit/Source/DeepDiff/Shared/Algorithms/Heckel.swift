@@ -10,7 +10,7 @@ import Foundation
 
 // https://gist.github.com/ndarville/3166060
 
-public final class Heckel<T: DiffAware> {
+public final class Heckel {
   // OC and NC can assume three values: 1, 2, and many.
   enum Counter {
     case zero, one, many
@@ -66,10 +66,10 @@ public final class Heckel<T: DiffAware> {
     }
   }
 
-  public func diff(old: [T], new: [T]) -> [Change<T>] {
+  public func diff(old: [ModernDiffable], new: [ModernDiffable]) -> [Change<ModernDiffable>] {
     // The Symbol Table
     // Each line works as the key in the table look-up, i.e. as table[line].
-    var table: [T.DiffId: TableEntry] = [:]
+    var table: [AnyHashable: TableEntry] = [:]
 
     // The arrays OA and NA have one entry for each line in their respective files, O and N
     var oldArray = [ArrayEntry]()
@@ -83,8 +83,8 @@ public final class Heckel<T: DiffAware> {
   }
 
   private func perform1stPass(
-    new: [T],
-    table: inout [T.DiffId: TableEntry],
+    new: [ModernDiffable],
+    table: inout [AnyHashable: TableEntry],
     newArray: inout [ArrayEntry]) {
 
     // 1st pass
@@ -105,8 +105,8 @@ public final class Heckel<T: DiffAware> {
   }
 
   private func perform2ndPass(
-    old: [T],
-    table: inout [T.DiffId: TableEntry],
+    old: [ModernDiffable],
+    table: inout [AnyHashable: TableEntry],
     oldArray: inout [ArrayEntry]) {
 
     // 2nd pass
@@ -185,10 +185,10 @@ public final class Heckel<T: DiffAware> {
   }
 
   private func perform6thPass(
-    new: [T],
-    old: [T],
+    new: [ModernDiffable],
+    old: [ModernDiffable],
     newArray: [ArrayEntry],
-    oldArray: [ArrayEntry]) -> [Change<T>] {
+    oldArray: [ArrayEntry]) -> [Change<ModernDiffable>] {
 
     // 6th pass
     // At this point following our five passes,
@@ -221,7 +221,7 @@ public final class Heckel<T: DiffAware> {
     // Here, NA[i] == OA[j], but NA[i+1] != OA[j+1].
     // This means our boundary is between the two lines.
 
-    var changes = [Change<T>]()
+    var changes = [Change<ModernDiffable>]()
     var deleteOffsets = Array(repeating: 0, count: old.count)
 
     // deletions
@@ -257,7 +257,8 @@ public final class Heckel<T: DiffAware> {
             index: newTuple.offset
           )))
         case .indexInOther(let oldIndex):
-          if !isEqual(oldItem: old[oldIndex], newItem: new[newTuple.offset]) {
+            if !old[oldIndex].isEqualToDiffable(new[newTuple.offset]) {
+//          if !isEqual(oldItem: old[oldIndex], newItem: new[newTuple.offset]) {
             changes.append(.replace(Replace(
               oldItem: old[oldIndex],
               newItem: new[newTuple.offset],
@@ -281,7 +282,16 @@ public final class Heckel<T: DiffAware> {
     return changes
   }
 
-  func isEqual(oldItem: T, newItem: T) -> Bool {
-    return T.compareContent(oldItem, newItem)
-  }
+//  func isEqual(oldItem: T, newItem: T) -> Bool {
+//    return T.compareContent(oldItem, newItem)
+//  }
+}
+
+public protocol ModernDiffable {
+    var diffId: AnyHashable { get }
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool
+}
+
+public extension ModernDiffable where Self: Hashable {
+    var diffId: AnyHashable { return self }
 }

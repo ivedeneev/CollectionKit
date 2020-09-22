@@ -25,6 +25,9 @@ open class CollectionDirector: NSObject {
     internal var sectionIds: [String] = []
     internal var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
     
+    
+    var sections1 = [Int : AbstractCollectionSection]()
+    
     var isEmpty: Bool {
         if sections.isEmpty {
             return true
@@ -167,7 +170,7 @@ extension CollectionDirector {
         }
     }
     
-    private func _performUpdates(sectionChanges: [Change<String>],
+    private func _performUpdates(sectionChanges: [Change<ModernDiffable>],
                                  itemChanges: ChangeWithIndexPath,
                                  completion: (() -> Void)?)
     {

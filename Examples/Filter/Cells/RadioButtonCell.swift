@@ -64,7 +64,17 @@ extension RadioButtonCell: ConfigurableCollectionItem {
     }
 }
 
-final class RadioButtonViewModel {
+final class RadioButtonViewModel: ModernDiffable {
+    var diffId: AnyHashable { return id }
+    
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let maybeRadio = other as? RadioButtonViewModel else {
+            return false
+        }
+        
+        return maybeRadio.id == id
+    }
+    
     let title: String
     let id: String
     let selectionStyle: SelectionStyle

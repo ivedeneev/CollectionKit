@@ -13,7 +13,14 @@ enum Update {
     /// `reloadData` should be called
     case reload
     /// Section and itenms update for `performBatchUpdate` method
-    case update(sections: [Change<String>], items: ChangeWithIndexPath)
+    case update(sections: [Change<ModernDiffable>], items: ChangeWithIndexPath)
+}
+
+extension String: ModernDiffable {
+    public func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let maybeString = other as? String else { return false }
+        return self == maybeString
+    }
 }
 
 /// Responsible for update calculation
@@ -25,9 +32,9 @@ final class CollectionUpdater {
     
     weak var collectionView: UICollectionView?
 
-    func calculateUpdates(oldSectionIds: [String],
+    func calculateUpdates(oldSectionIds: [ModernDiffable],
                           currentSections: [AbstractCollectionSection],
-                          itemMap: [String: [String]],
+                          itemMap: [String: [ModernDiffable]],
                           forceReloadDataForLargeAmountOfChanges: Bool) -> Update
     {
         
@@ -82,7 +89,7 @@ final class CollectionUpdater {
         
         var sectionMap = Dictionary<Int, Int>() // map between old and new section indicies
         for i in 0..<newSectionIds.count {
-            sectionMap[i] = oldSectionIds.firstIndex(of: newSectionIds[i])
+            sectionMap[i] = oldSectionIds.firstIndex(where: { newSectionIds[i].diffId == $0.diffId })
         }
         
         // we MUST use section index before updates in deletes and moves(from) operations
