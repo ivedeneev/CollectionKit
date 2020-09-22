@@ -68,8 +68,6 @@ class ViewController: CollectionViewController {
 //        director += imageSection
         
 //        imageSection +=
-        
-        director.performUpdates(in: imageSection)
     }
 }
 
