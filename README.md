@@ -10,6 +10,11 @@ Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.co
 Development still in progress. Some changes may affect backward compatibility
 
 
+# Installation
+Via CocoaPods: `pod 'IVCollectionKit'`
+Via Carthage `github "ivedeneev/CollectionKit"`
+Via Swift Package Manager: `Coming soon`
+
 # Features
  - [x] Declarative `UICollectionView` management
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`

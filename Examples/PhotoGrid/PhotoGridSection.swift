@@ -11,11 +11,6 @@ import IVCollectionKit
 import Photos
 
 final class PhotoGridSection: AbstractCollectionSection {
-    func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
-        let cell:PhotoCell = director.dequeueReusableCell(indexPath: indexPath)
-        cell.configure(item: results[indexPath.row])
-        return cell
-    }
     
     var identifier: String {
         return "PhotoGridSection"
@@ -51,5 +46,11 @@ final class PhotoGridSection: AbstractCollectionSection {
     
     func currentItemIds() -> [String] {
         return []
+    }
+    
+    func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
+        let cell:PhotoCell = director.dequeueReusableCell(indexPath: indexPath)
+        cell.configure(item: results[indexPath.row])
+        return cell
     }
 }
