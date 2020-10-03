@@ -10,24 +10,31 @@ import Foundation
 import IVCollectionKit
 
 struct User: Hashable {
-    let id: String = UUID().uuidString
+    let id: String
     let firstName: String
     let lastName: String
     let imageUrl: URL
     let city: String
     let info: [Info]
+    let description: String?
     
     struct Info: Hashable {
         let id: String
         let icon: String
         let value: String
     }
+    
+
 }
 
 extension User: ModernDiffable {
     func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
         guard let maybeUser = other as? User else { return false }
-        return maybeUser == self
+        return maybeUser.id == id
+    }
+    
+    var diffId: AnyHashable {
+        return id
     }
 }
 
@@ -38,6 +45,6 @@ extension User.Info: ModernDiffable {
     }
     
     var diffId: AnyHashable {
-        return self
+        return id
     }
 }

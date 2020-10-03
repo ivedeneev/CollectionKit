@@ -11,6 +11,9 @@ import IVCollectionKit
 import Photos
 
 final class PhotoGridSection: AbstractCollectionSection {
+    func currentItemIds() -> [ModernDiffable] {
+        return []
+    }
     
     var identifier: String {
         return "PhotoGridSection"

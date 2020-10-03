@@ -12,15 +12,15 @@ public func +=(left: CollectionDirector, right: AbstractCollectionSection) {
     left.append(section: right)
 }
 
-public func +=(left: AbstractCollectionSection, right: AbstractCollectionItem) {
+public func +=(left: CollectionSection, right: AbstractCollectionItem) {
     left.append(item: right)
 }
 
-public func +=(left: CollectionDirector, right: [AbstractCollectionSection]) {
+public func +=(left: CollectionDirector, right: [CollectionSection]) {
     left.append(sections: right)
 }
 
-public func +=(left: AbstractCollectionSection, right: [AbstractCollectionItem]) {
+public func +=(left: CollectionSection, right: [AbstractCollectionItem]) {
     left.append(items: right)
 }
 

@@ -34,7 +34,6 @@ public protocol ActionableCollectionItem {
 //MARK:- AbstractCollectionItem
 public protocol AbstractCollectionItem : AbstractCollectionReusableView, ActionableCollectionItem {
     var reuseIdentifier: String { get }
-//    var identifier: String { get }
     var cellType: AnyClass { get }
     var adjustsWidth: Bool { get set }
     var adjustsHeight: Bool { get set }

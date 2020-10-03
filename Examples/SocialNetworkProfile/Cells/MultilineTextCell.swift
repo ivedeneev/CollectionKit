@@ -60,7 +60,14 @@ extension MultilineTextCell: ConfigurableCollectionItem {
     }
 }
 
-final class MultilineTextViewModel {
+final class MultilineTextViewModel: ModernDiffable {
+    var diffId: AnyHashable { text }
+    
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let textVm = other as? MultilineTextViewModel else { return false }
+        return text == textVm.text && isExpanded == textVm.isExpanded
+    }
+    
     let text: String
     var isExpanded = false
     

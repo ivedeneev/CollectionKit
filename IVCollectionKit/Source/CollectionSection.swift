@@ -40,7 +40,7 @@ open class CollectionSection : AbstractCollectionSection {
         return items.count
     }
     
-    open func currentItemIds() -> [String] {
+    open func currentItemIds() -> [ModernDiffable] {
         return items.map { $0.identifier }
     }
 

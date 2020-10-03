@@ -80,11 +80,11 @@ final class TextSelectViewModel {
 extension TextSelectViewModel: ModernDiffable {
     func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
         guard let vm = other as? TextSelectViewModel else { return false }
-        return maybeUser == self
+        return vm.id == id
     }
     
     var diffId: AnyHashable {
-        return self
+        return id
     }
 }
 

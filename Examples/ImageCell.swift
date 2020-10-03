@@ -39,3 +39,11 @@ extension ImageCell: ConfigurableCollectionItem {
         imageView.image = item
     }
 }
+
+extension UIImage: ModernDiffable {
+    public var diffId: AnyHashable { self }
+    
+    public func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        isEqual(other)
+    }
+}

@@ -39,11 +39,7 @@ public protocol AbstractCollectionSection {
     func itemAdjustsWidth(at index: Int) -> Bool
     func itemAdjustsHeight(at index: Int) -> Bool
     
-    func append(item: AbstractCollectionItem)
-    func append(items: [AbstractCollectionItem])
-    func removeAll()
-    
-    func currentItemIds() -> [String]
+    func currentItemIds() -> [ModernDiffable]
 }
 
 /// Default implementation for very rare used methods
@@ -58,9 +54,6 @@ public extension AbstractCollectionSection {
     func didUnhighlightItem(at indexPath: IndexPath) {}
     func itemAdjustsWidth(at index: Int) -> Bool { return false }
     func itemAdjustsHeight(at index: Int) -> Bool { return false }
-    func append(item: AbstractCollectionItem) { }
-    func append(items: [AbstractCollectionItem]) { }
-    func removeAll() { }
     func shouldSelect(at indexPath: IndexPath) -> Bool { return true }
     func shouldDeselect(at indexPath: IndexPath) -> Bool { return true }
 }

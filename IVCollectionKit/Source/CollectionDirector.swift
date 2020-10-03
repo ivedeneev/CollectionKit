@@ -23,7 +23,7 @@ open class CollectionDirector: NSObject {
     internal lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     
     internal var sectionIds: [String] = []
-    internal var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
+    internal var lastCommitedSectionAndItemsIdentifiers: [String: [ModernDiffable]] = [:]
     
     
     var sections1 = [Int : AbstractCollectionSection]()
@@ -178,10 +178,12 @@ extension CollectionDirector {
             guard let collectionView = self?.collectionView else { return }
             
             itemChanges.deletes.executeIfPresent { (deletes) in
+                print("dels", deletes)
                 collectionView.deleteItems(at: deletes)
             }
             
             itemChanges.inserts.executeIfPresent { (inserts) in
+                print("ins", inserts)
                 collectionView.insertItems(at: inserts)
             }
             
@@ -221,7 +223,7 @@ extension CollectionDirector {
     /// - parameter clearSections: if `true` removes all items from sections. Remember, that you should override `removeAll()` method in your custom section. This method removes all items from array in `CollectionSection` implementation and does nothing by default
     public func removeAll(clearSections: Bool = false) {
         if clearSections {
-            sections.forEach { $0.removeAll() }
+            sections.forEach { ($0 as? CollectionSection)?.removeAll() }
         }
         
         sections.removeAll()

@@ -9,7 +9,14 @@
 import UIKit
 import IVCollectionKit
 
-struct ButtonViewModel {
+struct ButtonViewModel: ModernDiffable {
+    var diffId: AnyHashable { title }
+    
+    func isEqualToDiffable(_ other: ModernDiffable) -> Bool {
+        guard let buttonVm = other as? ButtonViewModel else { return false }
+        return buttonVm.title == title
+    }
+    
     let icon: String?
     let title: String
     let handler: (() -> Void)
