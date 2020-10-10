@@ -31,10 +31,14 @@ final class MultilineTextCell: UICollectionViewCell {
         addSubview(textLabel)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.backgroundColor = .systemBackground
-        textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
-        textLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        textLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-        textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        
+        NSLayoutConstraint.activate([
+            textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            textLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8),
+            textLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8)
+//            ,textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+        ])
+
         textLabel.numberOfLines = 0
         textLabel.font = Self.font
     }
@@ -56,6 +60,7 @@ extension MultilineTextCell: ConfigurableCollectionItem {
     }
     
     func configure(item: MultilineTextViewModel) {
+        textLabel.numberOfLines = item.isExpanded ? 0 : 3
         textLabel.text = item.text
     }
 }

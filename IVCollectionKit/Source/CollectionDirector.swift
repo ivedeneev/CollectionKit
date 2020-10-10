@@ -10,7 +10,7 @@ import UIKit
 
 open class CollectionDirector: NSObject {
     /// Array of sections models
-    internal var sections = [AbstractCollectionSection]()
+    public var sections = [AbstractCollectionSection]()
     ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
@@ -222,6 +222,10 @@ extension CollectionDirector {
         }
         
         sections.removeAll()
+    }
+    
+    public func clearSections() {
+        sections.forEach { $0.removeAll() }
     }
     
     public func append(section: AbstractCollectionSection) {

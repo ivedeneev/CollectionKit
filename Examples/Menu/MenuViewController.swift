@@ -33,7 +33,7 @@ final class MenuViewController: CollectionViewController {
         
         let s1 = CollectionSection(items: [cells, social, filter])
         s1.lineSpacing = 1
-        s1.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "Complex", kind: UICollectionView.elementKindSectionHeader)
+        s1.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "Complex")
         s1.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         director += s1
         
@@ -47,13 +47,13 @@ final class MenuViewController: CollectionViewController {
         }
         
         let s2 = CollectionSection(items: [photos])
-        s2.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom section", kind: UICollectionView.elementKindSectionHeader)
+        s2.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom section")
         s2.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         director += s2
         
         let s3 = CollectionSection(items: [photos])
-        s3.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom layout", kind: UICollectionView.elementKindSectionHeader)
-        s3.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        s3.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom layout")
+        s3.footerItem = CollectionHeaderFooterView<CollectionFooter>(item: "If we try to run make after the changes, only the target say_hello will be executed. That's because only the first target in the makefile is the default target. Often called the default goal, this is the reason you will see all as the first target in most projects. It is the responsibility of all to call other targets. We can override this behavior using a special phony target called .DEFAULT_GOAL.")
         director += s3
         
         director.performUpdates()

@@ -63,13 +63,14 @@ final class CollectionUpdater {
         let inserts = itemChanges.flatMap { $0.inserts }
         let reloads = itemChanges.flatMap { $0.replaces }
         if sectionChanges.isEmpty {
-            return .update(sections: sectionChanges,
-                           items: ChangeWithIndexPath(
-                                inserts: inserts,
-                                deletes: itemChanges.flatMap { $0.deletes },
-                                replaces: reloads,
-                                moves: itemChanges.flatMap { $0.moves }
-                            )
+            return .update(
+                sections: sectionChanges,
+                items: ChangeWithIndexPath(
+                    inserts: inserts,
+                    deletes: itemChanges.flatMap { $0.deletes },
+                    replaces: reloads,
+                    moves: itemChanges.flatMap { $0.moves }
+                )
             )
         }
         

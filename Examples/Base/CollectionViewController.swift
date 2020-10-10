@@ -11,7 +11,7 @@ import IVCollectionKit
 
 class CollectionViewController: UIViewController {
     let layout = UICollectionViewFlowLayout()
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    lazy var collectionView = TestCollectionView(frame: .zero, collectionViewLayout: layout)
     lazy var director: CollectionDirector = CollectionDirector(collectionView: collectionView)
     
     var topConstraint: NSLayoutConstraint!

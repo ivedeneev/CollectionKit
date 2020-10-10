@@ -57,7 +57,6 @@ public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableV
     var reuseIdentifier: String { get }
     var identifier: String { get }
     var viewType: AnyClass { get }
-    var kind: String { get }
     var onDisplay: (() -> Void)? { get set }
     var onEndDisplay: (() -> Void)? { get set }
     func configure(_: UICollectionReusableView)
