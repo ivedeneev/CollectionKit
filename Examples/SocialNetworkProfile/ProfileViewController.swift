@@ -9,6 +9,12 @@
 import UIKit
 import IVCollectionKit
 
+final class ProfileLayout: UICollectionViewFlowLayout {
+    override func initialLayoutAttributesForAppearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        nil
+    }
+}
+
 final class ProfileViewController: CollectionViewController, PopupContentView {
     var frameInPopup: CGRect { return CGRect(x: 0, y: 80, width: view.bounds.width, height: view.bounds.height - 50) }
     
@@ -20,6 +26,7 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.setCollectionViewLayout(ProfileLayout(), animated: false)
         loadData()
     }
     

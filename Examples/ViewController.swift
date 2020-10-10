@@ -59,17 +59,11 @@ class ViewController: CollectionViewController {
     }
     
     @objc func crazyUpdate() {
-//        imageSection.items.shuffle()
-//        director.sections.remove(at: 0)
-        
-//        director.remove(section: section1)
-        imageSection.items.shuffle()
-//        imageSection += images.map(CollectionItem<ImageCell>.init)
-//        director += imageSection
-        
-//        imageSection +=
-        
-        director.performUpdates(in: imageSection)
+//        section1.insert(item: CollectionItem<TextCell>(item: "insert").adjustsWidth(true), at: 0)
+//        section1.items.remove(at: 1)
+        section1.insert(item: CollectionItem<TextCell>(item: "insert 1").adjustsWidth(true), at: 1)
+        section1.items.remove(at: 2)
+        director.performUpdates()
     }
 }
 

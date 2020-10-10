@@ -18,7 +18,7 @@ final class MenuViewController: CollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        collectionView.backgroundColor = .systemBackground
         let cells = CollectionItem<TextCell>(item: "Multiple cells").adjustsWidth(true).onSelect { [weak self] (_) in
             self?.navigationController?.pushViewController(ViewController(), animated: true)
         }
@@ -39,11 +39,11 @@ final class MenuViewController: CollectionViewController {
         
         
         let photos = CollectionItem<TextCell>(item: "Custom Section (photo grid)").adjustsWidth(true).onSelect { [weak self] (_) in
-//            self?.navigationController?.pushViewController(PhotoGridViewController(), animated: true)
-            let _vc = PopupController<UINavigationController>()
-            _vc.content.roundCorners()
-            _vc.content.setViewControllers([ProfileViewController()], animated: false)
-            self?.present(_vc, animated: true, completion: nil)
+            self?.navigationController?.pushViewController(PhotoGridViewController(), animated: true)
+//            let _vc = PopupController<UINavigationController>()
+//            _vc.content.roundCorners()
+//            _vc.content.setViewControllers([ProfileViewController()], animated: false)
+//            self?.present(_vc, animated: true, completion: nil)
         }
         
         let s2 = CollectionSection(items: [photos])

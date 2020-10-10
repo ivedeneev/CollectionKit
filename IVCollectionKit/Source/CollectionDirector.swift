@@ -139,7 +139,7 @@ extension CollectionDirector {
         
         switch updates {
         case .reload:
-            reload()
+            self.reload()
             completion?()
             return
         case .update(let sections, let items):

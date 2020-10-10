@@ -37,8 +37,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         return reuseIdentifier + "_" + String(hashValue)
     }
     
-    private var internalIdentifier: String!
-    
     public func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
         return CellType.estimatedSize(item: item, boundingSize: boundingSize, in: section)
     }
