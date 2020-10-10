@@ -66,24 +66,23 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             director.performUpdates()
         }
         
-        director.removeAll(clearSections: true)
-        guard let user = user else { return }
-        print("T_T")
-        title = user.firstName
+        let userSection = CollectionSection(id: "user")
+        let descriptionSecion = CollectionSection(id: "desc")
+        let friendSection = CollectionSection(id: "friend")
         
+        var sections = Array<AbstractCollectionSection>()
+        guard let user = user else { return }
+        title = user.firstName
         
         userSection += CollectionItem<AvatarCell>(item: user)
         userSection.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         let infoRows = user.info.map(CollectionItem<ProfileInfoCell>.init)
         userSection += infoRows
-        director += userSection
+        sections.append(userSection)
         
-        descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(
-            item: "About me",
-            kind: UICollectionView.elementKindSectionHeader
-        )
-        
+
         if let desc = user.description {
+            descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "About me")
             let descViewModel = MultilineTextViewModel(text: desc)
             descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel).onSelect { [descViewModel, director] _ in
                 descViewModel.isExpanded = !descViewModel.isExpanded
@@ -91,8 +90,7 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             }
             
             descriptionSecion.insetForSection = UIEdgeInsets(top: 0, left: 8, bottom: 16, right: 8)
-            
-            director += descriptionSecion
+            sections.append(descriptionSecion)
         }
         
         if !friends.isEmpty {
@@ -103,8 +101,10 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             friendSection += friends.map(CollectionItem<FriendCell>.init)
             
             let buttonVm = ButtonViewModel(icon: nil, title: "See All", handler: { print("yezzzzzzzzz") })
-            friendSection.footerItem = CollectionHeaderFooterView<ButtonFooter>(item: buttonVm, kind: UICollectionView.elementKindSectionFooter)
-            director += friendSection
+            friendSection.footerItem = CollectionHeaderFooterView<ButtonFooter>(item: buttonVm)
+            sections.append(friendSection)
         }
+        
+        director.sections = sections
     }
 }

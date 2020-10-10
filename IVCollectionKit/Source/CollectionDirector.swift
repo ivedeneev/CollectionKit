@@ -10,7 +10,7 @@ import UIKit
 
 open class CollectionDirector: NSObject {
     /// Array of sections models
-    internal var sections = [AbstractCollectionSection]()
+    public var sections = [AbstractCollectionSection]()
     ///Register cell classes & xibs automatically
     open var shouldUseAutomaticViewRegistration: Bool = false
     ///Adjust z position for headers/footers to prevent scroll indicator hiding at iOS11
@@ -142,7 +142,7 @@ extension CollectionDirector {
         
         switch updates {
         case .reload:
-            reload()
+            self.reload()
             completion?()
             return
         case .update(let sections, let items):
@@ -151,24 +151,24 @@ extension CollectionDirector {
         }
     }
     
-    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
-        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
-        
-        let updates = updater.calculateUpdates(
-            oldSectionIds: [s.identifier],
-            currentSections: [s],
-            itemMap: lastCommitedSectionAndItemsIdentifiers.filter { $0.key == section.identifier },
-            forceReloadDataForLargeAmountOfChanges: false)
-        
-        switch updates {
-        case .reload:
-            reload()
-            return
-        case .update(let sections, let items):
-            createSnapshot()
-            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
-        }
-    }
+//    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
+//        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
+//
+//        let updates = updater.calculateUpdates(
+//            oldSectionIds: [s.identifier],
+//            currentSections: [s],
+//            itemMap: lastCommitedSectionAndItemsIdentifiers.filter { $0.key == section.identifier },
+//            forceReloadDataForLargeAmountOfChanges: false)
+//
+//        switch updates {
+//        case .reload:
+//            reload()
+//            return
+//        case .update(let sections, let items):
+//            createSnapshot()
+//            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
+//        }
+//    }
     
     private func _performUpdates(sectionChanges: [Change<ModernDiffable>],
                                  itemChanges: ChangeWithIndexPath,
@@ -228,6 +228,10 @@ extension CollectionDirector {
         
         sections.removeAll()
     }
+    
+//    public func clearSections() {
+//        sections.forEach { $0.removeAll() }
+//    }
     
     public func append(section: AbstractCollectionSection) {
         sections.append(section)

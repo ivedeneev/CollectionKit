@@ -14,14 +14,14 @@ final class TextCell: UICollectionViewCell {
     
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? .separator : .white
+            backgroundColor = isHighlighted ? .separator : .secondarySystemGroupedBackground
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(label)
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
     }
     
     required init?(coder: NSCoder) {

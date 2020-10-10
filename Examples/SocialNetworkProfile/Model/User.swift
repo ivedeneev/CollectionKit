@@ -23,7 +23,6 @@ struct User: Hashable {
         let icon: String
         let value: String
     }
-    
 
 }
 

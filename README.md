@@ -118,8 +118,8 @@ section.lineSpacing = 2
 ```
 Also you can set section header and footer:
 ```swift
-section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
-section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
+section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header")
+section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is f00ter")
 ```
 
 ## Updating & reloading

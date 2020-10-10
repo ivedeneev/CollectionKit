@@ -16,9 +16,14 @@ public protocol ConfigurableCollectionItem : Reusable {
 }
 
 
-//MARK:- ActionableCollectionItem
-//TODO: consider indexpath , item, cell as parameter
-public protocol ActionableCollectionItem {
+//MARK:- AbstractCollectionItem
+public protocol AbstractCollectionItem {
+    var reuseIdentifier: String { get }
+    var identifier: String { get }
+    var cellType: AnyClass { get }
+    var adjustsWidth: Bool { get set }
+    var adjustsHeight: Bool { get set }
+    
     var onSelect: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onDeselect: ((_ indexPath: IndexPath) -> Void)? { get set }
     var onDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)? { get set }
@@ -28,35 +33,26 @@ public protocol ActionableCollectionItem {
     var shouldHighlight: Bool { get set }
     var shouldSelect: Bool { get set }
     var shouldDeselect: Bool { get set }
-}
 
-
-//MARK:- AbstractCollectionItem
-public protocol AbstractCollectionItem : AbstractCollectionReusableView, ActionableCollectionItem {
-    var reuseIdentifier: String { get }
-    var cellType: AnyClass { get }
-    var adjustsWidth: Bool { get set }
-    var adjustsHeight: Bool { get set }
-    func configure(_: UICollectionReusableView)
+    func configure(_: UICollectionViewCell)
     func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
 }
 
 
 //MARK:- AbstractCollectionReusableView
-public protocol AbstractCollectionReusableView {
-    var reuseIdentifier: String { get }
-    var identifier: String { get }
-    func configure(_: UICollectionReusableView)
-    func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
-}
+//public protocol AbstractCollectionReusableView {
+//    var reuseIdentifier: String { get }
+//    var identifier: String { get }
+//    func configure(_: UICollectionReusableView)
+//    func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize
+//}
 
 
 //MARK:- AbstractCollectionHeaderFooterItem
-public protocol AbstractCollectionHeaderFooterItem : AbstractCollectionReusableView {
+public protocol AbstractCollectionHeaderFooterItem {
     var reuseIdentifier: String { get }
     var identifier: String { get }
     var viewType: AnyClass { get }
-    var kind: String { get }
     var onDisplay: (() -> Void)? { get set }
     var onEndDisplay: (() -> Void)? { get set }
     func configure(_: UICollectionReusableView)

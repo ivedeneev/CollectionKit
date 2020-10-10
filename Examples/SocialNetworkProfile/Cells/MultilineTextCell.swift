@@ -17,7 +17,7 @@ final class MultilineTextCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
         clipsToBounds = true
         layer.cornerRadius = 8
         setupTextLabel()
@@ -30,11 +30,15 @@ final class MultilineTextCell: UICollectionViewCell {
     private func setupTextLabel() {
         addSubview(textLabel)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
-        textLabel.backgroundColor = .systemBackground
-        textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
-        textLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        textLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-        textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        textLabel.backgroundColor = .secondarySystemGroupedBackground
+        
+        NSLayoutConstraint.activate([
+            textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            textLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8),
+            textLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8)
+            ,textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+        ])
+
         textLabel.numberOfLines = 0
         textLabel.font = Self.font
     }
@@ -56,9 +60,11 @@ extension MultilineTextCell: ConfigurableCollectionItem {
     }
     
     func configure(item: MultilineTextViewModel) {
+        textLabel.numberOfLines = item.isExpanded ? 0 : 3
         textLabel.text = item.text
     }
 }
+
 
 final class MultilineTextViewModel: ModernDiffable {
     var diffId: AnyHashable { text }
@@ -67,6 +73,7 @@ final class MultilineTextViewModel: ModernDiffable {
         guard let textVm = other as? MultilineTextViewModel else { return false }
         return text == textVm.text && isExpanded == textVm.isExpanded
     }
+
     
     let text: String
     var isExpanded = false
@@ -74,4 +81,6 @@ final class MultilineTextViewModel: ModernDiffable {
     init(text: String) {
         self.text = text
     }
+    
+    
 }

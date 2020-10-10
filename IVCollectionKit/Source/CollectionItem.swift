@@ -49,7 +49,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         self.item = item
     }
     
-    public func configure(_ cell: UICollectionReusableView) {
+    public func configure(_ cell: UICollectionViewCell) {
         (cell as? CellType)?.configure(item: item)
     }
     
@@ -127,7 +127,23 @@ public protocol SelectableCellViewModel {
 }
 
 public extension CollectionItem where CellType.T: SelectableCellViewModel {
-    /// Если viewModel для ячейки реализует протокол `SelectableCellViewModel`, то достаточно вызвать `onSelectFromViewModel()` у `CollectionItem`
+    /// If cell viewModel conforms `SelectableCellViewModel`, u can replace `onSelect` implementation of `CollectionItem` with `onSelectFromViewModel()` in cell viewModel
+    ///
+    /// ViewModel implemendation and creation:
+    /// ```
+    /// class TestViewModel: SelectableCellViewModel {
+    ///     var onSelect: ((IndexPath) -> ())?
+    /// }
+    ///
+    /// let viewModel = TestViewModel()
+    /// viewModel.onSelect = { indexPath in
+    ///     print(indexPath)
+    /// }
+    /// ```
+    ///
+    /// Usage:
+    /// `let testItem = CollectionItem<TestCell>(item: viewModel).onSelectFromViewModel()`
+    /// - note: uses `unowned self` reference
     @discardableResult
     func onSelectFromViewModel() -> Self {
         return onSelect { [unowned self] (indexPath) in

@@ -37,19 +37,9 @@ final class CollectionUpdater {
                           itemMap: [String: [ModernDiffable]],
                           forceReloadDataForLargeAmountOfChanges: Bool) -> Update
     {
-        
-        // if there is no sections in collectionView, it crashes :(
         if oldSectionIds.isEmpty {
             return .reload
         }
-        
-        #if !TEST
-        // if collectionview is not displayed force to use reload since animated updates makes no sense
-        // should ignore this in tests since window is always nil
-        if collectionView?.window == nil && ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
-            return .reload
-        }
-        #endif
         
         let newSectionIds = currentSections.map { $0.identifier }
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
@@ -70,13 +60,14 @@ final class CollectionUpdater {
         let inserts = itemChanges.flatMap { $0.inserts }
         let reloads = itemChanges.flatMap { $0.replaces }
         if sectionChanges.isEmpty {
-            return .update(sections: sectionChanges,
-                           items: ChangeWithIndexPath(
-                                inserts: inserts,
-                                deletes: itemChanges.flatMap { $0.deletes },
-                                replaces: reloads,
-                                moves: itemChanges.flatMap { $0.moves }
-                            )
+            return .update(
+                sections: sectionChanges,
+                items: ChangeWithIndexPath(
+                    inserts: inserts,
+                    deletes: itemChanges.flatMap { $0.deletes },
+                    replaces: reloads,
+                    moves: itemChanges.flatMap { $0.moves }
+                )
             )
         }
         
