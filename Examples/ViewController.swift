@@ -63,6 +63,7 @@ class ViewController: CollectionViewController {
 //        section1.items.remove(at: 1)
         section1.insert(item: CollectionItem<TextCell>(item: "insert 1").adjustsWidth(true), at: 1)
         section1.items.remove(at: 2)
+        imageSection.items.shuffle()
         director.performUpdates()
     }
 }

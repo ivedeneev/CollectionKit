@@ -8,7 +8,18 @@
 
 import UIKit
 
-///
+/// `UICollectionView` subclass designed for more safe batch updates
+/// I know, this is bad :(, but sometimes espesially during multiple updates something goes wrong and it crashes
+/// Perhaps,
 open class IVCollectionView: UICollectionView {
+    open override func deleteItems(at indexPaths: [IndexPath]) {
+        let safeIndexPaths = indexPaths.filter { collectionViewLayout.layoutAttributesForItem(at: $0) != nil }
+        super.deleteItems(at: safeIndexPaths)
+    }
+    
+    open override func insertItems(at indexPaths: [IndexPath]) {
+        let safeIndexPaths = indexPaths.filter { collectionViewLayout.layoutAttributesForItem(at: $0) != nil }
+        super.insertItems(at: safeIndexPaths)
+    }
     
 }

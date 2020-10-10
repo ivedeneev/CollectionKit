@@ -10,6 +10,11 @@ Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.co
 Development still in progress. Some changes may affect backward compatibility
 
 
+# Installation
+Via CocoaPods: `pod 'IVCollectionKit'`
+Via Carthage `github "ivedeneev/CollectionKit"`
+Via Swift Package Manager: `Coming soon`
+
 # Features
  - [x] Declarative `UICollectionView` management
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
@@ -113,8 +118,8 @@ section.lineSpacing = 2
 ```
 Also you can set section header and footer:
 ```swift
-section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
-section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header", kind: UICollectionView.elementKindSectionHeader)
+section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header")
+section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is f00ter")
 ```
 
 ## Updating & reloading

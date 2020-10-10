@@ -18,7 +18,7 @@ final class ProfileInfoCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
         setupImageView()
         setupTitleLabel()
     }

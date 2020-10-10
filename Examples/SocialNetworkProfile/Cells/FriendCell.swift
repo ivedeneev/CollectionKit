@@ -16,7 +16,7 @@ final class FriendCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
         clipsToBounds = true
         layer.cornerRadius = 8
         setupAvatarImageView()
