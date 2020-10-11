@@ -107,6 +107,7 @@ Available actions:
 - `onEndDisplay`
 - `onHighlight`
 - `onUnighlight`
+- `shouldHighlight`
 
 ## Section configuration
 You can setup inter item spacing, line spacing and section insets using section object:
@@ -119,7 +120,7 @@ section.lineSpacing = 2
 Also you can set section header and footer:
 ```swift
 section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header")
-section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is f00ter")
+section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is footer")
 ```
 
 ## Updating & reloading
@@ -132,9 +133,12 @@ Note, that all models, that you use in `CollectionItem` initializations should c
 ```swift
 director.performUpdates()
 director.performUpdates { finished: Bool in
-    print()
+    print("updates completed")
 }
 ```
+
+## IVCollectionView
+`IVCollectionView` is `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is simultanious updates.
 
 ## Custom sections
 You can provide your own section implementation using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections (see exapmles). Also you can create subclass of `CollectionSection` if you dont need radically different behaviour 
