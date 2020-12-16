@@ -29,7 +29,7 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open private(set) var item: CellType.T {
         didSet { configureId() }
     }
-    open var reuseIdentifier: String { return CellType.reuseIdentifier }
+    open var reuseIdentifier: String = CellType.reuseIdentifier
     /// identifier used for diff calculating
     public var identifier: String {
         return reuseIdentifier + "_" + internalIdentifier
