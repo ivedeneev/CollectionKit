@@ -46,8 +46,8 @@ final class SelectFilterCell: UICollectionViewCell {
 }
 
 extension SelectFilterCell: ConfigurableCollectionItem {
-    static func estimatedSize(item: SelectFilterCellViewModel?, boundingSize: CGSize) -> CGSize {
-        return .init(width: boundingSize.width, height: filterCellHeight)
+    static func estimatedSize(item: SelectFilterCellViewModel, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+         return .init(width: boundingSize.width, height: filterCellHeight)
     }
     
     func configure(item: SelectFilterCellViewModel) {

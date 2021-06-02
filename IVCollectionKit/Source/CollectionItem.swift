@@ -18,7 +18,9 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     open var onEndDisplay: ((_ indexPath: IndexPath, _ cell: UICollectionViewCell) -> Void)?
     open var onHighlight: ((_ indexPath: IndexPath) -> Void)?
     open var onUnighlight: ((_ indexPath: IndexPath) -> Void)?
-    open var shouldHighlight: Bool?
+    open var shouldSelect: Bool = true
+    open var shouldDeselect: Bool = true
+    open var shouldHighlight: Bool = true
     /// Width of cell = collectionView.width - horizontal section insets - horizontal collectionView insets.
     /// Width from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsWidth: Bool = false
@@ -26,19 +28,17 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     /// Height from `estimatedSize(boundingSize:)` will be ignored
     open var adjustsHeight: Bool = false
     /// ViewModel for
-    open private(set) var item: CellType.T {
-        didSet { configureId() }
-    }
+    open private(set) var item: CellType.T
     open var reuseIdentifier: String { return CellType.reuseIdentifier }
     /// identifier used for diff calculating
     public var identifier: String {
-        return reuseIdentifier + "_" + internalIdentifier
+        let hashableId: AnyHashable = (item as? AnyHashable) ?? UUID().uuidString as AnyHashable
+        let hashValue = hashableId.hashValue
+        return reuseIdentifier + "_" + String(hashValue)
     }
     
-    private var internalIdentifier: String!
-    
-    public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return CellType.estimatedSize(item: item, boundingSize: boundingSize)
+    public func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CellType.estimatedSize(item: item, boundingSize: boundingSize, in: section)
     }
     
     public var cellType: AnyClass {
@@ -47,13 +47,6 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
     
     public init(item: CellType.T) {
         self.item = item
-        configureId()
-    }
-    
-    private func configureId() {
-        let hashableId: AnyHashable = (item as? AnyHashable) ?? UUID().uuidString as AnyHashable
-        let hashValue = hashableId.hashValue
-        self.internalIdentifier = String(hashValue)
     }
     
     public func configure(_ cell: UICollectionReusableView) {
@@ -109,18 +102,52 @@ open class CollectionItem<CellType: ConfigurableCollectionItem>: AbstractCollect
         self.adjustsHeight = adjusts
         return self
     }
+    
+    @discardableResult
+    public func shouldHighlight(_ value: Bool) -> Self {
+        self.shouldHighlight = value
+        return self
+    }
+    
+    @discardableResult
+    public func shouldSelect(_ value: Bool) -> Self {
+        self.shouldSelect = value
+        return self
+    }
+    
+    @discardableResult
+    public func shouldDeselect(_ value: Bool) -> Self {
+        self.shouldDeselect = value
+        return self
+    }
 }
 
-protocol SelectableCellViewModel {
+public protocol SelectableCellViewModel {
     var onSelect: ((IndexPath) -> ())? { get set }
 }
 
-extension CollectionItem where CellType.T: SelectableCellViewModel {
-    /// Если viewModel для ячейки реализует протокол `SelectableCellViewModel`, то достаточно вызвать `onSelectFromViewModel()` у `CollectionItem`
+public extension CollectionItem where CellType.T: SelectableCellViewModel {
+    /// If cell viewModel conforms `SelectableCellViewModel`, u can replace `onSelect` implementation of `CollectionItem` with `onSelectFromViewModel()` in cell viewModel
+    ///
+    /// ViewModel implemendation and creation:
+    /// ```
+    /// class TestViewModel: SelectableCellViewModel {
+    ///     var onSelect: ((IndexPath) -> ())?
+    /// }
+    ///
+    /// let viewModel = TestViewModel()
+    /// viewModel.onSelect = { indexPath in
+    ///     print(indexPath)
+    /// }
+    /// ```
+    ///
+    /// Usage:
+    /// `let testItem = CollectionItem<TestCell>(item: viewModel).onSelectFromViewModel()`
+    /// - note: uses `unowned self` reference
     @discardableResult
     func onSelectFromViewModel() -> Self {
-        return onSelect { [weak self] (indexPath) in
-            self?.item.onSelect?(indexPath)
+        return onSelect { [unowned self] (indexPath) in
+            self.item.onSelect?(indexPath)
         }
     }
 }

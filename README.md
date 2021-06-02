@@ -10,6 +10,11 @@ Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.co
 Development still in progress. Some changes may affect backward compatibility
 
 
+# Installation
+Via CocoaPods: `pod 'IVCollectionKit'`
+Via Carthage `github "ivedeneev/CollectionKit"`
+Via Swift Package Manager: `Coming soon`
+
 # Features
  - [x] Declarative `UICollectionView` management
  - [x] No need to implement `UICollectionViewDataSource` and `UICollectionViewDelegate`
@@ -60,20 +65,32 @@ director.reload()
  ``` 
 
 ## Cell configuration
-Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configure methods:
+Cell must implement `ConfigurableCollectionCell` protocol. You need to specify cell size and configuration methods:
 ```swift
 extension CollectionCell : ConfigurableCollectionItem {
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: collectionViewSize.width, height: 50)
+    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width - 40, height: 44)
     }
 
     func configure(item: String) {
         textLabel.text = item
     }
 }
+
+Note, that `contentInsets` value of collection view is respected in `boundingSize` parameter
+```
+### "Auto sizing cells"
+
+Framework doesnt support auto-sizing cells, but you can adjust cell width and height to collection view dimensions
+
+```swift
+let item = CollectionItem<CollectionCell>(item: "text").adjustsWidth(true)
 ```
 
-## Actions
+It means that width of this cell will be equal to `collectionView.bounds.width` minus collectionView content insets and section insets. width from `estimatedSize` method is ignored for this case. `adjustsHeight(Bool)` method has same logic, but for vertical insets.
+
+
+### Cell actions
 Implement such actions like `didSelectItem` or `shouldHighlightItem` using functional syntax
 ```swift
 let row = CollectionItem<CollectionCell>(item: "text")
@@ -90,6 +107,7 @@ Available actions:
 - `onEndDisplay`
 - `onHighlight`
 - `onUnighlight`
+- `shouldHighlight`
 
 ## Section configuration
 You can setup inter item spacing, line spacing and section insets using section object:
@@ -99,16 +117,42 @@ section.minimumInterItemSpacing = 2
 section.insetForSection = UIEdgeInsetsMake(0, 20, 0, 20)
 section.lineSpacing = 2
 ```
-
-## Updating
-You can update collection view only by operating with section and item objects without any `IndexPath` mess: put usual operations in `performUpdates` block
+Also you can set section header and footer:
 ```swift
-self.director.performUpdates { [unowned self] in
-    self.section.append(item: row)
-    self.section.insert(item: row, at: 0)
-    self.section.remove(item: item)
+section.headerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is header")
+section.footerItem = CollectionHeaderFooterView<SectionHeader>(item: "This is footer")
+```
+
+## Updating & reloading
+
+`IVCollectionKit` provides 2 ways for updatung `UICollectionView` content:
+- reload (using `reloadData`)
+- animated updates(using `performBatchUpdates`)
+
+Note, that all models, that you use in `CollectionItem` initializations should conform `Hashable` protocol. Framework provides fallback for non-hashable models, but it may cause unexpected behaviour during animated updates.
+```swift
+director.performUpdates()
+director.performUpdates { finished: Bool in
+    print("updates completed")
 }
 ```
 
+## IVCollectionView
+`IVCollectionView` is `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is simultanious updates.
+
 ## Custom sections
-You can provide your own section implementations using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections
+You can provide your own section implementation using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections (see exapmles). Also you can create subclass of `CollectionSection` if you dont need radically different behaviour 
+
+## UIScrollViewDelegate
+If you need to implement `UISrollViewDelegate` methods for your collection view (e.g pagination support) you can use `scrollDelegate` property
+
+```swift
+final class ViewController: UIViewController, UIScrollViewDelegate {
+    var director: CollectionDirector!
+    ...
+    
+    private func setupDirector() {
+        director.scrollDelegate = self
+    }
+}
+```

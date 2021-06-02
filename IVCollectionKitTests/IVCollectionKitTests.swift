@@ -11,17 +11,21 @@ import XCTest
 
 class IVTestCase: XCTestCase {
     let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: UICollectionViewFlowLayout())
-    lazy var director = CollectionDirector(colletionView: collectionView)
+    lazy var director = CollectionDirector(collectionView: collectionView)
     
     override func tearDown() {
-        director.removeAll()
-        director.reload()
-        collectionView.layoutIfNeeded()
+        director.removeAll(clearSections: true)
+        reload()
         super.tearDown()
     }
     
     override func setUp() {
         super.setUp()
+    }
+    
+    func reload() {
+        director.reload()
+        collectionView.layoutIfNeeded()
     }
 }
 
@@ -66,9 +70,8 @@ final class TestCell : UICollectionViewCell, ConfigurableCollectionItem {
     func configure(item: Void) {
         
     }
-    
-    static func estimatedSize(item: ()?, boundingSize collectionViewSize: CGSize) -> CGSize {
-        return CGSize(width: 50, height: 50)
+    static func estimatedSize(item: (), boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        CGSize(width: 50, height: 50)
     }
 }
 

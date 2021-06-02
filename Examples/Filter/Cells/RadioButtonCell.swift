@@ -52,7 +52,7 @@ final class RadioButtonCell: UICollectionViewCell {
 }
 
 extension RadioButtonCell: ConfigurableCollectionItem {
-    static func estimatedSize(item: RadioButtonViewModel?, boundingSize: CGSize) -> CGSize {
+    static func estimatedSize(item: RadioButtonViewModel, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
         return .init(width: boundingSize.width, height: filterCellHeight)
     }
     

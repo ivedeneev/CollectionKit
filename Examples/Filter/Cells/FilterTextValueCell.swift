@@ -38,8 +38,9 @@ final class FilterTextValueCell: UICollectionViewCell {
 }
 
 extension FilterTextValueCell: ConfigurableCollectionItem {
-    static func estimatedSize(item: TextSelectViewModel?, boundingSize: CGSize) -> CGSize {
+    static func estimatedSize(item: TextSelectViewModel, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
         return .init(width: boundingSize.width, height: filterCellHeight)
+
     }
     
     func configure(item: TextSelectViewModel) {

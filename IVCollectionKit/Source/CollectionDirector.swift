@@ -1,9 +1,9 @@
 //
-//  ProductDetailDirector.swift
-//  Marketplace
+//  CollectionDirector.swift
+//  CollectionKit
 //
 //  Created by Igor Vedeneev on 13.08.17.
-//  Copyright © 2017 WeAreLT. All rights reserved.
+//  Copyright © 2017 Igor Vedeneev. All rights reserved.
 //
 
 import UIKit
@@ -18,12 +18,12 @@ open class CollectionDirector: NSObject {
     ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
     
-    private weak var collectionView: UICollectionView!
-    private lazy var updater = CollectionUpdater(collectionView: collectionView)
-    private lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
+    public weak var collectionView: UICollectionView!
+    internal lazy var updater = CollectionUpdater(collectionView)
+    internal lazy var viewsRegisterer = CollectionReusableViewsRegisterer(collectionView: collectionView)
     
-    private var sectionIds: [String] = []
-    private var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
+    internal var sectionIds: [String] = []
+    internal var lastCommitedSectionAndItemsIdentifiers: [String: [String]] = [:]
     
     var isEmpty: Bool {
         if sections.isEmpty {
@@ -33,13 +33,13 @@ open class CollectionDirector: NSObject {
         return sections.reduce(true, { $0 && $1.numberOfItems() == 0 })
     }
     
-    public init(colletionView: UICollectionView,
+    public init(collectionView: UICollectionView,
                 sections: [AbstractCollectionSection] = [],
                 shouldUseAutomaticViewRegistration: Bool = true,
                 shouldAdjustSupplementaryViewLayerZPosition: Bool = true)
     {
         
-        self.collectionView = colletionView
+        self.collectionView = collectionView
         super.init()
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
@@ -47,24 +47,44 @@ open class CollectionDirector: NSObject {
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
     }
     
-    private func section(for index: Int) -> AbstractCollectionSection {
+    open func section(for index: Int) -> AbstractCollectionSection {
         return sections[index]
     }
     
     /// Save all section and items and sections identifiers "snapshot". It will be used to compare current state during next update
     private func createSnapshot() {
-        sectionIds = sections.map { $0.identifier }
-        
-        lastCommitedSectionAndItemsIdentifiers = [:]
+        sectionIds.removeAll()
+        lastCommitedSectionAndItemsIdentifiers.removeAll()
 
         for s in sections {
+            sectionIds.append(s.identifier)
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
         }
+    }
+    
+    /// dequeue cell for `CollectionSection` implementation & support automatic cell registration
+    internal func private_dequeueReusableCell(of type: AnyClass, reuseIdentifier: String, for indexPath: IndexPath) -> UICollectionViewCell {
+        if shouldUseAutomaticViewRegistration {
+            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: reuseIdentifier, cellClass: type)
+        }
+        
+        return collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
     }
 }
 
 //MARK:- Public
 extension CollectionDirector {
+    
+    /// Dequeue cell and register cell identidifer
+    public func dequeueReusableCell<T: UICollectionViewCell & Reusable>(indexPath: IndexPath) -> T {
+        
+        if shouldUseAutomaticViewRegistration {
+            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: T.reuseIdentifier, cellClass: T.self)
+        }
+        
+        return collectionView.dequeue(indexPath: indexPath)
+    }
+    
     /// Invokes empty batch update block. Typical use case: re-calculate cell size or toggle state of expandable section
     public func setNeedsUpdate() {
         collectionView.performBatchUpdates({}, completion: nil)
@@ -109,105 +129,91 @@ extension CollectionDirector {
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
     public func performUpdates(forceReloadDataForLargeAmountOfChanges: Bool = false,
-                               completion: (() -> Void)? = nil)
-    {
-        let newSectionIds = self.sections.map { $0.identifier }
-        let oldSectionIds = sectionIds
-        let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
-
-        // if there is no sections in cv, it crashes :(
-        if oldSectionIds.isEmpty {
-            reload()
-            return
-        }
-
-        let converter = IndexPathConverter()
-        var itemChanges = Array<ChangeWithIndexPath>()
+                               completion: (() -> Void)? = nil) {
         
-        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
-            reload()
+        let updates = updater.calculateUpdates(
+            oldSectionIds: sectionIds,
+            currentSections: sections,
+            itemMap: lastCommitedSectionAndItemsIdentifiers,
+            forceReloadDataForLargeAmountOfChanges: forceReloadDataForLargeAmountOfChanges)
+        
+        switch updates {
+        case .reload:
+            self.reload()
             completion?()
             return
+        case .update(let sections, let items):
+            createSnapshot()
+            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
         }
-        
-        self.sections.enumerated().forEach { [unowned self] (idx, section) in
-            let oldItemIds = self.lastCommitedSectionAndItemsIdentifiers[section.identifier] ?? section.currentItemIds()
-            let diff_ = diff(old: oldItemIds, new: section.currentItemIds())
-            guard !diff_.isEmpty else { return }
-            itemChanges.append(converter.convert(changes: diff_, section: idx))
-        }
-        
-        createSnapshot()
-        
+    }
+    
+//    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
+//        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
+//
+//        let updates = updater.calculateUpdates(
+//            oldSectionIds: [s.identifier],
+//            currentSections: [s],
+//            itemMap: lastCommitedSectionAndItemsIdentifiers.filter { $0.key == section.identifier },
+//            forceReloadDataForLargeAmountOfChanges: false)
+//
+//        switch updates {
+//        case .reload:
+//            reload()
+//            return
+//        case .update(let sections, let items):
+//            createSnapshot()
+//            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
+//        }
+//    }
+    
+    private func _performUpdates(sectionChanges: [Change<String>],
+                                 itemChanges: ChangeWithIndexPath,
+                                 completion: (() -> Void)?)
+    {
         collectionView.performBatchUpdates({ [weak self] in
-            guard let `self` = self else { return }
-
-            itemChanges.forEach { (changesWithIndexPath) in
-                
-                changesWithIndexPath.deletes.executeIfPresent { deletes in
-                    let indexPaths: [IndexPath]
-                    
-                    if !sectionChanges.isEmpty {
-                        let oldSections = deletes
-                            .map { newSectionIds[$0.section] }
-                            .compactMap { oldSectionIds.firstIndex(of: $0) }
-                        
-                        indexPaths = zip(deletes, oldSections).map { IndexPath(item: $0.item, section: $1) }
-                    } else {
-                        indexPaths = deletes
-                    }
-                    
-                    self.collectionView.deleteItems(at: indexPaths)
-                }
-
-                changesWithIndexPath.inserts.executeIfPresent {
-                  self.collectionView.insertItems(at: $0)
-                }
-
-                changesWithIndexPath.moves.executeIfPresent {
-                  $0.forEach { move in
-                    let from: IndexPath
-                    let to: IndexPath = move.to
-                    if !sectionChanges.isEmpty {
-                        let sectionId = newSectionIds[move.to.section]
-                        guard let oldSectionIdx = oldSectionIds.firstIndex(of: sectionId) else {
-                            fatalError("Attemt to move from section which doesnt belong to director before update.")
-                        }
-                        from = IndexPath(item: move.from.item, section: oldSectionIdx)
-                    } else {
-                        from = move.from
-                    }
-
-                    self.collectionView.moveItem(at: from, to: to)
-                  }
+            guard let collectionView = self?.collectionView else { return }
+            
+            itemChanges.deletes.executeIfPresent { (deletes) in
+                collectionView.deleteItems(at: deletes)
+            }
+            
+            itemChanges.inserts.executeIfPresent { (inserts) in
+                collectionView.insertItems(at: inserts)
+            }
+            
+            itemChanges.moves.executeIfPresent { (moves) in
+                moves.forEach { move in
+                    collectionView.moveItem(at: move.from, to: move.to)
                 }
             }
             
             let sectionDeletes = sectionChanges.compactMap { $0.delete?.index }
             sectionDeletes.executeIfPresent { deletes in
-                self.collectionView.deleteSections(IndexSet(deletes))
+                self?.collectionView.deleteSections(IndexSet(deletes))
             }
 
             let sectionInserts = sectionChanges.compactMap { $0.insert?.index }
             sectionInserts.executeIfPresent { inserts in
-                self.collectionView.insertSections(IndexSet(inserts))
+                self?.collectionView.insertSections(IndexSet(inserts))
             }
 
             sectionChanges.compactMap { $0.move }.executeIfPresent { moves in
-                moves.forEach { self.collectionView.moveSection($0.fromIndex, toSection: $0.toIndex) }
+                moves.forEach { self?.collectionView.moveSection($0.fromIndex, toSection: $0.toIndex) }
             }
-        }) { _ in
+        }) { (_) in
             completion?()
         }
-
-        itemChanges.flatMap { $0.replaces }.executeIfPresent { [weak self] in
+        
+        itemChanges.replaces.executeIfPresent { [weak self] in
             self?.collectionView.reloadItems(at: $0)
         }
-        
+
         sectionChanges.compactMap { $0.replace?.index }.executeIfPresent { [weak self] in
             self?.collectionView.reloadSections(IndexSet($0))
         }
     }
+    
     /// Removes all sections from director
     /// - parameter clearSections: if `true` removes all items from sections. Remember, that you should override `removeAll()` method in your custom section. This method removes all items from array in `CollectionSection` implementation and does nothing by default
     public func removeAll(clearSections: Bool = false) {
@@ -216,7 +222,10 @@ extension CollectionDirector {
         }
         
         sections.removeAll()
-        createSnapshot()
+    }
+    
+    public func clearSections() {
+        sections.forEach { $0.removeAll() }
     }
     
     public func append(section: AbstractCollectionSection) {
@@ -252,14 +261,7 @@ extension CollectionDirector: UICollectionViewDataSource {
     open func collectionView(_ collectionView: UICollectionView,
                              cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let item = section(for: indexPath.section).item(for: indexPath.row)
-        if shouldUseAutomaticViewRegistration {
-            viewsRegisterer.registerCellIfNeeded(reuseIdentifier: item.reuseIdentifier, cellClass: item.cellType)
-        }
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
-        item.configure(cell)
-        return cell
+        return section(for: indexPath.section).cell(for: self, indexPath: indexPath)
     }
     
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -322,6 +324,15 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         section(for: indexPath.section).didUnhighlightItem(at: indexPath)
     }
     
+    open func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return section(for: indexPath.section).shouldSelect(at: indexPath)
+    }
+
+    // called when the user taps on an already-selected item in multi-select mode
+    open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return section(for: indexPath.section).shouldDeselect(at: indexPath)
+    }
+    
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let section = self.section(for: indexPath.section)
         
@@ -356,13 +367,13 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let section_ = self.section(for: section)
         
-        let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
+        let value = section_.headerItem?.estimatedSize(boundingSize: collectionView.bounds.size, in: section_) ?? .zero
         return value
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        let section_ = sections[section]
-        let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size) ?? .zero
+        let section_ = self.section(for: section)
+        let value = section_.footerItem?.estimatedSize(boundingSize: collectionView.bounds.size, in: section_) ?? .zero
         return value
     }
     
@@ -386,10 +397,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
-            sections[indexPath.section].headerItem?.onDisplay?()
+            section(for: indexPath.section).headerItem?.onDisplay?()
             break
         case UICollectionView.elementKindSectionFooter:
-            sections[indexPath.section].footerItem?.onDisplay?()
+            section(for: indexPath.section).footerItem?.onDisplay?()
             break
         default:
             break
@@ -408,10 +419,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
         
         switch elementKind {
         case UICollectionView.elementKindSectionHeader:
-            sections[indexPath.section].headerItem?.onEndDisplay?()
+            section(for: indexPath.section).headerItem?.onEndDisplay?()
             break
         case UICollectionView.elementKindSectionFooter:
-            sections[indexPath.section].footerItem?.onEndDisplay?()
+            section(for: indexPath.section).footerItem?.onEndDisplay?()
             break
         default:
             break
@@ -422,7 +433,7 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
 //MARK:- UIScrollViewDelegate
 extension CollectionDirector : UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.scrollDelegate?.scrollViewDidScroll?(scrollView)
+        scrollDelegate?.scrollViewDidScroll?(scrollView)
     }
 }
 

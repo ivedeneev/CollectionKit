@@ -15,9 +15,9 @@ open class CollectionSection : AbstractCollectionSection {
 
     public let identifier: String
 
-    open var items: [AbstractCollectionItem] = []
-    open var headerItem: AbstractCollectionHeaderFooterItem?
-    open var footerItem: AbstractCollectionHeaderFooterItem?
+    public var items: [AbstractCollectionItem] = []
+    public var headerItem: AbstractCollectionHeaderFooterItem?
+    public var footerItem: AbstractCollectionHeaderFooterItem?
     
     open var insetForSection: UIEdgeInsets = .zero
     open var minimumInterItemSpacing: CGFloat = .leastNormalMagnitude
@@ -28,27 +28,35 @@ open class CollectionSection : AbstractCollectionSection {
         self.identifier = id
     }
     
-    open func item(for index: Int) -> AbstractCollectionItem {
-        return items[index]
+    public func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
+        let item = items[indexPath.row]
+        let cell = director.private_dequeueReusableCell(of: item.cellType, reuseIdentifier: item.reuseIdentifier, for: indexPath)
+        item.configure(cell)
+        
+        return cell
     }
     
-    open func numberOfItems() -> Int {
+    public func numberOfItems() -> Int {
         return items.count
     }
     
-    open func currentItemIds() -> [String] {
+    public func currentItemIds() -> [String] {
         return items.map { $0.identifier }
     }
 
-    open func append(item: AbstractCollectionItem) {
+    public func append(item: AbstractCollectionItem) {
         items.append(item)
     }
     
-    open func append(items: [AbstractCollectionItem]) {
+    public func append(items: [AbstractCollectionItem]) {
         self.items.append(contentsOf: items)
     }
     
-    open func removeAll() {
+    public func insert(item: AbstractCollectionItem, at index: Int) {
+        items.insert(item, at: index)
+    }
+    
+    public func removeAll() {
         items.removeAll()
     }
     
@@ -69,7 +77,7 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     open func shouldHighlightItem(at indexPath: IndexPath) -> Bool {
-        return items[indexPath.item].shouldHighlight ?? true
+        return items[indexPath.item].shouldHighlight
     }
     
     open func didHighlightItem(at indexPath: IndexPath) {
@@ -81,16 +89,24 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     open func sizeForItem(at indexPath: IndexPath, boundingSize: CGSize) -> CGSize {
-        return items[indexPath.item].estimatedSize(boundingSize: boundingSize)
+        return items[indexPath.item].estimatedSize(boundingSize: boundingSize, in: self)
     }
     
-    open func itemAdjustsWidth(at index: Int) -> Bool {
+    public func itemAdjustsWidth(at index: Int) -> Bool {
         guard !isEmpty else { return false }
         return items[index].adjustsWidth
     }
     
-    open func itemAdjustsHeight(at index: Int) -> Bool {
+    public func itemAdjustsHeight(at index: Int) -> Bool {
         guard !isEmpty else { return false }
         return items[index].adjustsHeight
+    }
+    
+    public func shouldSelect(at indexPath: IndexPath) -> Bool {
+        return items[indexPath.row].shouldSelect
+    }
+    
+    public func shouldDeselect(at indexPath: IndexPath) -> Bool {
+        return items[indexPath.row].shouldDeselect
     }
 }

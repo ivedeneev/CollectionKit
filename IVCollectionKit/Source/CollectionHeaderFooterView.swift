@@ -9,7 +9,8 @@
 import UIKit
 
 open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: AbstractCollectionHeaderFooterItem where ViewType: UICollectionReusableView {
-    public let kind: String
+    
+
     public var viewType: AnyClass { return ViewType.self }
     public var indexPath: String?
     open var item: ViewType.T
@@ -18,17 +19,16 @@ open class CollectionHeaderFooterView<ViewType: ConfigurableCollectionItem>: Abs
     open var reuseIdentifier: String { return ViewType.reuseIdentifier }
     public let identifier: String = UUID().uuidString
     
-    public init(item: ViewType.T, kind: String) {
+    public init(item: ViewType.T) {
         self.item = item
-        self.kind = kind
     }
     
     public func configure(_ view: UICollectionReusableView) {
         (view as? ViewType)?.configure(item: item)
     }
     
-    public func estimatedSize(boundingSize: CGSize) -> CGSize {
-        return ViewType.estimatedSize(item: self.item, boundingSize: boundingSize)
+    public func estimatedSize(boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return ViewType.estimatedSize(item: item, boundingSize: boundingSize, in: section)
     }
     
     @discardableResult

@@ -31,17 +31,18 @@ class ViewController: CollectionViewController {
         section1.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         director += section1
         
+//        imageSection = CollectionSection(id: "images")
         imageSection = CollectionSection(items: images.map(CollectionItem<ImageCell>.init))
         imageSection.insetForSection = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 2)
         imageSection.lineSpacing = 2
         imageSection.minimumInterItemSpacing = 2
         director += imageSection
-        
-        let itemsForSection2 =  pokerCombos.suffix(5).map(CollectionItem<TextCell>.init)
-        section2 = CollectionSection(items: itemsForSection2)
-        section2.lineSpacing = 2
-        section2.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
-        director += section2
+//
+//        let itemsForSection2 =  pokerCombos.suffix(5).map(CollectionItem<TextCell>.init)
+//        section2 = CollectionSection(items: itemsForSection2)
+//        section2.lineSpacing = 2
+//        section2.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+//        director += section2
 
         director.performUpdates()
     }
@@ -58,8 +59,11 @@ class ViewController: CollectionViewController {
     }
     
     @objc func crazyUpdate() {
+//        section1.insert(item: CollectionItem<TextCell>(item: "insert").adjustsWidth(true), at: 0)
+//        section1.items.remove(at: 1)
+        section1.insert(item: CollectionItem<TextCell>(item: "insert 1").adjustsWidth(true), at: 1)
+        section1.items.remove(at: 2)
         imageSection.items.shuffle()
-        director.sections.remove(at: 0)
         director.performUpdates()
     }
 }

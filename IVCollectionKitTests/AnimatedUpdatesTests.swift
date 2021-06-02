@@ -61,11 +61,15 @@ class AnimatedUpdatesTests: IVTestCase {
             
             let indexPaths = Array(0..<4).map { IndexPath(item: $0, section: 0) }
             let cells = indexPaths.compactMap { self.collectionView.cellForItem(at: $0) as? StringCell }
-            XCTAssert(cells.count == 4)
+            XCTAssert(cells.count == 4, "Expected 4 cells, got \(cells.count)")
             let texts = zip(insertSectionsStrings, cells.compactMap { $0.titleLabel.text })
             let textsAreEqual = texts.reduce(true, { $0 && $1.0 == $1.1 })
             XCTAssert(textsAreEqual)
         }
+    }
+    
+    func test_onlyItemsUpdate() {
+        
     }
 
     func testPerformanceExample() {
@@ -73,17 +77,5 @@ class AnimatedUpdatesTests: IVTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
-    }
-}
-
-private class StringCell: UICollectionViewCell, ConfigurableCollectionItem {
-    let titleLabel = UILabel()
-    
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: 5, height: 5)
-    }
-    
-    func configure(item: String) {
-        titleLabel.text = item
     }
 }

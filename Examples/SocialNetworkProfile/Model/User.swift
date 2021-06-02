@@ -9,16 +9,21 @@
 import Foundation
 
 struct User: Hashable {
-    let id: String = UUID().uuidString
+    let id: String
     let firstName: String
     let lastName: String
     let imageUrl: URL
     let city: String
     let info: [Info]
+    let description: String?
     
     struct Info: Hashable {
         let id: String
         let icon: String
         let value: String
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

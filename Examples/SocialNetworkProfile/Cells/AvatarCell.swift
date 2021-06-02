@@ -19,10 +19,23 @@ final class AvatarCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
         setupImageView()
         setupNameLabel()
         setupAgeAndCityLabel()
+        
+        NSLayoutConstraint.activate([
+            imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            imageView.heightAnchor.constraint(equalToConstant: 48),
+            imageView.widthAnchor.constraint(equalToConstant: 48),
+            nameLabel.bottomAnchor.constraint(equalTo: centerYAnchor, constant: -2),
+            nameLabel.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 16),
+            nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            ageAndCityLabel.topAnchor.constraint(equalTo: centerYAnchor, constant: 2),
+            ageAndCityLabel.leftAnchor.constraint(equalTo: nameLabel.leftAnchor),
+            ageAndCityLabel.rightAnchor.constraint(equalTo: nameLabel.rightAnchor),
+        ])
     }
     
     required init?(coder: NSCoder) {
@@ -31,11 +44,8 @@ final class AvatarCell: UICollectionViewCell {
     
     private func setupImageView() {
         addSubview(imageView)
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 24
         imageView.backgroundColor = .tertiarySystemGroupedBackground
@@ -44,31 +54,25 @@ final class AvatarCell: UICollectionViewCell {
     private func setupNameLabel() {
         addSubview(nameLabel)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.bottomAnchor.constraint(equalTo: centerYAnchor, constant: -2).isActive = true
-        nameLabel.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 16).isActive = true
-        nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
         nameLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
     }
     
     private func setupAgeAndCityLabel() {
         addSubview(ageAndCityLabel)
         ageAndCityLabel.translatesAutoresizingMaskIntoConstraints = false
-        ageAndCityLabel.topAnchor.constraint(equalTo: centerYAnchor, constant: 2).isActive = true
-        ageAndCityLabel.leftAnchor.constraint(equalTo: nameLabel.leftAnchor).isActive = true
-        ageAndCityLabel.rightAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
-        ageAndCityLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         ageAndCityLabel.textColor = .systemGray
         ageAndCityLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
     }
 }
 
 extension AvatarCell: ConfigurableCollectionItem {
+    static func estimatedSize(item: User, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+         return CGSize(width: boundingSize.width, height: 76)
+    }
+    
     func configure(item: User) {
         nameLabel.text = "\(item.firstName) \(item.lastName)"
         ageAndCityLabel.text = "26 y. \(item.city)"
-    }
-    
-    static func estimatedSize(item: User?, boundingSize: CGSize) -> CGSize {
-        return CGSize.init(width: boundingSize.width, height: 76)
+        imageView.image = UIImage(named: "hazard")
     }
 }

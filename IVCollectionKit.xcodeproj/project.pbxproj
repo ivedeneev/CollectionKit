@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D61AEA5324253AB700FB7FFD /* PopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AEA5224253AB700FB7FFD /* PopupController.swift */; };
 		D61AEA5524253B5D00FB7FFD /* StringFilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61AEA5424253B5D00FB7FFD /* StringFilterPopup.swift */; };
+		D61CB2BD2531B31100E35CDC /* IVCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61CB2BC2531B31100E35CDC /* IVCollectionView.swift */; };
 		D631D82923F751D40024C23F /* AdjustWidthHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */; };
 		D631D82C23F87F0D0024C23F /* DataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82B23F87F0D0024C23F /* DataSourceTests.swift */; };
 		D631D82F23F9C4220024C23F /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631D82E23F9C4220024C23F /* CollectionViewController.swift */; };
@@ -85,10 +86,14 @@
 		D6668EA324269B8C00EEB524 /* NumberPickerPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */; };
 		D6668EA5242757D200EEB524 /* FilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA4242757D200EEB524 /* FilterPopup.swift */; };
 		D6668EA72427717600EEB524 /* ManualInputFilterPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */; };
+		D68C85E8245496CD0011C186 /* CollectionUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */; };
+		D68C85EB24549B3B0011C186 /* StringCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68C85EA24549B3B0011C186 /* StringCell.swift */; };
+		D6C19B8025324FB000FAE6DC /* ProfileDiffableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C19B7F25324FB000FAE6DC /* ProfileDiffableController.swift */; };
 		D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A67240D775D00F0A110 /* FilterViewController.swift */; };
 		D6C74A6A240D78F500F0A110 /* FilterTextValueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */; };
 		D6C74A6C240D799900F0A110 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */; };
 		D6C74A6E240EF3C400F0A110 /* RadioButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */; };
+		D6D3919824D08416004C85E4 /* MultilineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D3919724D08416004C85E4 /* MultilineTextCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +130,7 @@
 /* Begin PBXFileReference section */
 		D61AEA5224253AB700FB7FFD /* PopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupController.swift; sourceTree = "<group>"; };
 		D61AEA5424253B5D00FB7FFD /* StringFilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFilterPopup.swift; sourceTree = "<group>"; };
+		D61CB2BC2531B31100E35CDC /* IVCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IVCollectionView.swift; sourceTree = "<group>"; };
 		D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustWidthHeightTests.swift; sourceTree = "<group>"; };
 		D631D82B23F87F0D0024C23F /* DataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceTests.swift; sourceTree = "<group>"; };
 		D631D82E23F9C4220024C23F /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
@@ -183,10 +189,14 @@
 		D6668EA224269B8C00EEB524 /* NumberPickerPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPickerPopup.swift; sourceTree = "<group>"; };
 		D6668EA4242757D200EEB524 /* FilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPopup.swift; sourceTree = "<group>"; };
 		D6668EA62427717600EEB524 /* ManualInputFilterPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualInputFilterPopup.swift; sourceTree = "<group>"; };
+		D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionUpdaterTests.swift; sourceTree = "<group>"; };
+		D68C85EA24549B3B0011C186 /* StringCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCell.swift; sourceTree = "<group>"; };
+		D6C19B7F25324FB000FAE6DC /* ProfileDiffableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDiffableController.swift; sourceTree = "<group>"; };
 		D6C74A67240D775D00F0A110 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D6C74A69240D78F500F0A110 /* FilterTextValueCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextValueCell.swift; sourceTree = "<group>"; };
 		D6C74A6B240D799900F0A110 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		D6C74A6D240EF3C400F0A110 /* RadioButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonCell.swift; sourceTree = "<group>"; };
+		D6D3919724D08416004C85E4 /* MultilineTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineTextCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,6 +270,7 @@
 				D631D84523FBBD030024C23F /* ProfileInfoCell.swift */,
 				D631D84723FC69690024C23F /* FriendCell.swift */,
 				D631D84923FC85DB0024C23F /* ButtonFooter.swift */,
+				D6D3919724D08416004C85E4 /* MultilineTextCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -336,11 +347,13 @@
 		D655C19B23E2178F00405D88 /* IVCollectionKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				D68C85E924549B2D0011C186 /* Helpers */,
 				D655C19C23E2178F00405D88 /* IVCollectionKitTests.swift */,
 				D655C19E23E2178F00405D88 /* Info.plist */,
 				D631D82823F751D40024C23F /* AdjustWidthHeightTests.swift */,
 				D631D82B23F87F0D0024C23F /* DataSourceTests.swift */,
 				D631D84C24041D4A0024C23F /* AnimatedUpdatesTests.swift */,
+				D68C85E7245496CD0011C186 /* CollectionUpdaterTests.swift */,
 			);
 			path = IVCollectionKitTests;
 			sourceTree = "<group>";
@@ -348,6 +361,7 @@
 		D655C1AD23E217C400405D88 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				D6C19B7E25324F8900FAE6DC /* DiffableDataSource */,
 				D6C74A66240D774700F0A110 /* Filter */,
 				D631D83C23FB42190024C23F /* SocialNetworkProfile */,
 				D631D83323F9CA2A0024C23F /* PhotoGrid */,
@@ -381,6 +395,7 @@
 				D655C1C123E2180F00405D88 /* Operators.swift */,
 				D655C1C923E2180F00405D88 /* Protocols.swift */,
 				D655C1CA23E2180F00405D88 /* Reusable.swift */,
+				D61CB2BC2531B31100E35CDC /* IVCollectionView.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -431,6 +446,22 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D68C85E924549B2D0011C186 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D68C85EA24549B3B0011C186 /* StringCell.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		D6C19B7E25324F8900FAE6DC /* DiffableDataSource */ = {
+			isa = PBXGroup;
+			children = (
+				D6C19B7F25324FB000FAE6DC /* ProfileDiffableController.swift */,
+			);
+			path = DiffableDataSource;
 			sourceTree = "<group>";
 		};
 		D6C74A66240D774700F0A110 /* Filter */ = {
@@ -594,6 +625,7 @@
 				D655C1E323E2181000405D88 /* CollectionItem.swift in Sources */,
 				D655C1F923E2195700405D88 /* Heckel.swift in Sources */,
 				D655C20523E2195700405D88 /* UICollectionView+Extensions.swift in Sources */,
+				D61CB2BD2531B31100E35CDC /* IVCollectionView.swift in Sources */,
 				D655C1D923E2181000405D88 /* CollectionUpdater.swift in Sources */,
 				D655C1DD23E2181000405D88 /* Protocols.swift in Sources */,
 				D655C1FB23E2195700405D88 /* MoveReducer.swift in Sources */,
@@ -620,6 +652,7 @@
 				D655C1D423E2181000405D88 /* CollectionHeaderFooterView.swift in Sources */,
 				D655C20023E2195700405D88 /* Change.swift in Sources */,
 				D655C1E023E2181000405D88 /* Reusable.swift in Sources */,
+				D68C85E8245496CD0011C186 /* CollectionUpdaterTests.swift in Sources */,
 				D655C19D23E2178F00405D88 /* IVCollectionKitTests.swift in Sources */,
 				D655C1F423E2195700405D88 /* Array+Extensions.swift in Sources */,
 				D655C1CE23E2181000405D88 /* Operators.swift in Sources */,
@@ -630,6 +663,7 @@
 				D655C1DC23E2181000405D88 /* Helpers.swift in Sources */,
 				D631D84D24041D4A0024C23F /* AnimatedUpdatesTests.swift in Sources */,
 				D655C1FA23E2195700405D88 /* Heckel.swift in Sources */,
+				D68C85EB24549B3B0011C186 /* StringCell.swift in Sources */,
 				D655C20623E2195700405D88 /* UICollectionView+Extensions.swift in Sources */,
 				D655C20223E2195700405D88 /* IndexPathConverter.swift in Sources */,
 				D655C1FE23E2195700405D88 /* DiffAware.swift in Sources */,
@@ -671,8 +705,10 @@
 				D6C74A68240D775D00F0A110 /* FilterViewController.swift in Sources */,
 				D631D83B23F9E83C0024C23F /* CollectionHeader.swift in Sources */,
 				D655C21023E2203200405D88 /* ImageCell.swift in Sources */,
+				D6C19B8025324FB000FAE6DC /* ProfileDiffableController.swift in Sources */,
 				D631D84A23FC85DB0024C23F /* ButtonFooter.swift in Sources */,
 				D64FA9952425E33100624969 /* FilterRouter.swift in Sources */,
+				D6D3919824D08416004C85E4 /* MultilineTextCell.swift in Sources */,
 				D631D83523F9CA9D0024C23F /* PhotoGridViewController.swift in Sources */,
 				D64FA99C2425E71E00624969 /* SelectFilterCell.swift in Sources */,
 				D631D84623FBBD030024C23F /* ProfileInfoCell.swift in Sources */,
@@ -853,7 +889,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.9.11;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -880,7 +916,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.9.11;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -900,6 +936,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -918,6 +955,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.ivedeneev.IVCollectionKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

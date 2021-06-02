@@ -36,14 +36,14 @@ final class PhotoCell: UICollectionViewCell {
 }
 
 extension PhotoCell: ConfigurableCollectionItem {
-    func configure(item: PHAsset) {
-        cancellable = PHImageManager.default().image(asset: item).assign(to: \.image, on: imageView)
+    static func estimatedSize(item: PHAsset, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+         let side = min(boundingSize.width, boundingSize.height)
+        let cellSide = ((side - section.minimumInterItemSpacing * 2) / 3).rounded(.down)
+               return CGSize(width: cellSide, height: cellSide)
     }
     
-    static func estimatedSize(item: PHAsset?, boundingSize: CGSize) -> CGSize {
-        let side = min(boundingSize.width, boundingSize.height)
-        let cellSide = ((side - 2 * 2) / 3).rounded(.down)
-        return CGSize(width: cellSide, height: cellSide)
+    func configure(item: PHAsset) {
+        cancellable = PHImageManager.default().image(asset: item).assign(to: \.image, on: imageView)
     }
 }
 

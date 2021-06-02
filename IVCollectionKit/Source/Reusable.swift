@@ -9,6 +9,7 @@
 import Foundation
 import UIKit.UINib
 
+/// Convinience methods to work with cell registering
 public protocol Reusable {
     static var nib: UINib { get }
     static var reuseIdentifier: String { get }
@@ -19,7 +20,7 @@ public extension Reusable {
     static var nib: UINib {
         return UINib(nibName: String(describing: self), bundle: nil)
     }
-    
+
     static var reuseIdentifier: String {
         return String(describing: self)
     }
@@ -32,11 +33,11 @@ public extension UICollectionView {
         }
         return cell
     }
-    
+
     func registerNib<T: Reusable>(_ type: T.Type) {
         register(T.nib, forCellWithReuseIdentifier: T.reuseIdentifier)
     }
-    
+
     func registerClass<T: Reusable>(_ type: T.Type) where T: UICollectionViewCell {
         register(T.self, forCellWithReuseIdentifier: T.reuseIdentifier)
     }

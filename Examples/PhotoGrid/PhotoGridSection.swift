@@ -11,6 +11,7 @@ import IVCollectionKit
 import Photos
 
 final class PhotoGridSection: AbstractCollectionSection {
+    
     var identifier: String {
         return "PhotoGridSection"
     }
@@ -35,25 +36,21 @@ final class PhotoGridSection: AbstractCollectionSection {
         return results.count
     }
     
-    func item(for index: Int) -> AbstractCollectionItem {
-        return CollectionItem<PhotoCell>(item: results[index])
-    }
-    
     func didSelectItem(at indexPath: IndexPath) {
         
     }
     
     func sizeForItem(at indexPath: IndexPath, boundingSize: CGSize) -> CGSize {
-        return PhotoCell.estimatedSize(item: nil, boundingSize: boundingSize)
+        return PhotoCell.estimatedSize(item: results[indexPath.row], boundingSize: boundingSize, in: self)
     }
-    
-    func append(item: AbstractCollectionItem) { }
-    
-    func append(items: [AbstractCollectionItem]) { }
-    
-    func removeAll() { }
     
     func currentItemIds() -> [String] {
         return []
+    }
+    
+    func cell(for director: CollectionDirector, indexPath: IndexPath) -> UICollectionViewCell {
+        let cell:PhotoCell = director.dequeueReusableCell(indexPath: indexPath)
+        cell.configure(item: results[indexPath.row])
+        return cell
     }
 }

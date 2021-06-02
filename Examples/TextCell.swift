@@ -14,14 +14,14 @@ final class TextCell: UICollectionViewCell {
     
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? .separator : .white
+            backgroundColor = isHighlighted ? .separator : .secondarySystemGroupedBackground
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(label)
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemGroupedBackground
     }
     
     required init?(coder: NSCoder) {
@@ -35,11 +35,11 @@ final class TextCell: UICollectionViewCell {
 }
 
 extension TextCell: ConfigurableCollectionItem {
-    func configure(item: String) {
-        label.text = item
+    static func estimatedSize(item: String, boundingSize: CGSize, in section: AbstractCollectionSection) -> CGSize {
+        return CGSize(width: boundingSize.width - 40, height: 44)
     }
     
-    static func estimatedSize(item: String?, boundingSize: CGSize) -> CGSize {
-        return CGSize(width: boundingSize.width - 40, height: 44)
+    func configure(item: String) {
+        label.text = item
     }
 }
