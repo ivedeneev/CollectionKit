@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "IVCollectionKit",
-
+    platforms: [.iOS(.v9)],
     products: [
         .library(
             name: "IVCollectionKit",
