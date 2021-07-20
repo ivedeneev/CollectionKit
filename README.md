@@ -135,7 +135,10 @@ director.performUpdates()
 director.performUpdates { finished: Bool in
     print("updates completed")
 }
+
+If you need to animate cell size you can use `director.setNeedsUpdates()` method. This method doesnt trigger cell calculatuion under the hood
 ```
+**IMPORTANT!** if you use animated updates via `performUpdates` or `setNeedsUpdate` dont use update methods of UICollectionView directly. It may lead to unpredictable behaviour
 
 ## IVCollectionView
 `IVCollectionView` is `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is simultanious updates.
