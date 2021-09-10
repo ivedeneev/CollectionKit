@@ -17,6 +17,7 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
     
     var user: User?
     var friends = [User]()
+    var posts = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +32,9 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             self.loadData(val: 2)
         }
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.77) {
+            self.loadData(val: 3)
+        }
     }
     
     func loadData(val: Int) {
@@ -50,6 +54,15 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
                        User(id: "vy", firstName: "Viktor", lastName: "Yudaev", imageUrl: URL(string:"www.google.ru")!, city: "Tambov", info: [], description: nil),
                        User(id: "avdm", firstName: "Andy", lastName: "Van der Meyde", imageUrl: URL(string: "www.google.ru")!, city: "Amsterdam", info: [], description: nil),
             ]
+            
+        case 3:
+            user?.info.append(.init(id: "333", icon: "phone", value: "+7 (4752) 52-57-66"))
+            friends.insert(User(id: "kr", firstName: "Kristina", lastName: "Test", imageUrl: URL(string: "www.amster.ru")!, city: "Moskva", info: [], description: nil), at: 0)
+            
+            posts = (0..<20).map {
+                let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                return "\($0)\n" + String((0..<300).map { _ in letters.randomElement()! })
+              }
         default:
             break
         }
@@ -65,12 +78,15 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
         let userSection = CollectionSection(id: "user")
         let descriptionSecion = CollectionSection(id: "desc")
         let friendSection = CollectionSection(id: "friend")
+        let postsSection = CollectionSection(id: "posts")
         
         var sections = Array<AbstractCollectionSection>()
         guard let user = user else { return }
         title = user.firstName
         
-        userSection += CollectionItem<AvatarCell>(item: user)
+        userSection += CollectionItem<AvatarCell>(item: user).onSelect { [unowned self] (_) in
+            self.collectionView.scrollToItem(at: IndexPath(item: 10, section: 3), at: .centeredVertically, animated: true)
+        }
         userSection.insetForSection = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         let infoRows = user.info.map(CollectionItem<ProfileInfoCell>.init)
         userSection += infoRows
@@ -80,10 +96,11 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             descriptionSecion.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "About me")
             
             let descViewModel = MultilineTextViewModel(text: desc)
-            descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel).onSelect { [descViewModel, director] _ in
-                descViewModel.isExpanded = !descViewModel.isExpanded
-                director.performUpdates()
-            }
+            descriptionSecion += CollectionItem<MultilineTextCell>(item: descViewModel)
+                .onSelect { [descViewModel, director] _ in
+                    descViewModel.isExpanded = !descViewModel.isExpanded
+                    director.performUpdates()
+                }
             
             descriptionSecion.insetForSection = UIEdgeInsets(top: 0, left: 8, bottom: 16, right: 8)
             
@@ -100,6 +117,24 @@ final class ProfileViewController: CollectionViewController, PopupContentView {
             let buttonVm = ButtonViewModel(icon: nil, title: "See All", handler: { print("yezzzzzzzzz") })
             friendSection.footerItem = CollectionHeaderFooterView<ButtonFooter>(item: buttonVm)
             sections.append(friendSection)
+        }
+        
+        if !posts.isEmpty {
+            postsSection.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "Posts")
+            
+            postsSection += posts.map { post in
+                    let vm = MultilineTextViewModel(text: post)
+                    return CollectionItem<MultilineTextCell>(item: vm)
+                        .onSelect { [vm, director] _ in
+                            vm.isExpanded = !vm.isExpanded
+                            director.performUpdates()
+                        }
+                }
+            
+            postsSection.insetForSection = UIEdgeInsets(top: 0, left: 8, bottom: 16, right: 8)
+            postsSection.lineSpacing = 8
+            
+            sections.append(postsSection)
         }
         
         director.sections = sections
