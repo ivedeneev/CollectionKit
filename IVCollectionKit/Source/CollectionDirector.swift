@@ -447,3 +447,62 @@ extension CollectionDirector {
         return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
     }
 }
+
+extension CollectionDirector {
+    
+    public enum CollectionLayout {
+        case vertical
+        case horizontal
+    }
+    
+    open func calculateContentSize(for collectionLayout: CollectionLayout = .vertical) -> CGSize {
+        
+        let allIndexPaths = sections.enumerated().map { sectionIndex, section -> [IndexPath] in
+            (0..<section.numberOfItems())
+                .map { itemIndex in
+                    return IndexPath(item: itemIndex, section: sectionIndex)
+                }
+        }
+        .flatMap { $0 }
+        
+        var contentSize = allIndexPaths.reduce(CGSize.zero) { contentSize, indexPath in
+            var contentSizeResult = contentSize
+            
+            let itemSize = collectionView(
+                collectionView,
+                layout: collectionView.collectionViewLayout,
+                sizeForItemAt: indexPath
+            )
+            
+            print(">>> itemSize", itemSize)
+            
+            switch collectionLayout {
+            case .vertical:
+                contentSizeResult.width = max(contentSizeResult.width, itemSize.width)
+                contentSizeResult.height += itemSize.height
+                
+            case .horizontal:
+                contentSizeResult.height = max(contentSizeResult.height, itemSize.height)
+                contentSizeResult.width += itemSize.width
+            }
+            
+            return contentSizeResult
+        }
+        
+        sections.forEach { section in
+            let sectionInsets = section.insetForSection
+            switch collectionLayout {
+            case .vertical:
+                let verticalInsets = sectionInsets.top + sectionInsets.bottom
+                print(">>> verticalInsets ", verticalInsets)
+                contentSize.height += verticalInsets
+            case .horizontal:
+                let horizontalInsets = sectionInsets.left + sectionInsets.right
+                print(">>> verticalInsets ", horizontalInsets)
+                contentSize.width += horizontalInsets
+            }
+        }
+        
+        return contentSize
+    }
+}

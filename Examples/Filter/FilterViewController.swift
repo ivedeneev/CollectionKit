@@ -101,6 +101,11 @@ final class FilterViewController: CollectionViewController {
         }
         
         director.reload()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            
+            let verticalContentSize = self.director.calculateContentSize(for: .vertical)
+            print(">>> ", verticalContentSize)
+        }
     }
 }
 
