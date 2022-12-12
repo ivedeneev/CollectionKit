@@ -6,9 +6,9 @@ Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.co
 
 
 # Installation
-Via CocoaPods: `pod 'IVCollectionKit'`
-Via Carthage `github "ivedeneev/CollectionKit"`
-Via Swift Package Manager: `.package(url: "https://github.com/ivedeneev/CollectionKit", branch: "master")`
+- Via CocoaPods: `pod 'IVCollectionKit'`
+- Via Carthage `github "ivedeneev/CollectionKit"`
+- Via Swift Package Manager: `.package(url: "https://github.com/ivedeneev/CollectionKit", branch: "master")`
 
 # Features
  - [x] Declarative `UICollectionView` management
