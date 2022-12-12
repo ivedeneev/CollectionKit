@@ -11,7 +11,6 @@ import IVCollectionKit
 
 class CollectionViewController: UIViewController {
     let layout = UICollectionViewFlowLayout()
-//    lazy var collectionView = IVCollectionView(frame: .zero, collectionViewLayout: layout)
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     lazy var director: CollectionDirector = CollectionDirector(collectionView: collectionView)
     
@@ -26,14 +25,18 @@ class CollectionViewController: UIViewController {
     private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        topConstraint = collectionView.topAnchor.constraint(equalTo: view.topAnchor)
-        topConstraint.isActive = true
-        bottomConstraint = collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        bottomConstraint.isActive = true
-        collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.backgroundColor = .systemGroupedBackground
         collectionView.alwaysBounceVertical = true
+        
+        topConstraint = collectionView.topAnchor.constraint(equalTo: view.topAnchor)
+        bottomConstraint = collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        
+        NSLayoutConstraint.activate([
+            topConstraint,
+            bottomConstraint,
+            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            collectionView.rightAnchor.constraint(equalTo: view.rightAnchor)
+        ])
     }
 }
 

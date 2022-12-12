@@ -23,11 +23,6 @@ extension FilterPopup where Self: UIViewController {
         headerView.backgroundColor = .systemBackground
         view.addSubview(headerView)
         
-        headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        headerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        
         let titleLabel = UILabel()
         let cancelButton = UIButton()
         
@@ -38,17 +33,26 @@ extension FilterPopup where Self: UIViewController {
         headerView.addSubview(cancelButton)
         
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -16).isActive = true
-        cancelButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 18).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
         cancelButton.backgroundColor = .secondarySystemBackground
         cancelButton.addTarget(self, action: "cancel", for: .touchUpInside)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: cancelButton.leftAnchor, constant: -10).isActive = true
+        
+        NSLayoutConstraint.activate([
+            headerView.topAnchor.constraint(equalTo: view.topAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: 44),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            cancelButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -16),
+            cancelButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            cancelButton.widthAnchor.constraint(equalToConstant: 18),
+            cancelButton.heightAnchor.constraint(equalToConstant: 18),
+            
+            titleLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            titleLabel.rightAnchor.constraint(equalTo: cancelButton.leftAnchor, constant: -10)
+        ])
     }
     
     func setupToolbar() {
@@ -57,13 +61,15 @@ extension FilterPopup where Self: UIViewController {
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.isTranslucent = false
         view.addSubview(toolbar)
-        
-        toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -34).isActive = true
+
+        NSLayoutConstraint.activate([
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
         
         toolbar.setItems([
-            UIBarButtonItem(title: "Сбросить", style: .plain, target: self, action: "reset"),
+            UIBarButtonItem(title: "Reset", style: .plain, target: self, action: "reset"),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
             UIBarButtonItem(barButtonSystemItem: .done, target: self, action: "cancel"),
         ], animated: false)

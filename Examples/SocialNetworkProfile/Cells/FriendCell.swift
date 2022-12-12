@@ -31,22 +31,29 @@ final class FriendCell: UICollectionViewCell {
         addSubview(avatarImageView)
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         avatarImageView.backgroundColor = .systemFill
-        avatarImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        avatarImageView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-        avatarImageView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        avatarImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
+        
+        NSLayoutConstraint.activate([
+            avatarImageView.topAnchor.constraint(equalTo: topAnchor),
+            avatarImageView.leftAnchor.constraint(equalTo: leftAnchor),
+            avatarImageView.rightAnchor.constraint(equalTo: rightAnchor),
+            avatarImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5)
+        ])
     }
     
     private func setupNameLabel() {
         addSubview(nameLabel)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor).isActive = true
-        nameLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-        nameLabel.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+
         nameLabel.numberOfLines = 2
         nameLabel.font = .systemFont(ofSize: 13)
+        
+        NSLayoutConstraint.activate([
+            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor),
+            nameLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8),
+            nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8),
+            nameLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 }
 

@@ -47,15 +47,18 @@ final class NumberPickerPopup: UIViewController, PopupContentView, FilterPopup {
         setupToolbar()
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         
-        pickerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 44).isActive = true
-        pickerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -44).isActive = true
-        pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         pickerView.dataSource = self
         pickerView.delegate = self
         
         view.backgroundColor = .systemBackground
         pickerView.backgroundColor = .systemBackground
+        
+        NSLayoutConstraint.activate([
+            pickerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 44),
+            pickerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -44),
+            pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
     
     @objc func cancel() {
@@ -94,9 +97,9 @@ extension NumberPickerPopup: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if row == 0 {
             if component == 0 {
-                return "от"
+                return "from"
             } else {
-                return "до"
+                return "to"
             }
         }
         

@@ -33,13 +33,13 @@ final class FilterViewController: CollectionViewController {
         s2.lineSpacing = 1
         
         let filters: [FilterProtocol] = [
-            StringFilter(type: .singleSelect, title: "Владельцев по ПТС", payload: StringFilter.Payload(entries: ["Один", "Не более двух"].map(StringFilterEntry.init), multiselect: false)),
-            NumberFilter(title: "Год выпуска", payload: NumberFilter.Payload(min: 1890, max: 2020, step: 1, selectedMin: nil, selectedMax: nil)),
-            NumberFilter(title: "Объем двигателя", payload: NumberFilter.Payload(min: 0.2, max: 4.4, step: 0.1, selectedMin: nil, selectedMax: nil)),
-            StringFilter(type: .singleSelect, title: "Коробка", payload: StringFilter.Payload(entries: ["Автомат", "Механика"].map(StringFilterEntry.init), multiselect: true)),
-            StringFilter(type: .singleSelect, title: "Привод", payload: StringFilter.Payload(entries: ["Передний", "Полный", "Задний"].map(StringFilterEntry.init), multiselect: true)),
-            StringFilter(type: .singleSelect, title: "Расположение руля", payload: StringFilter.Payload(entries: ["Левый", "Правый"].map(StringFilterEntry.init), multiselect: false)),
-            ManualInputFilter(title: "Цена", payload: .init(fields: [.init(key: "от", initialValue: nil), .init(key: "до", initialValue: nil)]))
+            StringFilter(type: .singleSelect, title: "Previous owners", payload: StringFilter.Payload(entries: ["One", "Two or less"].map(StringFilterEntry.init), multiselect: false)),
+            NumberFilter(title: "Year", payload: NumberFilter.Payload(min: 1890, max: 2020, step: 1, selectedMin: nil, selectedMax: nil)),
+            NumberFilter(title: "Engine", payload: NumberFilter.Payload(min: 0.2, max: 4.4, step: 0.1, selectedMin: nil, selectedMax: nil)),
+            StringFilter(type: .singleSelect, title: "Transmission", payload: StringFilter.Payload(entries: ["Automatic", "Manual"].map(StringFilterEntry.init), multiselect: true)),
+            StringFilter(type: .singleSelect, title: "Drive", payload: StringFilter.Payload(entries: ["Front wheel", "Four wheel", "Rear wheel"].map(StringFilterEntry.init), multiselect: true)),
+            StringFilter(type: .singleSelect, title: "Steering wheel position", payload: StringFilter.Payload(entries: ["Left side", "Right side"].map(StringFilterEntry.init), multiselect: false)),
+            ManualInputFilter(title: "Price", payload: .init(fields: [.init(key: "from", initialValue: nil), .init(key: "to", initialValue: nil)]))
         ]
         
         s2 += filters.map { filter in
@@ -58,19 +58,11 @@ final class FilterViewController: CollectionViewController {
                 case .numRange:
                     let _vc = PopupController<NumberPickerPopup>()
                     vc = _vc
-//                    _vc.content.selectedEntries = vm.currentValue()
                     _vc.content.filter = filter as! NumberFilter
-//                    _vc.content.onSelect = { [unowned vm] entries in
-//                        vm.updateSelection(entries)
-//                    }
                 case .fromToInput:
                     let _vc = PopupController<ManualInputFilterPopup>()
                     vc = _vc
-//                    _vc.content.selectedEntries = vm.currentValue()
                     _vc.content.filter = filter as! ManualInputFilter
-//                    _vc.content.onSelect = { [unowned vm] entries in
-//                        vm.updateSelection(entries)
-//                    }
                 default:
                     vc = UITableViewController()
                 }
@@ -88,8 +80,8 @@ final class FilterViewController: CollectionViewController {
         
         
         let boolFilters = [
-            BoolFilter(title: "На гарантии", payload: .init(initialySelected: false)),
-            BoolFilter(title: "Только с фото", payload: .init(initialySelected: true))
+            BoolFilter(title: "With warranty", payload: .init(initialySelected: false)),
+            BoolFilter(title: "With photo", payload: .init(initialySelected: true))
         ]
         
         s3 += boolFilters.map { filter in

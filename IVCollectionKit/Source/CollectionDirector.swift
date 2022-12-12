@@ -29,12 +29,10 @@ open class CollectionDirector: NSObject {
     private var isUpdating = false {
         didSet {
             guard !isUpdating, !pendingUpdates.isEmpty else { return }
-            print("perform pending update")
             let upd = pendingUpdates.removeFirst()
             upd()
         }
     }
-    private let updatesLock = NSRecursiveLock()
     
     var isEmpty: Bool {
         if sections.isEmpty {
@@ -44,11 +42,12 @@ open class CollectionDirector: NSObject {
         return sections.reduce(true, { $0 && $1.numberOfItems() == 0 })
     }
     
-    public init(collectionView: UICollectionView,
-                sections: [AbstractCollectionSection] = [],
-                shouldUseAutomaticViewRegistration: Bool = true,
-                shouldAdjustSupplementaryViewLayerZPosition: Bool = true)
-    {
+    public init(
+        collectionView: UICollectionView,
+        sections: [AbstractCollectionSection] = [],
+        shouldUseAutomaticViewRegistration: Bool = true,
+        shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+    ){
         
         self.collectionView = collectionView
         super.init()
@@ -64,7 +63,6 @@ open class CollectionDirector: NSObject {
     
     /// Save all section and items and sections identifiers "snapshot". It will be used to compare current state during next update
     private func createSnapshot() {
-        updatesLock.lock()
         sectionIds.removeAll()
         lastCommitedSectionAndItemsIdentifiers.removeAll()
 
@@ -72,7 +70,6 @@ open class CollectionDirector: NSObject {
             sectionIds.append(s.identifier)
             lastCommitedSectionAndItemsIdentifiers[s.identifier] = s.currentItemIds()
         }
-        updatesLock.unlock()
     }
     
     /// dequeue cell for `CollectionSection` implementation & support automatic cell registration
@@ -152,7 +149,7 @@ extension CollectionDirector {
     /// Calculates and performs managed UICollectionView updates based on diff between sections array state
     /// afert last update or reload and current state
     /// if `UICollectionView` is empty performs `reloadData` instead of batch updates to prevent crash
-    /// - parameter forceReloadDataForLargeAmountOfChanges: if there is > 50 section changes perform reload data instead of animated updates. `false` by default
+    /// - parameter forceReloadDataForLargeAmountOfChanges: if there is > 10 section changes perform reload data instead of animated updates. `false` by default
     /// - parameter completion: closure, which will be called after all updates has been performed. Nullable
     ///
     public func performUpdates(
@@ -258,7 +255,8 @@ extension CollectionDirector {
         sections.append(section)
     }
     
-    public func insert(section: AbstractCollectionSection,
+    public func insert(
+        section: AbstractCollectionSection,
                        after afterSection: AbstractCollectionSection)
     {
         guard let afterIndex = sections.firstIndex(where: { afterSection == $0 }) else { return }
@@ -473,24 +471,3 @@ extension CollectionDirector {
         return scrollDelegate?.responds(to: selector) == true ? scrollDelegate : super.forwardingTarget(for: selector)
     }
 }
-
-
-
-//    public func performUpdates(in section: AbstractCollectionSection, completion: (() -> Void)? = nil) {
-//        guard let s = sections.first(where: { $0.identifier == section.identifier }) else { fatalError("Attempt to update") }
-//
-//        let updates = updater.calculateUpdates(
-//            oldSectionIds: [s.identifier],
-//            currentSections: [s],
-//            itemMap: lastCommitedSectionAndItemsIdentifiers.filter { $0.key == section.identifier },
-//            forceReloadDataForLargeAmountOfChanges: false)
-//
-//        switch updates {
-//        case .reload:
-//            reload()
-//            return
-//        case .update(let sections, let items):
-//            createSnapshot()
-//            _performUpdates(sectionChanges: sections, itemChanges: items, completion: completion)
-//        }
-//    }

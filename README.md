@@ -5,15 +5,10 @@ Framework to manage complex `UICollectionView` in declarative way and very few l
 Heavily inspired by https://github.com/maxsokolov/TableKit and https://github.com/Instagram/IGListKit
 
 
-# WARNING
-
-Development still in progress. Some changes may affect backward compatibility
-
-
 # Installation
 Via CocoaPods: `pod 'IVCollectionKit'`
 Via Carthage `github "ivedeneev/CollectionKit"`
-Via Swift Package Manager: `Coming soon`
+Via Swift Package Manager: `.package(url: "https://github.com/ivedeneev/CollectionKit", branch: "master")`
 
 # Features
  - [x] Declarative `UICollectionView` management
@@ -141,7 +136,7 @@ If you need to animate cell size you can use `director.setNeedsUpdates()` method
 **IMPORTANT!** if you use animated updates via `performUpdates` or `setNeedsUpdate` dont use update methods of UICollectionView directly. It may lead to unpredictable behaviour
 
 ## IVCollectionView
-`IVCollectionView` is `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is simultanious updates.
+`IVCollectionView` is experemental `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is many  simultanious updates.
 
 ## Custom sections
 You can provide your own section implementation using `AbstractCollectionSection` protocol. For example, you can use it for using `CollectionDirector` with `Realm.Results` and save `Results` lazy behaviour or implementing expandable sections (see exapmles). Also you can create subclass of `CollectionSection` if you dont need radically different behaviour 

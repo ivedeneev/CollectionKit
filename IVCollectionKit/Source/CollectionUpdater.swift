@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let maxAmoutOfAnimatedSectionChanges = 10
+
 /// Update model for collectionView
 enum Update {
     /// `reloadData` should be called
@@ -39,7 +41,7 @@ final class CollectionUpdater {
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
         let converter = IndexPathConverter()
                
-        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
+        if sectionChanges.count > maxAmoutOfAnimatedSectionChanges && forceReloadDataForLargeAmountOfChanges {
             return .reload
         }
         

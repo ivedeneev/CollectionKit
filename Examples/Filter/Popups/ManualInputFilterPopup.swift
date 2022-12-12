@@ -34,7 +34,6 @@ final class ManualInputFilterPopup: CollectionViewController, PopupContentView, 
         setupKeyboardObserving()
         setupHeaderView(title: filter.title)
         roundCorners()
-//        setupToolbar()
     
         let fields = filter.payload.fields.map { field -> UITextField in
             let tf = FloatingLabelTextField()
@@ -51,10 +50,12 @@ final class ManualInputFilterPopup: CollectionViewController, PopupContentView, 
         
         view.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60).isActive = true
-        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60),
+            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60)
+        ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,7 +65,6 @@ final class ManualInputFilterPopup: CollectionViewController, PopupContentView, 
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-//        onSelect?(selectedEntries)
     }
     
     @objc func cancel() {

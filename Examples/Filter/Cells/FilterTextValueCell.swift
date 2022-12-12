@@ -19,13 +19,16 @@ final class FilterTextValueCell: UICollectionViewCell {
         
         addSubview(textField)
         textField.showUnderlineView = false
-        textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
-        textField.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        textField.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isEnabled = false
         backgroundColor = .systemBackground
+        
+        NSLayoutConstraint.activate([
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor),
+            textField.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+        ])
     }
     
     required init?(coder: NSCoder) {
