@@ -13,7 +13,7 @@ final class StringFilterPopup: CollectionViewController, PopupContentView, Filte
     
     var frameInPopup: CGRect {
         let safeArea: CGFloat = 34
-        let height: CGFloat = max(CGFloat(filter.payload.entries.count * 51) + safeArea + 30.0, 250)
+        let height: CGFloat = max(CGFloat(filter.payload.entries.count * 51) + safeArea + 30.0, 300)
         return CGRect(x: 0, y: view.bounds.height - height, width: view.bounds.width, height: height)
     }
     

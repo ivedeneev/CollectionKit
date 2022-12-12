@@ -17,13 +17,9 @@ final class PhotoGridSection: AbstractCollectionSection {
     }
     
     var headerItem: AbstractCollectionHeaderFooterItem?
-    
     var footerItem: AbstractCollectionHeaderFooterItem?
-    
     var insetForSection: UIEdgeInsets = .zero
-    
     var minimumInterItemSpacing: CGFloat = 2
-    
     var lineSpacing: CGFloat = 2
     
     private var results: PHFetchResult<PHAsset>

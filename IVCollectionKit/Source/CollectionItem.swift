@@ -146,7 +146,7 @@ public extension CollectionItem where CellType.T: SelectableCellViewModel {
     /// - note: uses `unowned self` reference
     @discardableResult
     func onSelectFromViewModel() -> Self {
-        return onSelect { [unowned self] (indexPath) in
+        onSelect { [unowned self] (indexPath) in
             self.item.onSelect?(indexPath)
         }
     }

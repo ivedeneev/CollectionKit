@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let maxAmoutOfAnimatedSectionChanges = 10
+
 /// Update model for collectionView
 enum Update {
     /// `reloadData` should be called
@@ -25,10 +27,11 @@ final class CollectionUpdater {
     
     weak var collectionView: UICollectionView?
 
-    func calculateUpdates(oldSectionIds: [String],
-                          currentSections: [AbstractCollectionSection],
-                          itemMap: [String: [String]],
-                          forceReloadDataForLargeAmountOfChanges: Bool) -> Update
+    func calculateUpdates(
+        oldSectionIds: [String],
+        currentSections: [AbstractCollectionSection],
+        itemMap: [String: [String]],
+        forceReloadDataForLargeAmountOfChanges: Bool) -> Update
     {
         if oldSectionIds.isEmpty {
             return .reload
@@ -38,7 +41,7 @@ final class CollectionUpdater {
         let sectionChanges = diff(old: oldSectionIds, new: newSectionIds)
         let converter = IndexPathConverter()
                
-        if sectionChanges.count > 50 && forceReloadDataForLargeAmountOfChanges {
+        if sectionChanges.count > maxAmoutOfAnimatedSectionChanges && forceReloadDataForLargeAmountOfChanges {
             return .reload
         }
         
@@ -100,13 +103,14 @@ final class CollectionUpdater {
             }
         }
         
-        return .update(sections: sectionChanges,
-                       items: ChangeWithIndexPath(
-                            inserts: itemChanges.flatMap { $0.inserts },
-                            deletes: deletes,
-                            replaces: itemChanges.flatMap { $0.replaces },
-                            moves: moves
-                       )
+        return .update(
+            sections: sectionChanges,
+            items: ChangeWithIndexPath(
+                inserts: itemChanges.flatMap { $0.inserts },
+                deletes: deletes,
+                replaces: itemChanges.flatMap { $0.replaces },
+                moves: moves
+            )
         )
     }
 }

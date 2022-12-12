@@ -18,9 +18,9 @@ final class MenuViewController: CollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .systemGroupedBackground
         let cells = CollectionItem<TextCell>(item: "Multiple cells").adjustsWidth(true).onSelect { [weak self] (_) in
-            self?.navigationController?.pushViewController(ViewController(), animated: true)
+            self?.navigationController?.pushViewController(ManyCellsViewController(), animated: true)
         }
         
         let social = CollectionItem<TextCell>(item: "Social profile").adjustsWidth(true).onSelect { [weak self] (_) in

@@ -61,30 +61,37 @@ open class CollectionSection : AbstractCollectionSection {
     }
     
     open func willDisplayItem(at indexPath: IndexPath, cell: UICollectionViewCell) {
+        guard indexPath.item < numberOfItems() else { return }
         items[indexPath.item].onDisplay?(indexPath, cell)
     }
     
     open func didEndDisplayingItem(at indexPath: IndexPath, cell: UICollectionViewCell) {
-         items[indexPath.item].onEndDisplay?(indexPath, cell)
+        guard indexPath.item < numberOfItems() else { return }
+        items[indexPath.item].onEndDisplay?(indexPath, cell)
     }
     
     open func didSelectItem(at indexPath: IndexPath) {
-         items[indexPath.item].onSelect?(indexPath)
+        guard indexPath.item < numberOfItems() else { return }
+        items[indexPath.item].onSelect?(indexPath)
     }
     
     open func didDeselectItem(at indexPath: IndexPath) {
+        guard indexPath.item < numberOfItems() else { return }
         items[indexPath.item].onDeselect?(indexPath)
     }
     
     open func shouldHighlightItem(at indexPath: IndexPath) -> Bool {
+        guard indexPath.item < numberOfItems() else { return false }
         return items[indexPath.item].shouldHighlight
     }
     
     open func didHighlightItem(at indexPath: IndexPath) {
-         items[indexPath.item].onHighlight?(indexPath)
+        guard indexPath.item < numberOfItems() else { return }
+        items[indexPath.item].onHighlight?(indexPath)
     }
     
     open func didUnhighlightItem(at indexPath: IndexPath) {
+        guard indexPath.item < numberOfItems() else { return }
          items[indexPath.item].onUnighlight?(indexPath)
     }
     

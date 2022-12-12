@@ -24,14 +24,17 @@ final class ButtonFooter: UICollectionReusableView {
         addSubview(button)
         button.backgroundColor = .systemBackground
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive = true
-        button.topAnchor.constraint(equalTo: topAnchor, constant: 4).isActive = true
-        button.leftAnchor.constraint(equalTo: leftAnchor, constant: 16).isActive = true
-        button.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
         button.clipsToBounds = true
         button.layer.cornerRadius = 6
         button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        
+        NSLayoutConstraint.activate([
+            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            button.topAnchor.constraint(equalTo: topAnchor, constant: 4),
+            button.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            button.rightAnchor.constraint(equalTo: rightAnchor, constant: -16)
+        ])
     }
     
     required init?(coder: NSCoder) {

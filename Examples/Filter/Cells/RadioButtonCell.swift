@@ -29,16 +29,20 @@ final class RadioButtonCell: UICollectionViewCell {
         backgroundColor = .systemBackground
         addSubview(radioButtonImageView)
         radioButtonImageView.translatesAutoresizingMaskIntoConstraints = false
-        radioButtonImageView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
-        radioButtonImageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        radioButtonImageView.widthAnchor.constraint(equalToConstant: 18).isActive = true
-        radioButtonImageView.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        
-        addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 16).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: radioButtonImageView.leftAnchor, constant: -10).isActive = true
+
+        addSubview(titleLabel)
+
+        NSLayoutConstraint.activate([
+            radioButtonImageView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            radioButtonImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            radioButtonImageView.widthAnchor.constraint(equalToConstant: 18),
+            radioButtonImageView.heightAnchor.constraint(equalToConstant: 18),
+            
+            titleLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleLabel.rightAnchor.constraint(equalTo: radioButtonImageView.leftAnchor, constant: -10)
+        ])
     }
     
     required init?(coder: NSCoder) {

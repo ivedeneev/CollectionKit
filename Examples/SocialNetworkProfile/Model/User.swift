@@ -14,7 +14,7 @@ struct User: Hashable {
     let lastName: String
     let imageUrl: URL
     let city: String
-    let info: [Info]
+    var info: [Info]
     let description: String?
     
     struct Info: Hashable {

@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// **EXPEREMENTAL**
 /// `UICollectionView` subclass designed for more safe batch updates
 /// I know, this is bad :(, but sometimes espesially during multiple updates something goes wrong and it crashes
 open class IVCollectionView: UICollectionView {

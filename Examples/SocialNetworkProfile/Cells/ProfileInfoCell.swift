@@ -30,20 +30,26 @@ final class ProfileInfoCell: UICollectionViewCell {
     private func setupImageView() {
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 32).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
         imageView.backgroundColor = .tertiarySystemGroupedBackground
+        
+        NSLayoutConstraint.activate([
+            imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            imageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 32),
+            imageView.heightAnchor.constraint(equalToConstant: 16),
+            imageView.widthAnchor.constraint(equalToConstant: 16)
+        ])
     }
     
     private func setupTitleLabel() {
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        titleLabel.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 36).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        
+        NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleLabel.leftAnchor.constraint(equalTo: imageView.rightAnchor, constant: 36),
+            titleLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16)
+        ])
     }
 }
 
