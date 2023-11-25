@@ -17,8 +17,9 @@ final class PaginationViewController: CollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        director.delegate = self
+        title = "Pagination"
         
+        director.delegate = self
         postsSection.insetForSection = UIEdgeInsets(top: 0, left: 8, bottom: 16, right: 8)
         postsSection.lineSpacing = 8
         director += postsSection
@@ -28,7 +29,7 @@ final class PaginationViewController: CollectionViewController {
     }
     
     func appendPosts() {
-        let newPosts = (posts.count..<posts.count+20).map {
+        let newPosts = (posts.count..<posts.count+10).map {
             let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             return "\($0)\n" + String((0..<300).map { _ in letters.randomElement()! })
           }
@@ -48,7 +49,7 @@ final class PaginationViewController: CollectionViewController {
             }
         
         if isLoading {
-            postsSection += CollectionItem<PaginationLoadingCell>(item: Void())
+            postsSection += CollectionItem<PaginationLoadingCell>(item: Void()).adjustsWidth(true)
         }
         
         director.performUpdates()
@@ -57,14 +58,15 @@ final class PaginationViewController: CollectionViewController {
 
 extension PaginationViewController: CollectionDirectorDelegate {
     func didScrollToBottom(director: CollectionDirector) {
+        print(#function)
         guard !isLoading else { return }
         print("DID SCROLL TO BOTTOM")
         isLoading = true
         configure()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.appendPosts()
-            self.configure()
             self.isLoading = false
+            self.configure()
         }
     }
 }

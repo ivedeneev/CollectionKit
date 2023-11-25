@@ -19,6 +19,8 @@ final class PhotoCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -50,16 +52,20 @@ extension PhotoCell: ConfigurableCollectionItem {
 }
 
 extension PHImageManager {
+    private static let queue = DispatchQueue(label: "image.downloader")
+    
     func image(asset: PHAsset) -> AnyPublisher<UIImage?, Never> {
         var requestId: PHImageRequestID!
         return Future<UIImage?, Never> { (promise) in
-            let options = PHImageRequestOptions()
-            options.deliveryMode = .opportunistic
-            options.isNetworkAccessAllowed = true
-            options.resizeMode = .none
-            options.isSynchronous = false
-            requestId = self.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFill, options: options) { (img, userInfo) in
-                promise(.success(img))
+            Self.queue.async {
+                let options = PHImageRequestOptions()
+                options.deliveryMode = .opportunistic
+                options.isNetworkAccessAllowed = true
+                options.resizeMode = .fast
+                options.isSynchronous = false
+                requestId = self.requestImage(for: asset, targetSize: CGSize(width: 100, height:100), contentMode: .aspectFill, options: options) { (img, userInfo) in
+                    promise(.success(img))
+                }
             }
         }
         .handleEvents(receiveCancel: { self.cancelImageRequest(requestId) })
