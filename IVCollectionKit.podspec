@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'IVCollectionKit'
-  s.version          = '1.0.1'
+  s.version          = '1.1.0'
   s.summary          = 'UICollectionView declarative management'
 
 # This description is used to generate tags and improve search results.

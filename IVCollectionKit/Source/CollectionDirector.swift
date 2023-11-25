@@ -17,6 +17,8 @@ open class CollectionDirector: NSObject {
     open var shouldAdjustSupplementaryViewLayerZPosition: Bool = true
     ///Forward scrollView delegate messages to specific object
     open weak var scrollDelegate: UIScrollViewDelegate?
+    ///
+    open weak var delegate: CollectionDirectorDelegate?
     
     public weak var collectionView: UICollectionView!
     internal lazy var updater = CollectionUpdater(collectionView)
@@ -46,7 +48,8 @@ open class CollectionDirector: NSObject {
         collectionView: UICollectionView,
         sections: [AbstractCollectionSection] = [],
         shouldUseAutomaticViewRegistration: Bool = true,
-        shouldAdjustSupplementaryViewLayerZPosition: Bool = true
+        shouldAdjustSupplementaryViewLayerZPosition: Bool = true,
+        delegate: CollectionDirectorDelegate? = nil
     ){
         
         self.collectionView = collectionView
@@ -55,6 +58,7 @@ open class CollectionDirector: NSObject {
         self.collectionView.delegate = self
         self.shouldUseAutomaticViewRegistration = shouldUseAutomaticViewRegistration
         self.shouldAdjustSupplementaryViewLayerZPosition = shouldAdjustSupplementaryViewLayerZPosition
+        self.delegate = delegate
     }
     
     open func section(for index: Int) -> AbstractCollectionSection {
@@ -257,8 +261,8 @@ extension CollectionDirector {
     
     public func insert(
         section: AbstractCollectionSection,
-                       after afterSection: AbstractCollectionSection)
-    {
+        after afterSection: AbstractCollectionSection
+    ) {
         guard let afterIndex = sections.firstIndex(where: { afterSection == $0 }) else { return }
         sections.insert(section, at: afterIndex + 1)
     }
@@ -327,6 +331,12 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         section(for: indexPath.section).willDisplayItem(at: indexPath, cell: cell)
+        
+        let sectionsCount = sections.count - 1
+        let lastSectionItemsCount = section(for: sectionsCount).numberOfItems()
+        
+        guard indexPath.section == sectionsCount, indexPath.item == lastSectionItemsCount - 1 else { return }
+        delegate?.didScrollToBottom(director: self)
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

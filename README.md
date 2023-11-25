@@ -135,6 +135,18 @@ If you need to animate cell size you can use `director.setNeedsUpdates()` method
 ```
 **IMPORTANT!** if you use animated updates via `performUpdates` or `setNeedsUpdate` dont use update methods of UICollectionView directly. It may lead to unpredictable behaviour
 
+## Pagination
+To support Pagination you should implement `CollectionDirectorDelegate` protocol. See [examples](https://github.com/ivedeneev/CollectionKit/blob/master/Examples/Pagination/PaginationViewController.swift)
+```swift
+director.delegate = self
+
+extension PaginationViewController: CollectionDirectorDelegate {
+    func didScrollToBottom(director: CollectionDirector) {
+
+    }
+}
+```
+
 ## IVCollectionView
 `IVCollectionView` is experemental `UICollectionView` subclass designed to manage incorrect updates. You can use it instead of ordinary CollectionView. Typical use case is many  simultanious updates.
 

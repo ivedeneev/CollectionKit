@@ -37,6 +37,16 @@ final class MenuViewController: CollectionViewController {
         s1.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         director += s1
         
+        let paginationSection = CollectionSection()
+        paginationSection.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "Pagination")
+//        paginationSection.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        let paginationItem = CollectionItem<TextCell>(item: "Pagination")
+            .adjustsWidth(true)
+            .onSelect { [weak self] _ in
+                self?.navigationController?.pushViewController(PaginationViewController(), animated: true)
+            }
+        paginationSection += paginationItem
+        director += paginationSection
         
         let photos = CollectionItem<TextCell>(item: "Custom Section (photo grid)").adjustsWidth(true).onSelect { [weak self] (_) in
             self?.navigationController?.pushViewController(PhotoGridViewController(), animated: true)
@@ -44,7 +54,6 @@ final class MenuViewController: CollectionViewController {
         
         let s2 = CollectionSection(items: [photos])
         s2.headerItem = CollectionHeaderFooterView<CollectionHeader>(item: "custom section")
-        s2.insetForSection = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         director += s2
         
         let s3 = CollectionSection(items: [
