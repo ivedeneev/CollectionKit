@@ -29,7 +29,8 @@ final class PaginationViewController: CollectionViewController {
     }
     
     func appendPosts() {
-        let newPosts = (posts.count..<posts.count+10).map {
+        let limit = 20
+        let newPosts = (posts.count..<posts.count+limit).map {
             let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             return "\($0)\n" + String((0..<300).map { _ in letters.randomElement()! })
           }

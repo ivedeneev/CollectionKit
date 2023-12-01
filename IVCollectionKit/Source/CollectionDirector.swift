@@ -332,10 +332,10 @@ extension CollectionDirector : UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         section(for: indexPath.section).willDisplayItem(at: indexPath, cell: cell)
         
-        let sectionsCount = sections.count - 1
-        let lastSectionItemsCount = section(for: sectionsCount).numberOfItems()
+        guard let lastNonEmptySectionIndex = sections.lastIndex(where: { !$0.isEmpty }) else { return }
+        let lastSectionItemsCount = section(for: lastNonEmptySectionIndex).numberOfItems()
         
-        guard indexPath.section == sectionsCount, indexPath.item == lastSectionItemsCount - 1 else { return }
+        guard indexPath.section == lastNonEmptySectionIndex, indexPath.item == lastSectionItemsCount - 1 else { return }
         delegate?.didScrollToBottom(director: self)
     }
     
